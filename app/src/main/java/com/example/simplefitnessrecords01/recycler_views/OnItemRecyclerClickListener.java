@@ -5,5 +5,5 @@ import com.example.simplefitnessrecords01.fitness.SetTraining;
 
 //інтерфейс слухача натискань на елементи RecyclerView
 public interface OnItemRecyclerClickListener {
-    void onItemClick(SetTraining setTraining);
+    void onItemClick(int position);
 }

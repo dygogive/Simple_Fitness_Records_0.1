@@ -5,9 +5,6 @@
         android:title="@string/edit"
         android:id="@+id/edit"/>
     <item
-        android:title="@string/train_red"
-        android:id="@+id/tr_red"/>
-    <item
         android:title="@string/delete"
         android:id="@+id/delete"/>
 

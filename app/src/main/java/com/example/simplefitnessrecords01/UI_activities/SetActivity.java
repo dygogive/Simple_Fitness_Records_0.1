@@ -33,23 +33,6 @@ public class SetActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-        //Creating FAB
-        // Знаходимо FloatingActionButton
-        FloatingActionButton fab = findViewById(R.id.fab_add);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Ваш код, що виконується після натискання кнопки
-            }
-        });
-
-
-
-
-
-
-
-
         //обробити інфу від екстра чз інтент
         getIntentExtra();
     }
@@ -65,25 +48,13 @@ public class SetActivity extends AppCompatActivity {
         String textSubname = getExtraArray[2];
         //записати ці строки на екран
         StringBuilder sb = new StringBuilder();
-        sb.append("День тренування: " + textDay).append("\n").append("Назва тренування: ").append(textName).
-                append("\n").append("Підназва тренування: "). append(textSubname);
-        binding.textMultiLine.setText(sb.toString());
+//        sb.append("День тренування: " + textDay).append("\n").append("Назва тренування: ").append(textName).
+//                append("\n").append("Підназва тренування: "). append(textSubname);
+        binding.tvDay.setText(textDay);
+        binding.tvName.setText(textName);
+        binding.tvSubName.setText(textSubname);
 
-        //ідентифікувати помічник і базу
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        String selection = MyDatabaseHelper.COLUMN_DAY + "=? AND " + MyDatabaseHelper.COLUMN_NAME + "=? AND " + MyDatabaseHelper.COLUMN_SUBNAME + "=?";
-        String[] selectionArgs = {textDay , textName , textSubname};
-        Cursor с = db.query(MyDatabaseHelper.DATABASE_TABLE,new String[]{"id"},selection, selectionArgs,null,null,null);
-        if (  !с.moveToFirst()  ) {
-            ContentValues cv = new ContentValues();
-            cv.put("day", textDay);
-            cv.put("name", textName);
-            cv.put("subname", textSubname);
-
-            db.insert("sets", null, cv);
-        } else Toast.makeText(SetActivity.this, "Рядок уже є", Toast.LENGTH_SHORT).show();
     }
 
 

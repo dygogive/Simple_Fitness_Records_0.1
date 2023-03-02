@@ -3,6 +3,7 @@ package com.example.simplefitnessrecords01.recycler_views;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -131,7 +132,7 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
                 //а також чи є позиція натисненого елементу
                 if (listenerShort != null & RecyclerView.NO_POSITION != position) {
                     // тепер я викликаю метод натиснення на своєму слухачеві і передаю елемент SetTraining
-                    listenerShort.onItemClick(setTrainingList.get(position));
+                    listenerShort.onItemClick(position);
                 }
             });
 

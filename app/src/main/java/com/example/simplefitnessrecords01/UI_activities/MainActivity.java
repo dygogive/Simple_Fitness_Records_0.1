@@ -31,12 +31,13 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private ActivityResultLauncher activityResultLauncher;
 
+    MyDatabaseHelper dbHelp;
+    SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
 
 
         //Запускач Актівіті з результатом
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        dbHelp = new MyDatabaseHelper(MainActivity.this);
+        db     = dbHelp.getWritableDatabase();
 
         //ініціалізація recycleView
         recycleViewInit();
@@ -118,9 +122,33 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //встановлюємо наш слухач оброблень короткого натискання
-        adapter.setOnItemRecyclerClickListener(setTraining -> {
-            //реакція на натискання на елемент рециклер тут
-            Toast.makeText(this, setTraining.getDay(), Toast.LENGTH_SHORT).show();
+        adapter.setOnItemRecyclerClickListener(position -> {
+            String[] dayNameSubname = null;
+
+            Cursor c = db.query(MyDatabaseHelper.DATABASE_TABLE,null,null,null,null,null,null);
+            if(c.moveToPosition(position)) {
+                @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
+                @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
+
+//                if(c.moveToFirst()){
+//                    do{
+//                        @SuppressLint("Range") String day1 =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
+//                        @SuppressLint("Range") String name2 =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
+//                        @SuppressLint("Range") String subname3 = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
+//                        Log.d("test1" , day1 +" + "+ name2 +" + "+ subname3  +" + "+  position);
+//                    }while (c.moveToNext());
+//                }
+
+                db.close();
+                dbHelp.close();
+
+                dayNameSubname = new String[] {day,name,subname};
+
+                MainActivity.this.getActivityResultLauncher().launch(dayNameSubname);
+            }else {
+                Toast.makeText(this, "Немає в БВ позиції - " + position, Toast.LENGTH_SHORT).show();
+            }
         });
 
         //передати адаптер
@@ -152,7 +180,26 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_new:
                 // Обробка натискання на пункт "NEW"
-                CustomDialog dialog = new CustomDialog(this,txts -> {MainActivity.this.getActivityResultLauncher().launch(txts);});
+                CustomDialog dialog = new CustomDialog(this,txts -> {
+                    //ідентифікувати помічник і базу
+                    MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+                    String selection = MyDatabaseHelper.COLUMN_DAY + "=? AND " + MyDatabaseHelper.COLUMN_NAME + "=? AND " + MyDatabaseHelper.COLUMN_SUBNAME + "=?";
+                    String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
+                    Cursor с = db.query(MyDatabaseHelper.DATABASE_TABLE,new String[]{"id"},selection, selectionArgs,null,null,null);
+                    if (  !с.moveToFirst()  ) {
+                        ContentValues cv = new ContentValues();
+                        cv.put("day", txts[0]);
+                        cv.put("name", txts[1]);
+                        cv.put("subname", txts[2]);
+                        db.insert("sets", null, cv);
+                    } else Toast.makeText(MainActivity.this, "Рядок уже є", Toast.LENGTH_SHORT).show();
+                    db.close();
+
+
+                    MainActivity.this.getActivityResultLauncher().launch(txts);
+                });
                 dialog.show();
                 return true;
             case R.id.action_settings:
@@ -211,30 +258,6 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
-            case R.id.tr_red:
-
-                String[] dayNameSubname = null;
-
-                MyDatabaseHelper dbHelp = new MyDatabaseHelper(MainActivity.this);
-                SQLiteDatabase db = dbHelp.getWritableDatabase();
-
-                Cursor c = db.query(MyDatabaseHelper.DATABASE_TABLE,null,null,null,null,null,null);
-                if(c.moveToPosition(position)) {
-                    String day =     c.getString(c.getColumnIndexOrThrow(MyDatabaseHelper.COLUMN_DAY));
-                    String name =    c.getString(c.getColumnIndexOrThrow(MyDatabaseHelper.COLUMN_NAME));
-                    String subname = c.getString(c.getColumnIndexOrThrow(MyDatabaseHelper.COLUMN_SUBNAME));
-
-
-                    db.close();
-                    dbHelp.close();
-
-                    dayNameSubname = new String[] {day,name,subname};
-
-                }
-
-                MainActivity.this.getActivityResultLauncher().launch(dayNameSubname);
-
-                return true;
 
             case R.id.delete:
                 //адаптер
@@ -249,6 +272,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onPause() {
 
+        db.close();
 
+        super.onPause();
+    }
 }

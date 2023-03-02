@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Simple Fitness Records 0.1</string>
+    <string name="action_new_training">Нове тренування</string>
+    <string name="settings">Налаштування</string>
+    <string name="the_end_training">Закінчити тренування</string>
+    <string name="delete">Видалити</string>
+    <string name="edit">Ред. назву</string>
+    <string name="train_red">Ред. тренування</string>
+    <string name="my_fab_description">Новий запис підходу</string>
+</resources>

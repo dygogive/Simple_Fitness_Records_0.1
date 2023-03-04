@@ -1,10 +1,17 @@
 package com.example.simplefitnessrecords01.fitness;
 
-public class SetTraining {
-    int id;
+public class TrainingFitness {
+    int id = 0;
     String day, name, subname;
 
-    public SetTraining(int id, String day, String name, String subname) {
+    public TrainingFitness(int id, String day, String name, String subname) {
+        this.id = id;
+        this.day = day;
+        this.name = name;
+        this.subname = subname;
+    }
+
+    public TrainingFitness(String day, String name, String subname) {
         this.id = id;
         this.day = day;
         this.name = name;

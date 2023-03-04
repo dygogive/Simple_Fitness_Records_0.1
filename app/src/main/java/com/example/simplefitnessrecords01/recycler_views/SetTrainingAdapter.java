@@ -3,12 +3,7 @@ package com.example.simplefitnessrecords01.recycler_views;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -18,21 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
-import com.example.simplefitnessrecords01.fitness.SetTraining;
+import com.example.simplefitnessrecords01.fitness.TrainingFitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.SetTrainingHolder> {
 
-    public void setSetTrainingList(List<SetTraining> setTrainingList) {
+    public void setSetTrainingList(List<TrainingFitness> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
 
     //Список ітемів
-    private List<SetTraining> setTrainingList;
+    private List<TrainingFitness> setTrainingList;
 
     //контекст
     private Context context;
@@ -44,7 +38,7 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
 
     //конструктор
-    public SetTrainingAdapter(List<SetTraining> setTrainingList, Context context) {
+    public SetTrainingAdapter(List<TrainingFitness> setTrainingList, Context context) {
         this.setTrainingList = setTrainingList;
         this.context = context;
     }
@@ -70,7 +64,7 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
     @Override
     public void onBindViewHolder(@NonNull SetTrainingAdapter.SetTrainingHolder holder, int position) {
         //отримати елемент списку
-        SetTraining setTraining = setTrainingList.get(position);
+        TrainingFitness setTraining = setTrainingList.get(position);
         //закинути з нього інфу у холдер
         holder.binding.textView.setText(setTraining.getDay());
     }

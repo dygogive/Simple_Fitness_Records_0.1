@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.dialog.DialogOK;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.SetTraining;
+import com.example.simplefitnessrecords01.fitness.TrainingFitness;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.CustomDialog;
@@ -28,11 +28,38 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
-    private ActivityResultLauncher activityResultLauncher;
+    //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
+    private int position;
 
+    //використовується при довгому натисненні на РециклерВ'ю, щоб закинути номер посиції на оброблення контекстного меню
+    public void setPosition(int posit) {
+        position = posit;
+    }
+
+    //Біндінг цього актівіті
+    private ActivityMainBinding binding;
+
+    //Запускач інших актівіті із цього актівіті
+    private ActivityResultLauncher activityResultLauncher;
+    //метод гетер для торимання посилання на запускач актівіті
+    public ActivityResultLauncher getActivityResultLauncher() {
+        return activityResultLauncher;
+    }
+
+    //посилання на Помічник по роботі з базою даних
     MyDatabaseHelper dbHelp;
+    //посилання на База даних
     SQLiteDatabase db;
+
+
+
+
+
+
+
+    /**********  Activity Lifecycle ***************/
+
+    //метод життєвого циклу актівіті
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-        //Запускач Актівіті з результатом
+        //Ініціалізація посилання на Запускач Актівіті з результатом і тут оброблення цього результату
         activityResultLauncher = registerForActivityResult(new MyActivityResultContract(),
                 result -> {
                     if (result) {
@@ -54,23 +81,13 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private int position;
 
-    public void setPosition(int posit) {
-        position = posit;
-    }
-
-
-    public ActivityResultLauncher getActivityResultLauncher() {
-        return activityResultLauncher;
-    }
-
-
-
+    //метод життєвого циклу актівіті
     @Override
     protected void onResume() {
         super.onResume();
 
+        //ініціалізація посилань на базу даних
         dbHelp = new MyDatabaseHelper(MainActivity.this);
         db     = dbHelp.getWritableDatabase();
 
@@ -79,15 +96,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private List<SetTraining> trainingList(){
-        //ідентифікувати помічник і базу
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+
+
+
+    /**********  RecyclerView ***************/
+
+    //метод створює список імен баз даних
+    private List<TrainingFitness> trainingList(){
+
         //пустий список для SetTraining з бази для рециклера
-        List<SetTraining> trainingListist = new ArrayList<>();
-        //курсор з бази
+        List<TrainingFitness> trainingListist = new ArrayList<>();
+
+        //курсор з бази з вибором усього
         Cursor cursor = db.rawQuery("SELECT * FROM " + MyDatabaseHelper.DATABASE_TABLE, null);
-        //перебрати рядки курсору якщо в базі є записи
+
+        //перебрати рядки курсору
         if (cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range")
@@ -98,55 +122,52 @@ public class MainActivity extends AppCompatActivity {
                 String name = cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
                 @SuppressLint("Range")
                 String subname = cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
-                trainingListist.add(new SetTraining(id, day, name, subname));
+                trainingListist.add(new TrainingFitness(id, day, name, subname));
             } while (cursor.moveToNext());
         } else {
-            //Якщо база порожня то виконати наступне
-            CustomDialog dialog = new CustomDialog(this, txts -> {MainActivity.this.getActivityResultLauncher().launch(txts);});
+            //Якщо база порожня то запуск діалогу
+            CustomDialog dialog = new CustomDialog(this, txts -> {
+                //обробник масиву текстів, отриманих з діалогу
+                MainActivity.this.getActivityResultLauncher().launch(txts);});
+            //показати діалог
             dialog.show();
         }
-        cursor.close();
-        db.close();
+        //повернути список об'єктів тренувань
         return trainingListist;
     }
 
-    //ініціалізація recycleView
+    //ініціалізація recycleView списку створених тренувань фітнесу
     private void recycleViewInit() {
         //дістати setTrainingList з бази даних
-        List<SetTraining> setTrainingList = trainingList();
+        List<TrainingFitness> fitnessList = trainingList();
 
-        //створити новий адаптер
-        SetTrainingAdapter adapter = new SetTrainingAdapter(setTrainingList, this);
+        //створити новий адаптер з цим списком
+        SetTrainingAdapter adapter = new SetTrainingAdapter(fitnessList, this);
 
         //менеджер відображення елементів передаємо
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //встановлюємо наш слухач оброблень короткого натискання
+        //встановлюємо наш слухач оброблень короткого натискання і закодуємо саме оброблення
         adapter.setOnItemRecyclerClickListener(position -> {
+
+            //створимо масив з інфою про тренування при натисканні на елемент рециклера
             String[] dayNameSubname = null;
 
+            //курсор
             Cursor c = db.query(MyDatabaseHelper.DATABASE_TABLE,null,null,null,null,null,null);
             if(c.moveToPosition(position)) {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
                 @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
 
-//                if(c.moveToFirst()){
-//                    do{
-//                        @SuppressLint("Range") String day1 =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
-//                        @SuppressLint("Range") String name2 =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
-//                        @SuppressLint("Range") String subname3 = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
-//                        Log.d("test1" , day1 +" + "+ name2 +" + "+ subname3  +" + "+  position);
-//                    }while (c.moveToNext());
-//                }
-
-                db.close();
-                dbHelp.close();
-
+                //заповнення масиву
                 dayNameSubname = new String[] {day,name,subname};
 
+                //запустити актівіті, що представляє процес тренування, передавши йому інформацію про тренування
                 MainActivity.this.getActivityResultLauncher().launch(dayNameSubname);
+
             }else {
+                //при помилці запустити тост такий
                 Toast.makeText(this, "Немає в БВ позиції - " + position, Toast.LENGTH_SHORT).show();
             }
         });
@@ -155,14 +176,25 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    protected void onPause() {
+
+        db.close();
+
+        super.onPause();
+    }
 
 
 
 
-    /*
-     * Викличте MenuInflater в методі onCreateOptionsMenu()
-     * вашої діяльності або фрагмента. Ось код для діяльності:
-     * */
+
+
+
+
+
+    /********** Options Menu **************/
+
+    //Створення меню
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Роздування ресурсу меню з використанням MenuInflater
@@ -170,9 +202,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /*Додайте обробник події для пунктів меню, які ви хочете обробити.
-     Для цього використовуйте метод onOptionsItemSelected().
-      Ось код для діяльності:*/
+    /*Listener of Options Menu */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Обробка натискання пунктів меню
@@ -215,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    /************************ Context Menu  *****************************/
 
     // Реалізація методу для обробки натискань на пункти контекстного меню
     @Override
@@ -272,11 +302,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onPause() {
 
-        db.close();
 
-        super.onPause();
-    }
+
 }

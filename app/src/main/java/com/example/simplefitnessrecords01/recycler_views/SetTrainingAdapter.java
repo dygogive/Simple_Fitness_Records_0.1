@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.fitness.TrainingFitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
@@ -21,33 +22,48 @@ import java.util.List;
 
 public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.SetTrainingHolder> {
 
+
+    //контекст
+    private Context context;
+
+    //Список ітемів - тренувань
+    private List<TrainingFitness> setTrainingList;
     public void setSetTrainingList(List<TrainingFitness> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
 
-    //Список ітемів
-    private List<TrainingFitness> setTrainingList;
 
-    //контекст
-    private Context context;
+
+
 
 
     //слухач натискань на елементи, якого я створив для того, щоб оброблювати натискання на елементи
     private OnItemRecyclerClickListener listenerShort;
 
-
-
-    //конструктор
-    public SetTrainingAdapter(List<TrainingFitness> setTrainingList, Context context) {
-        this.setTrainingList = setTrainingList;
-        this.context = context;
-    }
-
-
     //метод для встановлення слухача натискань на елементи Рециклера
     public void setOnItemRecyclerClickListener(OnItemRecyclerClickListener listener) {
         this.listenerShort = listener;
     }
+
+
+
+
+
+
+    //конструктори
+    public SetTrainingAdapter(List<TrainingFitness> setTrainingList, Context context) {
+        this.setTrainingList = setTrainingList;
+        this.context = context;
+    }
+    public SetTrainingAdapter(Context context) {
+        this.context = context;
+    }
+
+
+
+
+
+
 
     //метод створює в'ю холдери
     @NonNull
@@ -60,6 +76,10 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
         return new SetTrainingHolder(view);
     }
 
+
+
+
+
     //метод наповнює інформацією створені в'ю у холдерах
     @Override
     public void onBindViewHolder(@NonNull SetTrainingAdapter.SetTrainingHolder holder, int position) {
@@ -69,6 +89,9 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
         holder.binding.textView.setText(setTraining.getDay());
     }
 
+
+
+    //повернення кількості елементів, які відображає Рециклер
     @Override
     public int getItemCount() {
         //розмір елементів
@@ -76,10 +99,10 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
     }
 
 
+    //Видалити один з обёэктыв ы з бази, ы з рециклера
     public void deleteItem(int position) {
-        //взяти базу
-        MyDatabaseHelper helper = new MyDatabaseHelper(context);
-        SQLiteDatabase db = helper.getWritableDatabase();
+
+        GetterDB getterDB = (GetterDB) context;
 
         //код для видалення
         String table_name = MyDatabaseHelper.DATABASE_TABLE;
@@ -88,19 +111,18 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
 
         //видалити з бази
-        db.execSQL(sql, where_args);
-        db.close();
+        getterDB.getDB().execSQL(sql, where_args);
+        getterDB.getDB().close();
+
         //видалити з адаптера
         setTrainingList.remove(position);
 
         //повідомити адаптер про видалення
         notifyItemRemoved(position);
-
-
-        Toast.makeText(context, "Видалити позицію: " + position, Toast.LENGTH_SHORT).show();
     }
 
 
+    //*******Холдер елементыв *************
     public class SetTrainingHolder extends RecyclerView.ViewHolder {
 
         //біндер для елементів лайаута ітема рецикла в'ю
@@ -109,6 +131,8 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
         //конструктор
         public SetTrainingHolder(@NonNull View itemView) {
             super(itemView);
+
+
 
             //встановити слухач натискань на елемент в'ю
             itemView.setOnClickListener(v -> {
@@ -142,8 +166,10 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
                     ((Activity)context).getMenuInflater().inflate(R.menu.menu_for_recycler_viev, menu);
                 });
 
+                //Якщо контекст це МейнАктівіті (краще використати інтерфейс)
                 if (context instanceof MainActivity) {
                     MainActivity child = (MainActivity) context;
+                    //Задаєш позицію
                     child.setPosition(position);
                 } else Toast.makeText(context, "Error! MainActivity renamed!", Toast.LENGTH_SHORT).show();
 
@@ -155,8 +181,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
 
         }
-
-
 
     }
 

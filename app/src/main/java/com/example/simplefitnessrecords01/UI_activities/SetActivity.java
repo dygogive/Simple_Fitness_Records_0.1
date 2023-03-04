@@ -1,21 +1,14 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.RecordSet;
@@ -26,16 +19,28 @@ import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class SetActivity extends AppCompatActivity {
+
+
     //біндінг
     private ActivitySetBinding binding;
 
+    //посилання на Помічник по роботі з базою даних
+    MyDatabaseHelper dbHelp;
+    //посилання на База даних
+    SQLiteDatabase db;
+
+
+
+
+
+
+    /**********  Activity Lifecycle ***************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,44 @@ public class SetActivity extends AppCompatActivity {
 
 
 
+        //обробити інфу від екстра чз інтент
+        procIntentExtra();
+
+    }
+
+    //метод життєвого циклу актівіті
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //ініціалізація посилань на базу даних
+        dbHelp = new MyDatabaseHelper(SetActivity.this);
+        db     = dbHelp.getWritableDatabase();
+
+        //ініціалізація Рециклера в'ю
+        recycleViewInit();
+    }
+
+    @Override
+    protected void onPause() {
+        //Закрити базу
+        db.close();
+
+        super.onPause();
+    }
+
+
+
+
+
+    /**********  RecyclerView ***************/
+    private void recycleViewInit() {
+
+        //менеджер для РЕЦИКЛЕРА В'Ю
         binding.recyclerAddSet.setLayoutManager(new LinearLayoutManager(this));
+        //Адаптер для рециклера
         binding.recyclerAddSet.setAdapter(new AdapterSets(this));
+
 
         //записати тестові дані в рециклер
         List<SetFit> setFitList1 = new ArrayList<>();
@@ -61,12 +102,19 @@ public class SetActivity extends AppCompatActivity {
             setFitList1.add(setFit);
         }
         ((AdapterSets)binding.recyclerAddSet.getAdapter()).setSetFitList(setFitList1);
-
-        //обробити інфу від екстра чз інтент
-        getIntentExtra();
     }
 
-    private void getIntentExtra() {
+
+
+
+
+
+
+    /******************* IntentExtra **************************/
+
+
+    //Обробити дані, що отримані від попереднього актівіті
+    private void procIntentExtra() {
         //Інтент з інфою
         Intent intent = getIntent();
         //Інфа з інтенту
@@ -77,33 +125,27 @@ public class SetActivity extends AppCompatActivity {
         String textSubname = getExtraArray[2];
         //записати ці строки на екран
         StringBuilder sb = new StringBuilder();
-//        sb.append("День тренування: " + textDay).append("\n").append("Назва тренування: ").append(textName).
-//                append("\n").append("Підназва тренування: "). append(textSubname);
+
+        //показати тексти на екрані
         binding.tvDay.setText(textDay);
         binding.tvName.setText(textName);
         binding.tvSubName.setText(textSubname);
-
-
     }
 
 
 
 
 
-    /*
-     * Викличте MenuInflater в методі onCreateOptionsMenu()
-     * вашої діяльності або фрагмента. Ось код для діяльності:
-     * */
+    /********** Options Menu **************/
+
+    /* Створення меню */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Роздування ресурсу меню з використанням MenuInflater
         getMenuInflater().inflate(R.menu.menu_training, menu);
         return true;
     }
-    /*Додайте обробник події для пунктів меню, які ви хочете обробити.
-     Для цього використовуйте метод onOptionsItemSelected().
-      Ось код для діяльності:*/
-
+    /* Listener of Options Menu */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Обробка натискання пунктів меню

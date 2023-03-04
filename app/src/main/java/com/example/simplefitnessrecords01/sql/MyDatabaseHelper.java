@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
+    /************   НАЗВА БД ТА ТАБЛИЦЬ *************************/
     private static final String DATABASE_NAME = "mydatabase.db";
     public static final String DATABASE_TABLE = "sets";
     public static final String COLUMN_ID = "id";
@@ -18,10 +19,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_REPEATS = "repeats";
     private static final int DATABASE_VERSION = 1;
 
+
+    /************* КОНСТРУКТОР  ********************/
     public MyDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
+    /*************** СТВОРЕННЯ ТАБЛИЦЬ **********************/
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Створення таблиць бази даних
@@ -31,6 +36,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 "" + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
     }
 
+
+
+    /************************* ОНОВЛЕННЯ ТАБЛИЦЬ ********************************/
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Оновлення таблиць бази даних

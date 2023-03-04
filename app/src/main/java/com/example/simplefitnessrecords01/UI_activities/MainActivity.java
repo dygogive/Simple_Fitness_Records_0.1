@@ -26,7 +26,7 @@ import com.example.simplefitnessrecords01.recycler_views.SetTrainingAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GetterDB {
 
     //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
     private int position;
@@ -51,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
     //посилання на База даних
     SQLiteDatabase db;
 
-
-
-
-
-
+    public SQLiteDatabase getDB() {
+        return db;
+    }
 
     /**********  Activity Lifecycle ***************/
 
@@ -95,7 +93,13 @@ public class MainActivity extends AppCompatActivity {
         recycleViewInit();
     }
 
+    @Override
+    protected void onPause() {
 
+        db.close();
+
+        super.onPause();
+    }
 
 
 
@@ -176,13 +180,6 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    protected void onPause() {
-
-        db.close();
-
-        super.onPause();
-    }
 
 
 

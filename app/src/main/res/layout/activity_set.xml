@@ -42,10 +42,11 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnAddExe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Додати вправу"
+        android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="parent"

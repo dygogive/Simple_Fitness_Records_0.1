@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
+import com.example.simplefitnessrecords01.fitness.SetFit;
 import com.example.simplefitnessrecords01.fitness.TrainingFitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
@@ -34,9 +35,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
 
 
-
-
-
     //слухач натискань на елементи, якого я створив для того, щоб оброблювати натискання на елементи
     private OnItemRecyclerClickListener listenerShort;
 
@@ -44,9 +42,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
     public void setOnItemRecyclerClickListener(OnItemRecyclerClickListener listener) {
         this.listenerShort = listener;
     }
-
-
-
 
 
 
@@ -58,10 +53,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
     public SetTrainingAdapter(Context context) {
         this.context = context;
     }
-
-
-
-
 
 
 
@@ -78,15 +69,13 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
 
 
-
-
     //метод наповнює інформацією створені в'ю у холдерах
     @Override
     public void onBindViewHolder(@NonNull SetTrainingAdapter.SetTrainingHolder holder, int position) {
         //отримати елемент списку
         TrainingFitness setTraining = setTrainingList.get(position);
         //закинути з нього інфу у холдер
-        holder.binding.textView.setText(setTraining.getDay());
+        holder.onBindData(setTraining);
     }
 
 
@@ -128,6 +117,9 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
         //біндер для елементів лайаута ітема рецикла в'ю
         TextForRecyclerBinding binding = TextForRecyclerBinding.bind(itemView);
 
+        //Унікальний ідентифікатор
+        String unicID;
+
         //конструктор
         public SetTrainingHolder(@NonNull View itemView) {
             super(itemView);
@@ -150,7 +142,7 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
                 //а також чи є позиція натисненого елементу
                 if (listenerShort != null & RecyclerView.NO_POSITION != position) {
                     // тепер я викликаю метод натиснення на своєму слухачеві і передаю елемент SetTraining
-                    listenerShort.onItemClick(position);
+                    listenerShort.onItemClick(position, unicID);
                 }
             });
 
@@ -178,8 +170,11 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
                 return true;
             });
+        }
 
-
+        void onBindData(TrainingFitness trainingFitness){
+            binding.textView.setText(trainingFitness.getDay());
+            unicID = trainingFitness.getUnicID();
         }
 
     }

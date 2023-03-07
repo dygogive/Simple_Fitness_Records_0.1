@@ -1,5 +1,7 @@
 package com.example.simplefitnessrecords01.fitness;
 
+import java.util.UUID;
+
 public class SetFit {
     Exercise exe;
     RecordSet recordSet;
@@ -19,6 +21,10 @@ public class SetFit {
     public void setRecordSet(RecordSet recordSet) {
         this.recordSet = recordSet;
     }
+
+
+
+
 
     public SetFit(Exercise exe, RecordSet recordSet) {
         this.exe = exe;

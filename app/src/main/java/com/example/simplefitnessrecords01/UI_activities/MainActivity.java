@@ -152,10 +152,10 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //встановлюємо наш слухач оброблень короткого натискання і закодуємо саме оброблення
-        adapter.setOnItemRecyclerClickListener(position -> {
+        adapter.setOnItemRecyclerClickListener((position, unicID) -> {
 
             //створимо масив з інфою про тренування при натисканні на елемент рециклера
-            String[] dayNameSubname = null;
+            String[] dayNameSubnameUnicID = null;
 
             //курсор
             Cursor c = db.query(MyDatabaseHelper.DATABASE_TABLE,null,null,null,null,null,null);
@@ -165,10 +165,10 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
 
                 //заповнення масиву
-                dayNameSubname = new String[] {day,name,subname};
+                dayNameSubnameUnicID = new String[] {day,name,subname,unicID};
 
                 //запустити актівіті, що представляє процес тренування, передавши йому інформацію про тренування
-                MainActivity.this.getActivityResultLauncher().launch(dayNameSubname);
+                MainActivity.this.getActivityResultLauncher().launch(dayNameSubnameUnicID);
 
             }else {
                 //при помилці запустити тост такий

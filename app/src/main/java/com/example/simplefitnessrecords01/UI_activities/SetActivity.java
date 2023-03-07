@@ -5,10 +5,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.RecordSet;
@@ -16,6 +18,7 @@ import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.SetFit;
 import com.example.simplefitnessrecords01.fitness.Weight;
 import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
+import com.example.simplefitnessrecords01.sql.CurentTrainingDBhelper;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
@@ -32,11 +35,10 @@ public class SetActivity extends AppCompatActivity {
 
     //посилання на Помічник по роботі з базою даних
     MyDatabaseHelper dbHelp;
+    CurentTrainingDBhelper dbHelpThisTraining;
+    String tableName;
     //посилання на База даних
     SQLiteDatabase db;
-
-
-
 
 
 
@@ -62,6 +64,10 @@ public class SetActivity extends AppCompatActivity {
 
         //ініціалізація посилань на базу даних
         dbHelp = new MyDatabaseHelper(SetActivity.this);
+        dbHelpThisTraining = new CurentTrainingDBhelper(SetActivity.this, tableName, 1);
+
+
+
         db     = dbHelp.getWritableDatabase();
 
         //ініціалізація Рециклера в'ю
@@ -77,9 +83,6 @@ public class SetActivity extends AppCompatActivity {
     }
 
 
-
-
-
     /**********  RecyclerView ***************/
     private void recycleViewInit() {
 
@@ -89,23 +92,35 @@ public class SetActivity extends AppCompatActivity {
         binding.recyclerAddSet.setAdapter(new AdapterSets(this));
 
 
-        //записати тестові дані в рециклер
-        List<SetFit> setFitList1 = new ArrayList<>();
-        for (int i = 0; i < 20; i++){
-            Random random = new Random();
-            Weight weight   = new Weight(random.nextInt(100));
-            Repeats repeats = new Repeats(random.nextInt(8+4));
-            SetFit setFit = new SetFit(
-                    new Exercise("Exercise "+ i),
-                    new RecordSet(weight,repeats)
-            );
-            setFitList1.add(setFit);
-        }
-        ((AdapterSets)binding.recyclerAddSet.getAdapter()).setSetFitList(setFitList1);
+//        //записати тестові дані в рециклер
+//        List<SetFit> setFitList1 = new ArrayList<>();
+//        for (int i = 0; i < 20; i++){
+//            Random random = new Random();
+//            Weight weight   = new Weight(random.nextInt(100));
+//            Repeats repeats = new Repeats(random.nextInt(8+4));
+//            SetFit setFit = new SetFit(
+//                    new Exercise("Exercise "+ i),
+//                    new RecordSet(weight,repeats)
+//            );
+//            setFitList1.add(setFit);
+//        }
+//        ((AdapterSets)binding.recyclerAddSet.getAdapter()).setSetFitList(setFitList1);
     }
 
 
 
+
+    /***************** onClick button *******************/
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.btnAddExe:{
+
+            } break;
+            default:{
+
+            }
+        }
+    }
 
 
 
@@ -130,6 +145,9 @@ public class SetActivity extends AppCompatActivity {
         binding.tvDay.setText(textDay);
         binding.tvName.setText(textName);
         binding.tvSubName.setText(textSubname);
+
+        //зробити ім'я таблиці, яке не треба міняти вже
+        tableName = getExtraArray[3];
     }
 
 

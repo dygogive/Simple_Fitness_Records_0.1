@@ -1,8 +1,15 @@
 package com.example.simplefitnessrecords01.fitness;
 
+import java.util.UUID;
+
 public class TrainingFitness {
     int id = 0;
     String day, name, subname;
+
+    private String unicID;
+    public String getUnicID() {
+        return unicID;
+    }
 
     public TrainingFitness(int id, String day, String name, String subname) {
         this.id = id;
@@ -16,6 +23,9 @@ public class TrainingFitness {
         this.day = day;
         this.name = name;
         this.subname = subname;
+
+        // Генерує унікальну строку для імені
+        String uniqueID = UUID.randomUUID().toString();
     }
 
     public void setId(int id) {

@@ -12,6 +12,7 @@ import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 
 public class MyActivityResultContract extends ActivityResultContract<String[], Boolean> {
 
+
     //створити намір і відправити його з інфою
     @NonNull
     @Override
@@ -24,6 +25,7 @@ public class MyActivityResultContract extends ActivityResultContract<String[], B
         return intent;
     }
 
+
     //получити намір і обробити інфу з ним
     @Override
     public Boolean parseResult(int resultCode, @Nullable Intent intent) {
@@ -33,4 +35,5 @@ public class MyActivityResultContract extends ActivityResultContract<String[], B
         }
         return false;
     }
+
 }

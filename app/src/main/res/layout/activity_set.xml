@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009685"
+    android:background="#EAEAEA"
     tools:context=".UI_activities.SetActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#8BC34A"
+        android:background="#00000000"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textColor="@color/train_info"
+            android:textColor="#007065"
             android:textSize="28sp" />
 
         <TextView
@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:textColor="#007065"
             android:textSize="28sp" />
 
         <TextView
@@ -36,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
+            android:textColor="#007065"
             android:textSize="28sp" />
     </LinearLayout>
 
@@ -53,7 +55,7 @@
         android:id="@+id/recycler_add_set"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#B6D393"
+        android:background="#EAEAEA"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

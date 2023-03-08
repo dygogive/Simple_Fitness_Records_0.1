@@ -17,11 +17,11 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.dialog.DialogOK;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.TrainingFitness;
+import com.example.simplefitnessrecords01.fitness.Fitness;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.CustomDialog;
-import com.example.simplefitnessrecords01.recycler_views.SetTrainingAdapter;
+import com.example.simplefitnessrecords01.recycler_views.FitnessListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     /**********  RecyclerView ***************/
 
     //метод створює список імен баз даних
-    private List<TrainingFitness> trainingList(){
+    private List<Fitness>  getFitnessList(){
 
         //пустий список для SetTraining з бази для рециклера
-        List<TrainingFitness> trainingListist = new ArrayList<>();
+        List<Fitness> fitnessList = new ArrayList<>();
 
         //курсор з бази з вибором усього
         Cursor cursor = db.rawQuery("SELECT * FROM " + MyDatabaseHelper.DATABASE_TABLE, null);
@@ -126,33 +126,45 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 String name = cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
                 @SuppressLint("Range")
                 String subname = cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
-                trainingListist.add(new TrainingFitness(id, day, name, subname));
+                @SuppressLint("Range")
+                String unicid = cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_UNICID));
+                fitnessList.add(   new Fitness(id, day, name, subname, unicid)   );
             } while (cursor.moveToNext());
         } else {
             //Якщо база порожня то запуск діалогу
             CustomDialog dialog = new CustomDialog(this, txts -> {
                 //обробник масиву текстів, отриманих з діалогу
-                MainActivity.this.getActivityResultLauncher().launch(txts);});
+//                MainActivity.this.getActivityResultLauncher().launch(txts);
+                ContentValues cv = new ContentValues();
+                cv.put(MyDatabaseHelper.COLUMN_DAY,    txts[0]);
+                cv.put(MyDatabaseHelper.COLUMN_NAME,   txts[1]);
+                cv.put(MyDatabaseHelper.COLUMN_SUBNAME,txts[2]);
+                cv.put(MyDatabaseHelper.COLUMN_UNICID, txts[3]);
+                db.insert(MyDatabaseHelper.DATABASE_TABLE,null,cv);
+                cv.clear();
+                recycleViewInit();
+                });
             //показати діалог
             dialog.show();
+
         }
         //повернути список об'єктів тренувань
-        return trainingListist;
+        return fitnessList;
     }
 
     //ініціалізація recycleView списку створених тренувань фітнесу
     private void recycleViewInit() {
         //дістати setTrainingList з бази даних
-        List<TrainingFitness> fitnessList = trainingList();
+        List<Fitness> fitnessList = getFitnessList();
 
         //створити новий адаптер з цим списком
-        SetTrainingAdapter adapter = new SetTrainingAdapter(fitnessList, this);
+        FitnessListAdapter adapter = new FitnessListAdapter(fitnessList, this);
 
         //менеджер відображення елементів передаємо
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //встановлюємо наш слухач оброблень короткого натискання і закодуємо саме оброблення
-        adapter.setOnItemRecyclerClickListener((position, unicID) -> {
+        adapter.setOnItemRecyclerClickListener((position) -> {
 
             //створимо масив з інфою про тренування при натисканні на елемент рециклера
             String[] dayNameSubnameUnicID = null;
@@ -163,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
                 @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
+                @SuppressLint("Range") String unicID = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_UNICID));
 
                 //заповнення масиву
                 dayNameSubnameUnicID = new String[] {day,name,subname,unicID};
@@ -224,8 +237,8 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                     } else Toast.makeText(MainActivity.this, "Рядок уже є", Toast.LENGTH_SHORT).show();
                     db.close();
 
-
-                    MainActivity.this.getActivityResultLauncher().launch(txts);
+                    //оновити список
+                    recycleViewInit();
                 });
                 dialog.show();
                 return true;
@@ -275,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                         db.close();
                         dbHelp.close();
 
-                        ((SetTrainingAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(trainingList());
+                        ((FitnessListAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(getFitnessList());
                         binding.recyclerView.getAdapter().notifyDataSetChanged();
 
                     }
@@ -288,9 +301,9 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
             case R.id.delete:
                 //адаптер
-                SetTrainingAdapter setTrainingAdapter = (SetTrainingAdapter) binding.recyclerView.getAdapter();
+                FitnessListAdapter fitnessListAdapter = (FitnessListAdapter) binding.recyclerView.getAdapter();
                 //видалити
-                setTrainingAdapter.deleteItem(position);
+                fitnessListAdapter.deleteItem(position);
                 return true;
 
             default:

@@ -14,6 +14,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_SUBNAME = "subname";
+    public static final String COLUMN_UNICID = "unicid";
 
     private static final int DATABASE_VERSION = 1;
 
@@ -30,7 +31,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // Створення таблиць бази даних
         db.execSQL("CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE + " " +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_DAY + " TEXT, " + COLUMN_NAME + " TEXT, " +
-                "" + COLUMN_SUBNAME + " TEXT)");
+                "" + COLUMN_SUBNAME + " TEXT, " + COLUMN_UNICID  + " TEXT)");
     }
 
 

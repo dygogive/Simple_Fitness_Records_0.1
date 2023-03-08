@@ -2,7 +2,6 @@ package com.example.simplefitnessrecords01.recycler_views;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
-import com.example.simplefitnessrecords01.fitness.SetFit;
-import com.example.simplefitnessrecords01.fitness.TrainingFitness;
+import com.example.simplefitnessrecords01.fitness.Fitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 
 import java.util.List;
 
-public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.SetTrainingHolder> {
+public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.SetTrainingHolder> {
 
 
     //контекст
     private Context context;
 
     //Список ітемів - тренувань
-    private List<TrainingFitness> setTrainingList;
-    public void setSetTrainingList(List<TrainingFitness> setTrainingList) {
+    private List<Fitness> setTrainingList;
+    public void setSetTrainingList(List<Fitness> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
 
@@ -46,11 +44,8 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
 
     //конструктори
-    public SetTrainingAdapter(List<TrainingFitness> setTrainingList, Context context) {
+    public FitnessListAdapter(List<Fitness> setTrainingList, Context context) {
         this.setTrainingList = setTrainingList;
-        this.context = context;
-    }
-    public SetTrainingAdapter(Context context) {
         this.context = context;
     }
 
@@ -71,9 +66,9 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
     //метод наповнює інформацією створені в'ю у холдерах
     @Override
-    public void onBindViewHolder(@NonNull SetTrainingAdapter.SetTrainingHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FitnessListAdapter.SetTrainingHolder holder, int position) {
         //отримати елемент списку
-        TrainingFitness setTraining = setTrainingList.get(position);
+        Fitness setTraining = setTrainingList.get(position);
         //закинути з нього інфу у холдер
         holder.onBindData(setTraining);
     }
@@ -101,7 +96,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
         //видалити з бази
         getterDB.getDB().execSQL(sql, where_args);
-        getterDB.getDB().close();
 
         //видалити з адаптера
         setTrainingList.remove(position);
@@ -116,9 +110,6 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
 
         //біндер для елементів лайаута ітема рецикла в'ю
         TextForRecyclerBinding binding = TextForRecyclerBinding.bind(itemView);
-
-        //Унікальний ідентифікатор
-        String unicID;
 
         //конструктор
         public SetTrainingHolder(@NonNull View itemView) {
@@ -142,7 +133,7 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
                 //а також чи є позиція натисненого елементу
                 if (listenerShort != null & RecyclerView.NO_POSITION != position) {
                     // тепер я викликаю метод натиснення на своєму слухачеві і передаю елемент SetTraining
-                    listenerShort.onItemClick(position, unicID);
+                    listenerShort.onItemClick(position);
                 }
             });
 
@@ -172,9 +163,8 @@ public class SetTrainingAdapter extends RecyclerView.Adapter<SetTrainingAdapter.
             });
         }
 
-        void onBindData(TrainingFitness trainingFitness){
-            binding.textView.setText(trainingFitness.getDay());
-            unicID = trainingFitness.getUnicID();
+        void onBindData(Fitness fitness){
+            binding.textView.setText(fitness.getDay());
         }
 
     }

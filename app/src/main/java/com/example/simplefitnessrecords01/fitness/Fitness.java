@@ -2,30 +2,34 @@ package com.example.simplefitnessrecords01.fitness;
 
 import java.util.UUID;
 
-public class TrainingFitness {
+public class Fitness {
     int id = 0;
     String day, name, subname;
 
-    private String unicID;
+    private String uniqueID;
+
+
+    public Fitness(int id, String day, String name, String subname, String unicID) {
+        this.id = id;
+        this.day = day;
+        this.name = name;
+        this.subname = subname;
+        this.uniqueID = unicID;
+    }
+
+    public Fitness(String day, String name, String subname, String unicID) {
+        this.id = id;
+        this.day = day;
+        this.name = name;
+        this.subname = subname;
+        this.uniqueID = unicID;
+
+
+    }
+
+
     public String getUnicID() {
-        return unicID;
-    }
-
-    public TrainingFitness(int id, String day, String name, String subname) {
-        this.id = id;
-        this.day = day;
-        this.name = name;
-        this.subname = subname;
-    }
-
-    public TrainingFitness(String day, String name, String subname) {
-        this.id = id;
-        this.day = day;
-        this.name = name;
-        this.subname = subname;
-
-        // Генерує унікальну строку для імені
-        String uniqueID = UUID.randomUUID().toString();
+        return uniqueID;
     }
 
     public void setId(int id) {

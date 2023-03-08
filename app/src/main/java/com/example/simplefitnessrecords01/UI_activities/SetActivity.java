@@ -5,27 +5,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.simplefitnessrecords01.fitness.Exercise;
-import com.example.simplefitnessrecords01.fitness.RecordSet;
-import com.example.simplefitnessrecords01.fitness.Repeats;
-import com.example.simplefitnessrecords01.fitness.SetFit;
-import com.example.simplefitnessrecords01.fitness.Weight;
 import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
 import com.example.simplefitnessrecords01.sql.CurentTrainingDBhelper;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class SetActivity extends AppCompatActivity {
 
@@ -36,9 +26,10 @@ public class SetActivity extends AppCompatActivity {
     //посилання на Помічник по роботі з базою даних
     MyDatabaseHelper dbHelp;
     CurentTrainingDBhelper dbHelpThisTraining;
-    String tableName;
+    String unicIdOfFitness;
     //посилання на База даних
     SQLiteDatabase db;
+
 
 
 
@@ -64,7 +55,7 @@ public class SetActivity extends AppCompatActivity {
 
         //ініціалізація посилань на базу даних
         dbHelp = new MyDatabaseHelper(SetActivity.this);
-        dbHelpThisTraining = new CurentTrainingDBhelper(SetActivity.this, tableName, 1);
+        dbHelpThisTraining = new CurentTrainingDBhelper(SetActivity.this, unicIdOfFitness, 1);
 
 
 
@@ -81,6 +72,8 @@ public class SetActivity extends AppCompatActivity {
 
         super.onPause();
     }
+
+
 
 
     /**********  RecyclerView ***************/
@@ -127,7 +120,6 @@ public class SetActivity extends AppCompatActivity {
 
     /******************* IntentExtra **************************/
 
-
     //Обробити дані, що отримані від попереднього актівіті
     private void procIntentExtra() {
         //Інтент з інфою
@@ -147,7 +139,7 @@ public class SetActivity extends AppCompatActivity {
         binding.tvSubName.setText(textSubname);
 
         //зробити ім'я таблиці, яке не треба міняти вже
-        tableName = getExtraArray[3];
+        unicIdOfFitness = getExtraArray[3];
     }
 
 

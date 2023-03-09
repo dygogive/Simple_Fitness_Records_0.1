@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.SetFitRecyclerItemBinding;
-import com.example.simplefitnessrecords01.fitness.SetFit;
+import com.example.simplefitnessrecords01.fitness.SetFitness;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,18 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     Context context;
 
     //СПИСОК виконаних підходів на тренуванні
-    private List<SetFit> setFitList = new ArrayList<>();
+    private List<SetFitness> setFitList = new ArrayList<>();
     //Задати список підходів
-    public void setSetFitList(List<SetFit> setFitList) {
+    public void setSetFitList(List<SetFitness> setFitList) {
         this.setFitList = setFitList;
     }
+
+    //Добавити в список адаптера ще один сет
+    public void addSet(SetFitness set) {
+        setFitList.add(set);
+    }
+
+
 
 
 
@@ -33,9 +40,9 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         this.context = context;
     }
 
-    public AdapterSets(Context context, List<SetFit> setFitList) {
+    public AdapterSets(Context context, List<SetFitness> setFitnessList) {
         this.context = context;
-        this.setFitList = setFitList;
+        this.setFitList = setFitnessList;
     }
 
 
@@ -56,9 +63,9 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     @Override
     public void onBindViewHolder(@NonNull HolderSetFitList holder, int position) {
         //Витягти об'єкт зі списку
-        SetFit setFit = setFitList.get(position);
+        SetFitness setFitness = setFitList.get(position);
         //Через метод в холдері запихнути дані в В'ю
-        holder.initItemView(setFit);
+        holder.initItemView(setFitness);
     }
 
     //Метод повертає кількість об'єктів
@@ -80,14 +87,14 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         }
 
         //Оброблення даних від об'єкту щоб оживити в'ю у цьому холдері
-        void initItemView(SetFit setFit){
-            String exeName = setFit.getExe().toString();
+        void initItemView(SetFitness setFitness){
+            String exeName = setFitness.getExe().toString();
             binding.tvExerciceName.setText(exeName);
 
-            String weight = setFit.getRecordSet().getWeight().toString();
+            String weight = setFitness.getRecordSet().getWeight().toString();
             binding.etWeight.setText(weight);
 
-            String repeats = setFit.getRecordSet().getRepeats().toString();
+            String repeats = setFitness.getRecordSet().getRepeats().toString();
             binding.etRepeat.setText(repeats);
         }
 

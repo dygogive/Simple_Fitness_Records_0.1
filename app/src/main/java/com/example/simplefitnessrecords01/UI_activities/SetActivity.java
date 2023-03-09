@@ -11,8 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.simplefitnessrecords01.fitness.SetFitness;
 import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
-import com.example.simplefitnessrecords01.sql.CurentTrainingDBhelper;
+import com.example.simplefitnessrecords01.sql.SetsFitnessDB;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
@@ -25,8 +26,8 @@ public class SetActivity extends AppCompatActivity {
 
     //посилання на Помічник по роботі з базою даних
     MyDatabaseHelper dbHelp;
-    CurentTrainingDBhelper dbHelpThisTraining;
-    String unicIdOfFitness;
+    SetsFitnessDB dbHelpThisTraining;
+    String unicNameFitness;
     //посилання на База даних
     SQLiteDatabase db;
 
@@ -34,7 +35,6 @@ public class SetActivity extends AppCompatActivity {
 
 
     /**********  Activity Lifecycle ***************/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +45,6 @@ public class SetActivity extends AppCompatActivity {
 
         //обробити інфу від екстра чз інтент
         procIntentExtra();
-
     }
 
     //метод життєвого циклу актівіті
@@ -55,7 +54,7 @@ public class SetActivity extends AppCompatActivity {
 
         //ініціалізація посилань на базу даних
         dbHelp = new MyDatabaseHelper(SetActivity.this);
-        dbHelpThisTraining = new CurentTrainingDBhelper(SetActivity.this, unicIdOfFitness, 1);
+        dbHelpThisTraining = new SetsFitnessDB(SetActivity.this, unicNameFitness, 1);
 
 
 
@@ -78,14 +77,11 @@ public class SetActivity extends AppCompatActivity {
 
     /**********  RecyclerView ***************/
     private void recycleViewInit() {
-
         //менеджер для РЕЦИКЛЕРА В'Ю
-        binding.recyclerAddSet.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //Адаптер для рециклера
-        binding.recyclerAddSet.setAdapter(new AdapterSets(this));
-
-
-//        //записати тестові дані в рециклер
+        binding.recyclerView.setAdapter(new AdapterSets(this));
+        //        //записати тестові дані в рециклер
 //        List<SetFit> setFitList1 = new ArrayList<>();
 //        for (int i = 0; i < 20; i++){
 //            Random random = new Random();
@@ -107,13 +103,18 @@ public class SetActivity extends AppCompatActivity {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.btnAddExe:{
-
+                ((AdapterSets)binding.recyclerView.getAdapter()).addSet(new SetFitness());
+                ((AdapterSets)binding.recyclerView.getAdapter()).notifyDataSetChanged();
             } break;
             default:{
 
             }
         }
     }
+
+
+
+
 
 
 
@@ -130,16 +131,15 @@ public class SetActivity extends AppCompatActivity {
         String textDay =     getExtraArray[0];
         String textName =    getExtraArray[1];
         String textSubname = getExtraArray[2];
-        //записати ці строки на екран
-        StringBuilder sb = new StringBuilder();
+
 
         //показати тексти на екрані
         binding.tvDay.setText(textDay);
         binding.tvName.setText(textName);
         binding.tvSubName.setText(textSubname);
 
-        //зробити ім'я таблиці, яке не треба міняти вже
-        unicIdOfFitness = getExtraArray[3];
+        //унікальна назва тренування
+        unicNameFitness = getExtraArray[3];
     }
 
 

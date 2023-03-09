@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.fitness;
 
-public class RecordSet {
+public class RecordExercise {
     Weight weight;
     Repeats repeats;
 
@@ -12,7 +12,7 @@ public class RecordSet {
         return repeats;
     }
 
-    public RecordSet(Weight weight, Repeats repeats) {
+    public RecordExercise(Weight weight, Repeats repeats) {
         this.weight = weight;
         this.repeats = repeats;
     }

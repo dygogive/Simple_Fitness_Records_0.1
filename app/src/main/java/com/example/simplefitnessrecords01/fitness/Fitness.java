@@ -6,31 +6,16 @@ public class Fitness {
     int id = 0;
     String day, name, subname;
 
-    private String uniqueID;
 
 
-    public Fitness(int id, String day, String name, String subname, String unicID) {
+    public Fitness(int id, String day, String name, String subname) {
         this.id = id;
         this.day = day;
         this.name = name;
         this.subname = subname;
-        this.uniqueID = unicID;
-    }
-
-    public Fitness(String day, String name, String subname, String unicID) {
-        this.id = id;
-        this.day = day;
-        this.name = name;
-        this.subname = subname;
-        this.uniqueID = unicID;
-
-
     }
 
 
-    public String getUnicID() {
-        return uniqueID;
-    }
 
     public void setId(int id) {
         this.id = id;

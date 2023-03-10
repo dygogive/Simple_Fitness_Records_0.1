@@ -7,4 +7,5 @@
     <string name="edit">Ред. назву</string>
     <string name="train_red">Ред. тренування</string>
     <string name="my_fab_description">Новий запис підходу</string>
+    <string name="table_in_log">В лог таблиці</string>
 </resources>

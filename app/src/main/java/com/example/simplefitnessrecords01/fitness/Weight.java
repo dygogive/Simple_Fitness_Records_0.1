@@ -5,6 +5,10 @@ import androidx.annotation.NonNull;
 public class Weight {
     int weight;
 
+    public int getWeight() {
+        return weight;
+    }
+
     public Weight(int weight) {
         this.weight = weight;
     }

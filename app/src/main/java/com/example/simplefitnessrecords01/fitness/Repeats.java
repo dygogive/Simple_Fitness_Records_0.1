@@ -5,6 +5,10 @@ import androidx.annotation.NonNull;
 public class Repeats {
     int repeats;
 
+    public int getRepeats() {
+        return repeats;
+    }
+
     public Repeats(int repeats) {
         this.repeats = repeats;
     }

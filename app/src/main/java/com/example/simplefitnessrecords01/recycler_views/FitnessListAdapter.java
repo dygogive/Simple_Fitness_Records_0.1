@@ -15,7 +15,7 @@ import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.fitness.Fitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
-import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
+import com.example.simplefitnessrecords01.sql.SQLfitness;
 
 import java.util.List;
 
@@ -31,6 +31,9 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
         this.setTrainingList = setTrainingList;
     }
 
+    public Fitness getItem(int position) {
+        return setTrainingList.get(position);
+    }
 
 
     //слухач натискань на елементи, якого я створив для того, щоб оброблювати натискання на елементи
@@ -89,8 +92,8 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
         GetterDB getterDB = (GetterDB) context;
 
         //код для видалення
-        String table_name = MyDatabaseHelper.DATABASE_TABLE;
-        String where_clause = MyDatabaseHelper.COLUMN_DAY + "=?";
+        String table_name = SQLfitness.DATABASE_TABLE;
+        String where_clause = SQLfitness.COLUMN_DAY + "=?";
         String[] where_args = new String[] { setTrainingList.get(position).getDay() };
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
 

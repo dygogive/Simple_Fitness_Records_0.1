@@ -10,4 +10,8 @@
         android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="withText" />
+    <item
+        android:id="@+id/action_log_sql"
+        android:title="@string/table_in_log"
+        app:showAsAction="withText" />
 </menu>

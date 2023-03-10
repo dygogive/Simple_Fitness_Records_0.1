@@ -31,6 +31,9 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
         this.setTrainingList = setTrainingList;
     }
 
+    public Fitness getItem(int position) {
+        return setTrainingList.get(position);
+    }
 
 
     //слухач натискань на елементи, якого я створив для того, щоб оброблювати натискання на елементи

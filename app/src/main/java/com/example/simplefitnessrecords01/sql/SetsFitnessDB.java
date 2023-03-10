@@ -12,17 +12,18 @@ public class SetsFitnessDB extends SQLiteOpenHelper {
 
     String tableName;
 
-    public SetsFitnessDB(Context context, String tableName, int version) {
-        super(context, "TablesWithTrainings", null, version);
+    public SetsFitnessDB(Context context, String tableName) {
+        super(context, "TablesWithTrainings", null, 2);
         this.tableName = tableName;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Створення таблиць бази даних
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + tableName + " " +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_EXE + " TEXT, " +
-                "" + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + "tableName" + " " +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_EXE + " TEXT, "
+                + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
+
     }
 
     @Override

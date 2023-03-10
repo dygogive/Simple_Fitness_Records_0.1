@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.dialog.DialogOK;
+import com.example.simplefitnessrecords01.fitness.SetFitness;
 import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.fitness.Fitness;
@@ -22,6 +23,7 @@ import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResu
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.CustomDialog;
 import com.example.simplefitnessrecords01.recycler_views.FitnessListAdapter;
+import com.example.simplefitnessrecords01.sql.SetsFitnessDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +57,19 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         return db;
     }
 
-    /**********  Activity Lifecycle ***************/
 
+
+
+
+
+
+
+    /**********  Activity Lifecycle ***************/
     //метод життєвого циклу актівіті
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("loga", "ON CREATE IN MainActivity" );
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -78,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 }
         );
     }
-
-
     //метод життєвого циклу актівіті
     @Override
     protected void onResume() {
@@ -92,14 +99,15 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         //ініціалізація recycleView
         recycleViewInit();
     }
-
     @Override
     protected void onPause() {
-
-        db.close();
-
         super.onPause();
+        db.close();
     }
+
+
+
+
 
 
 
@@ -133,8 +141,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         } else {
             //Якщо база порожня то запуск діалогу
             CustomDialog dialog = new CustomDialog(this, txts -> {
-                //обробник масиву текстів, отриманих з діалогу
-//                MainActivity.this.getActivityResultLauncher().launch(txts);
                 ContentValues cv = new ContentValues();
                 cv.put(MyDatabaseHelper.COLUMN_DAY,    txts[0]);
                 cv.put(MyDatabaseHelper.COLUMN_NAME,   txts[1]);
@@ -175,7 +181,9 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_NAME));
                 @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_SUBNAME));
-                @SuppressLint("Range") String unicID = c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_UNICID));
+                @SuppressLint("Range") String unicID =  c.getString(c.getColumnIndex(MyDatabaseHelper.COLUMN_UNICID));
+
+                Log.d("loga", "test = ");
 
                 //заповнення масиву
                 dayNameSubnameUnicID = new String[] {day,name,subname,unicID};
@@ -220,22 +228,20 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         switch (id) {
             case R.id.action_new:
                 // Обробка натискання на пункт "NEW"
-                CustomDialog dialog = new CustomDialog(this,txts -> {
-                    //ідентифікувати помічник і базу
-                    MyDatabaseHelper dbHelper = new MyDatabaseHelper(this);
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-
+                CustomDialog dialog = new CustomDialog(this, txts -> {
+                    Log.d("loga", "test1" );
                     String selection = MyDatabaseHelper.COLUMN_DAY + "=? AND " + MyDatabaseHelper.COLUMN_NAME + "=? AND " + MyDatabaseHelper.COLUMN_SUBNAME + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
                     Cursor с = db.query(MyDatabaseHelper.DATABASE_TABLE,new String[]{"id"},selection, selectionArgs,null,null,null);
                     if (  !с.moveToFirst()  ) {
                         ContentValues cv = new ContentValues();
-                        cv.put("day", txts[0]);
-                        cv.put("name", txts[1]);
-                        cv.put("subname", txts[2]);
-                        db.insert("sets", null, cv);
+                        cv.put(MyDatabaseHelper.COLUMN_DAY,    txts[0]);
+                        cv.put(MyDatabaseHelper.COLUMN_NAME,   txts[1]);
+                        cv.put(MyDatabaseHelper.COLUMN_SUBNAME,txts[2]);
+                        cv.put(MyDatabaseHelper.COLUMN_UNICID, txts[3]);
+                        db.insert(MyDatabaseHelper.DATABASE_TABLE,null,cv);
+                        cv.clear();
                     } else Toast.makeText(MainActivity.this, "Рядок уже є", Toast.LENGTH_SHORT).show();
-                    db.close();
 
                     //оновити список
                     recycleViewInit();
@@ -249,6 +255,9 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 
 
 
@@ -302,17 +311,19 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
             case R.id.delete:
                 //адаптер
                 FitnessListAdapter fitnessListAdapter = (FitnessListAdapter) binding.recyclerView.getAdapter();
-                //видалити
+                //видалити таблицю в базі, видалити запис в рециклері та в базі в таблиці списку тренувань
+//                String tableName = fitnessListAdapter.getItem(position).getUnicID();
+//                SetsFitnessDB sfdb = new SetsFitnessDB(MainActivity.this,tableName);
+//                sfdb.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
+//                sfdb.close();
                 fitnessListAdapter.deleteItem(position);
+
                 return true;
 
             default:
                 return super.onContextItemSelected(item);
         }
     }
-
-
-
 
 
 }

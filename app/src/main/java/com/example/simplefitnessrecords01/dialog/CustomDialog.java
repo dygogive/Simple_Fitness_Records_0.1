@@ -3,6 +3,7 @@ package com.example.simplefitnessrecords01.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;

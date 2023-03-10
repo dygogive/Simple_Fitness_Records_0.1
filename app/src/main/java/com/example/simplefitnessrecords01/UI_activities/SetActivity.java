@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,18 +19,20 @@ import com.example.simplefitnessrecords01.sql.MyDatabaseHelper;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
 
+import java.util.UUID;
+
 public class SetActivity extends AppCompatActivity {
 
 
     //біндінг
     private ActivitySetBinding binding;
-
     //посилання на Помічник по роботі з базою даних
     MyDatabaseHelper dbHelp;
     SetsFitnessDB dbHelpThisTraining;
-    String unicNameFitness;
+    String unicNameFitness = "";
     //посилання на База даних
     SQLiteDatabase db;
+
 
 
 
@@ -41,25 +44,39 @@ public class SetActivity extends AppCompatActivity {
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-
         //обробити інфу від екстра чз інтент
         procIntentExtra();
     }
+    //Обробити дані, що отримані від попереднього актівіті
+    private void procIntentExtra() {
+        //Інтент з інфою
+        Intent intent = getIntent();
+        //Інфа з інтенту
+        String[] getExtraArray = intent.getStringArrayExtra("start fitness");
+        //текстові строки з інфи з інтенту
+        String textDay =     getExtraArray[0];
+        String textName =    getExtraArray[1];
+        String textSubname = getExtraArray[2];
 
+
+        //показати тексти на екрані
+        binding.tvDay.setText(textDay);
+        binding.tvName.setText(textName);
+        binding.tvSubName.setText(textSubname);
+
+        //унікальна назва тренування
+        unicNameFitness = getExtraArray[3];
+    }
     //метод життєвого циклу актівіті
     @Override
     protected void onResume() {
         super.onResume();
 
         //ініціалізація посилань на базу даних
-        dbHelp = new MyDatabaseHelper(SetActivity.this);
-        dbHelpThisTraining = new SetsFitnessDB(SetActivity.this, unicNameFitness, 1);
-
-
-
-        db     = dbHelp.getWritableDatabase();
-
+        if (  !unicNameFitness.equals("")  ) {
+            dbHelpThisTraining = new SetsFitnessDB(SetActivity.this, unicNameFitness);
+            db = dbHelpThisTraining.getWritableDatabase();
+        }
         //ініціалізація Рециклера в'ю
         recycleViewInit();
     }
@@ -71,7 +88,6 @@ public class SetActivity extends AppCompatActivity {
 
         super.onPause();
     }
-
 
 
 
@@ -98,7 +114,6 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-
     /***************** onClick button *******************/
     public void onClick(View view){
         switch (view.getId()){
@@ -119,28 +134,8 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-    /******************* IntentExtra **************************/
-
-    //Обробити дані, що отримані від попереднього актівіті
-    private void procIntentExtra() {
-        //Інтент з інфою
-        Intent intent = getIntent();
-        //Інфа з інтенту
-        String[] getExtraArray = intent.getStringArrayExtra("start fitness");
-        //текстові строки з інфи з інтенту
-        String textDay =     getExtraArray[0];
-        String textName =    getExtraArray[1];
-        String textSubname = getExtraArray[2];
 
 
-        //показати тексти на екрані
-        binding.tvDay.setText(textDay);
-        binding.tvName.setText(textName);
-        binding.tvSubName.setText(textSubname);
-
-        //унікальна назва тренування
-        unicNameFitness = getExtraArray[3];
-    }
 
 
 

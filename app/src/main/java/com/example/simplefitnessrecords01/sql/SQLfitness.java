@@ -11,9 +11,9 @@ public class SQLfitness extends SQLiteOpenHelper {
 
     /************   НАЗВА БД ТА ТАБЛИЦЬ *************************/
     private static final String DATABASE_NAME = "mydatabase.db";
-    public static final String DATABASE_TABLE = "sets";
+    public static final String DATABASE_TABLE = "fitnessDay";
 
-    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_SUBNAME = "subname";

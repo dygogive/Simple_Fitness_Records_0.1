@@ -1,6 +1,8 @@
 package com.example.simplefitnessrecords01.fitness;
 
+
 public class SetFitness {
+    int id = -1;
     Exercise exe;
     RecordExercise recordExercise;
 
@@ -10,6 +12,10 @@ public class SetFitness {
 
     public RecordExercise getRecordSet() {
         return recordExercise;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setExe(Exercise exe) {
@@ -24,9 +30,10 @@ public class SetFitness {
 
 
 
-    public SetFitness(Exercise exe, RecordExercise recordExercise) {
+    public SetFitness(int id, Exercise exe, RecordExercise recordExercise) {
         this.exe = exe;
         this.recordExercise = recordExercise;
+        this.id = id;
     }
 
 

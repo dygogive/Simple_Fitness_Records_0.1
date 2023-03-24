@@ -12,18 +12,20 @@ import com.example.simplefitnessrecords01.fitness.Weight;
 
 public class SQLsets extends SQLiteOpenHelper {
     Context context = null;
-    public static final String COLUMN_ID = "id";
-    private static final String COLUMN_EXE = "exe";
-    private static final String COLUMN_WEIGHT = "weight";
-    private static final String COLUMN_REPEATS = "repeats";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_EXE = "exe";
+    public static final String COLUMN_WEIGHT = "weight";
+    public static final String COLUMN_REPEATS = "repeats";
 
-    String tableName = "test";
+    private String tableName = "test";
+    public String getTableName() {
+        return tableName;
+    }
 
     public SQLsets(Context context, String tableName) {
         super(context, "TablesWithTrainings", null, 5);
         this.tableName = tableName;
         this.context = context;
-        Log.d("MainActSQLog", "Table " + tableName + " is ?.");
     }
 
 
@@ -32,11 +34,11 @@ public class SQLsets extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.query(tableName,null,null,null,null,null,null);
         if(c.moveToNext()){
+            int id_id = c.getColumnIndex(COLUMN_ID);
+            int id_exe = c.getColumnIndex(COLUMN_EXE);
+            int id_wei = c.getColumnIndex(COLUMN_WEIGHT);
+            int id_rep = c.getColumnIndex(COLUMN_REPEATS);
             do {
-                int id_id = c.getColumnIndex(COLUMN_ID);
-                int id_exe = c.getColumnIndex(COLUMN_EXE);
-                int id_wei = c.getColumnIndex(COLUMN_WEIGHT);
-                int id_rep = c.getColumnIndex(COLUMN_REPEATS);
                 int id     = c.getInt(id_id);
                 String exe = c.getString(id_exe);
                 int wei    = c.getInt(id_wei);

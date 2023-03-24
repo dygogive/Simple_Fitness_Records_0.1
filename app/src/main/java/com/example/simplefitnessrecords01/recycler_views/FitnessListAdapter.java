@@ -156,7 +156,7 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
                 if (context instanceof MainActivity) {
                     MainActivity child = (MainActivity) context;
                     //Задаєш позицію
-                    child.setPosition(position);
+                    child.setPositioContextMenu(position);
                 } else Toast.makeText(context, "Error! MainActivity renamed!", Toast.LENGTH_SHORT).show();
 
                 //показати контекстне меню

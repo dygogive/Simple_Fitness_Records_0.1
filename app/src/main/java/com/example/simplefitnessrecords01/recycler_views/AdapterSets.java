@@ -1,16 +1,24 @@
 package com.example.simplefitnessrecords01.recycler_views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.GetterDB;
+import com.example.simplefitnessrecords01.UI_activities.GetterSQLhelper;
+import com.example.simplefitnessrecords01.UI_activities.MainActivity;
+import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.SetFitRecyclerItemBinding;
 import com.example.simplefitnessrecords01.fitness.SetFitness;
+import com.example.simplefitnessrecords01.sql.SQLfitness;
+import com.example.simplefitnessrecords01.sql.SQLsets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +32,10 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     //Задати список підходів
     public void setSetFitList(List<SetFitness> setFitList) {
         this.setFitList = setFitList;
+    }
+
+    public void resetSetFitList(){
+        setFitList = new ArrayList<>();
     }
 
     //Добавити в список адаптера ще один сет
@@ -44,6 +56,30 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         this.context = context;
         this.setFitList = setFitnessList;
     }
+
+
+
+
+    public void deleteItem(int position){
+
+        GetterSQLhelper getterSQLhelper = (GetterSQLhelper) context;
+
+        //код для видалення
+        String table_name = ((SQLsets)getterSQLhelper.getHelper()).getTableName();
+        String where_clause = SQLsets.COLUMN_ID + "=?";
+        String[] where_args = new String[] {String.valueOf(setFitList.get(position).getId())};
+        String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
+
+        //видалити з бази
+        getterSQLhelper.getHelper().getWritableDatabase().execSQL(sql, where_args);
+
+        //видалити з адаптера
+        setFitList.remove(position);
+
+        //повідомити адаптер про видалення
+        notifyItemRemoved(position);
+    }
+
 
 
 
@@ -75,6 +111,8 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     }
 
 
+
+
     // *******************  Холдер *****************
     public class HolderSetFitList extends RecyclerView.ViewHolder {
 
@@ -84,6 +122,32 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         //Конструктор
         public HolderSetFitList(@NonNull View itemView) {
             super(itemView);
+
+
+            //встановити слухач Long натискань на елемент в'ю
+            itemView.setOnLongClickListener(v -> {
+                //позиція
+                int position = getAbsoluteAdapterPosition();
+                //реєстр контекстного меню
+                v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {
+                    // Встановлюємо заголовок контекстного меню
+                    menu.setHeaderTitle("Опції");
+                    // Заповнюємо контекстне меню пунктами
+                    ((Activity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
+                });
+
+                //Якщо контекст це МейнАктівіті (краще використати інтерфейс)
+                if (context instanceof SetActivity) {
+                    SetActivity child = (SetActivity) context;
+                    //Задаєш позицію
+                    child.setPosition(position);
+                } else Toast.makeText(context, "Error! SetActivity renamed!", Toast.LENGTH_SHORT).show();
+
+                //показати контекстне меню
+                v.showContextMenu();
+
+                return true;
+            });
         }
 
         //Оброблення даних від об'єкту щоб оживити в'ю у цьому холдері

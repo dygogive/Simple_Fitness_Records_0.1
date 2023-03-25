@@ -65,6 +65,10 @@ public class SQLSetFits extends SQLiteOpenHelper {
     }
 
 
+    public void updateSetFitInSQL(SetFitness setFitness){
+
+    }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {

@@ -20,8 +20,6 @@ import com.example.simplefitnessrecords01.fitness.SetFitness;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitList> {
 
@@ -78,6 +76,13 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     //****** Ініціалізувати (Оживити) В'ю та холдер даними об'єкту з списку
     @Override
     public void onBindViewHolder(@NonNull HolderSetFitList holder, int position) {
+
+
+
+
+
+
+
         //Витягти об'єкт зі списку
         SetFitness setFitness = setFitList.get(position);
         //Через метод в холдері запихнути дані в В'ю
@@ -118,7 +123,7 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
                     menu.setHeaderTitle("Опції");
                     Log.d("isErrorOr", "v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {");
                     // Заповнюємо контекстне меню пунктами
-                    ((SetActivity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
+                    ((Activity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
                 });
 
 
@@ -144,10 +149,8 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
             });
 
 
-            //Слухачі зміни тексту
+            //Слухач зміни тексту
             binding.tvExerciceName.addTextChangedListener(new TextWatcher() {
-                Timer timer = new Timer();
-                final long DELAY = 1000; // time delay msec
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -155,25 +158,15 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    setFitness1.getExe().setExeName(s.toString());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    timer.cancel();
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) setFitness1.getExe().setExeName(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
-                        }
-                    } , DELAY);
+
                 }
             });
             binding.etRepeat.addTextChangedListener(new TextWatcher() {
-                Timer timer = new Timer();
-                final long DELAY = 1000; // time delay msec
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -181,26 +174,15 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                    setFitness1.getRecordSet().getRepeats().changeRepeats(s.toString());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    timer.cancel();
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) setFitness1.getRecordSet().getRepeats().changeRepeats(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
-                        }
-                    } , DELAY);
+
                 }
             });
             binding.etWeight.addTextChangedListener(new TextWatcher() {
-                Timer timer = new Timer();
-                final long DELAY = 1000; // time delay msec
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -208,21 +190,12 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                    setFitness1.getRecordSet().getWeight().changeWeight(s.toString());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    timer.cancel();
-                    timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) setFitness1.getRecordSet().getWeight().changeWeight(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
-                        }
-                    } , DELAY);
+
                 }
             });
         }
@@ -238,12 +211,10 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
             binding.tvExerciceName.setText(exeName);
 
             int weight = setFitness.getRecordSet().getWeight().getIntWeight();
-            binding.etWeight.setText(String.valueOf(weight));
-            if (weight == 0) binding.etWeight.setText("");
+            if(weight != 0) binding.etWeight.setText(String.valueOf(weight));
 
             int repeats = setFitness.getRecordSet().getRepeats().getIntRepeats();
-            binding.etRepeat.setText(String.valueOf(repeats));
-            if (repeats == 0) binding.etRepeat.setText("");
+            if(repeats != 0) binding.etRepeat.setText(String.valueOf(repeats));
 
         }
 

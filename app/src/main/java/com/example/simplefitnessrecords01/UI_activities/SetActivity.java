@@ -5,7 +5,9 @@ import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_FITNAME;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,10 +25,10 @@ import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.SetFitness;
 import com.example.simplefitnessrecords01.fitness.Weight;
 import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
-import com.example.simplefitnessrecords01.sql.SQLfitness;
 import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
+import com.example.simplefitnessrecords01.sql.SQLfitness;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +135,10 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
     @Override
     protected void onPause() {
+
+        //save all to db
+        saveToDBFromRecycler();
+
         //Закрити базу
 //        getHelper().close();
 //        db.close();
@@ -349,6 +355,48 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
     public void setPosition(int position) {
         positionForContextMenu = position;
+    }
+
+
+
+
+
+
+
+    /**************  Save DATA ****************/
+    private void saveToDBFromRecycler(){
+        //
+        ContentValues cv = new ContentValues();
+        //
+        List<SetFitness> setsFitness = adapter. getSetFitList();
+        //
+        Cursor cursor = db.query(SQLSetFits.DATABASE_TABLE, null,null,null,null,null,null);
+        cursor.moveToFirst();
+        //
+        Log.d("isCounts", "Записи " + cursor.getCount());
+        Log.d("isCounts", "Записи " + setsFitness.size());
+        if(cursor.getCount() == setsFitness.size()) {
+            Log.d("isCounts", "Записи співпали");
+            for (SetFitness setFitness : setsFitness) {
+                //
+                String exe = setFitness.getExe().toString();
+                int weight = setFitness.getRecordSet().getWeight().getIntWeight();
+                int repeats = setFitness.getRecordSet().getRepeats().getIntRepeats();
+                //
+                cv.put(SQLSetFits.COLUMN_EXE, exe);
+                cv.put(SQLSetFits.COLUMN_WEIGHT, weight);
+                cv.put(SQLSetFits.COLUMN_REPEATS, repeats);
+                cv.put(COLUMN_FITNAME, nameFitness);
+                //
+                @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex(SQLSetFits.COLUMN_ID));
+                Log.d("isCounts",  id + " " + exe + " " + weight + " " + repeats);
+                db.update(SQLSetFits.DATABASE_TABLE, cv, SQLSetFits.COLUMN_ID + " = ?" , new String[] {"1"} );
+                //
+                //
+                cv.clear();
+                cursor.moveToNext();
+            }
+        }
     }
 
 }

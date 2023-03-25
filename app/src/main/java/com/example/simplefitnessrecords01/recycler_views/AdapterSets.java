@@ -34,6 +34,12 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         setFitList.add(set);
     }
 
+    public List<SetFitness> getSetFitList() {
+        return setFitList;
+    }
+
+
+
 
 
 

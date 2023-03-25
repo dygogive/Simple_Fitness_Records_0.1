@@ -29,23 +29,26 @@ public class SQLSetFits extends SQLiteOpenHelper {
 
 
     //methog give all information in Log
-    public void getTableInLog(String logTag){
+    public void getTableInLog(String logTag, String selection){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.query(DATABASE_TABLE,null,null,null,null,null,null);
+        Cursor c = db.query(DATABASE_TABLE,null,COLUMN_FITNAME + " = ?",new String[]{selection},null,null,null);
 
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(COLUMN_ID);
             int id_exe = c.getColumnIndex(COLUMN_EXE);
             int id_wei = c.getColumnIndex(COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(COLUMN_REPEATS);
+            int id_fitname = c.getColumnIndex(COLUMN_FITNAME);
             do {
                 int id     = c.getInt(id_id);
                 String exe = c.getString(id_exe);
                 int wei    = c.getInt(id_wei);
                 int rep    = c.getInt(id_rep);
+                String fitname = c.getString(id_fitname);
+
                 Log.d(logTag, "Table " + "tableName" + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_EXE + " - " +
                         exe + " ; " + COLUMN_WEIGHT + " - " +
-                        wei + " ; " + COLUMN_REPEATS + " - " +  rep + " ; " );
+                        wei + " ; " + COLUMN_REPEATS + " - " +  rep + " ; " + COLUMN_FITNAME + " - " +  fitname + " ; " );
             } while ( c.moveToNext() );
         }else Log.d(logTag, "Table " + DATABASE_TABLE + " is empty.");
     }
@@ -63,13 +66,11 @@ public class SQLSetFits extends SQLiteOpenHelper {
 
 
 
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Створення таблиць бази даних
         db.execSQL("CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE + " " +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_FITNAME + " TEXT, " + COLUMN_EXE + " TEXT, "
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_FITNAME + " TEXT, " + COLUMN_EXE + " TEXT, "
                 + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
     }
 

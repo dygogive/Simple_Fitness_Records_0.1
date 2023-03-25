@@ -2,6 +2,7 @@ package com.example.simplefitnessrecords01.recycler_views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.fitness.Fitness;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
+import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.sql.SQLfitness;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
 
     //Список ітемів - тренувань
     private List<Fitness> setTrainingList;
-    public void setSetTrainingList(List<Fitness> setTrainingList) {
+    public void setFitnessList(List<Fitness> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
     public Fitness getItem(int position) {
@@ -101,6 +103,27 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
         //видалити з бази
         getterDB.getDB().execSQL(sql, where_args);
+
+
+
+        /*видалити з бази записів тренувань
+          код для видалення */
+        Log.d("whereErr", "test 1");
+        table_name   = SQLSetFits.DATABASE_TABLE;
+        Log.d("whereErr", "test 2");
+        where_clause = SQLfitness.COLUMN_FITNAME + "=?";
+        Log.d("whereErr", "test 3");
+        where_args = new String[] { setTrainingList.get(position).getFitnessName() };
+        Log.d("whereErr", "test 4");
+        sql          = "DELETE FROM " + table_name + " WHERE " + where_clause;
+        Log.d("whereErr", "test 5");
+        //видалити з бази
+        SQLSetFits sqlSetFits = new SQLSetFits(context);
+        sqlSetFits.getWritableDatabase().execSQL(sql, where_args);
+        sqlSetFits.close();
+        Log.d("whereErr", "test 6");
+
+
         //видалити з адаптера
         setTrainingList.remove(position);
         //повідомити адаптер про видалення

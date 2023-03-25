@@ -2,6 +2,9 @@ package com.example.simplefitnessrecords01.recycler_views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,8 @@ import com.example.simplefitnessrecords01.fitness.SetFitness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitList> {
 
@@ -37,14 +42,9 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     public List<SetFitness> getSetFitList() {
         return setFitList;
     }
-
-
-
-
-
-
-
-
+    public SetFitness getSetFitness(int position) {
+        return setFitList.get(position);
+    }
 
 
     // Конструктори
@@ -60,27 +60,6 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
 
 
-    public void deleteItem(int position){
-
-//        GetterSQLhelper getterSQLhelper = (GetterSQLhelper) context;
-//
-//        //код для видалення
-//        String table_name = ((dbHelperSetFits)getterSQLhelper.getHelper()).getFitnessName();
-//        String where_clause = dbHelperSetFits.COLUMN_ID + "=?";
-//        String[] where_args = new String[] {String.valueOf(setFitList.get(position).getId())};
-//        String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
-//
-//        //видалити з бази
-//        getterSQLhelper.getHelper().getWritableDatabase().execSQL(sql, where_args);
-//
-//        //видалити з адаптера
-//        setFitList.remove(position);
-//
-//        //повідомити адаптер про видалення
-//        notifyItemRemoved(position);
-    }
-
-
 
 
     // **************Створення заготовки В'ю ТА Холдера ********
@@ -94,6 +73,7 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         //Створення холдера
         return new HolderSetFitList(view);
     }
+
 
     //****** Ініціалізувати (Оживити) В'ю та холдер даними об'єкту з списку
     @Override
@@ -116,6 +96,8 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
     // *******************  Холдер *****************
     public class HolderSetFitList extends RecyclerView.ViewHolder {
 
+        SetFitness setFitness1 = null;
+
         //біндер
         SetFitRecyclerItemBinding binding = SetFitRecyclerItemBinding.bind(itemView);
 
@@ -123,18 +105,24 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         public HolderSetFitList(@NonNull View itemView) {
             super(itemView);
 
-
             //встановити слухач Long натискань на елемент в'ю
             itemView.setOnLongClickListener(v -> {
                 //позиція
                 int position = getAbsoluteAdapterPosition();
+
+
+
                 //реєстр контекстного меню
                 v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {
                     // Встановлюємо заголовок контекстного меню
                     menu.setHeaderTitle("Опції");
+                    Log.d("isErrorOr", "v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {");
                     // Заповнюємо контекстне меню пунктами
-                    ((Activity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
+                    ((SetActivity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
                 });
+
+
+
 
                 //Якщо контекст це МейнАктівіті (краще використати інтерфейс)
                 if (context instanceof SetActivity) {
@@ -143,25 +131,121 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
                     child.setPosition(position);
                 } else Toast.makeText(context, "Error! SetActivity renamed!", Toast.LENGTH_SHORT).show();
 
+
+
+
                 //показати контекстне меню
                 v.showContextMenu();
+                Log.d("findErr2" , "test0");
+
+
 
                 return true;
             });
+
+
+            //Слухачі зміни тексту
+            binding.tvExerciceName.addTextChangedListener(new TextWatcher() {
+                Timer timer = new Timer();
+                final long DELAY = 1000; // time delay msec
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Log.d("TextWatcher",s.toString());
+                            if( !(s.toString()).equals("") ) setFitness1.getExe().setExeName(s.toString());
+                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                        }
+                    } , DELAY);
+                }
+            });
+            binding.etRepeat.addTextChangedListener(new TextWatcher() {
+                Timer timer = new Timer();
+                final long DELAY = 1000; // time delay msec
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Log.d("TextWatcher",s.toString());
+                            if( !(s.toString()).equals("") ) setFitness1.getRecordSet().getRepeats().changeRepeats(s.toString());
+                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                        }
+                    } , DELAY);
+                }
+            });
+            binding.etWeight.addTextChangedListener(new TextWatcher() {
+                Timer timer = new Timer();
+                final long DELAY = 1000; // time delay msec
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Log.d("TextWatcher",s.toString());
+                            if( !(s.toString()).equals("") ) setFitness1.getRecordSet().getWeight().changeWeight(s.toString());
+                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                        }
+                    } , DELAY);
+                }
+            });
         }
+
+
 
         //Оброблення даних від об'єкту щоб оживити в'ю у цьому холдері
         void initItemView(SetFitness setFitness){
+
+            setFitness1 = setFitness;
+
             String exeName = setFitness.getExe().toString();
             binding.tvExerciceName.setText(exeName);
 
             int weight = setFitness.getRecordSet().getWeight().getIntWeight();
-            if(weight != 0) binding.etWeight.setText(String.valueOf(weight));
+            binding.etWeight.setText(String.valueOf(weight));
+            if (weight == 0) binding.etWeight.setText("");
 
             int repeats = setFitness.getRecordSet().getRepeats().getIntRepeats();
-            if(repeats != 0) binding.etRepeat.setText(String.valueOf(repeats));
-        }
+            binding.etRepeat.setText(String.valueOf(repeats));
+            if (repeats == 0) binding.etRepeat.setText("");
 
+        }
 
     }
 }

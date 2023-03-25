@@ -18,4 +18,8 @@ public class Repeats {
     public String toString() {
         return String.valueOf(repeats);
     }
+
+    public void changeRepeats(String s) {
+        repeats = Integer.parseInt(s);
+    }
 }

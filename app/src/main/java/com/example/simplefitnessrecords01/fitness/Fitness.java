@@ -1,18 +1,16 @@
 package com.example.simplefitnessrecords01.fitness;
 
-import java.util.UUID;
-
 public class Fitness {
     int id = 0;
-    String day, name, subname;
+    String day, name, fitnessName;
 
 
 
-    public Fitness(int id, String day, String name, String subname) {
+    public Fitness(int id, String day, String name, String fitnessName) {
         this.id = id;
         this.day = day;
         this.name = name;
-        this.subname = subname;
+        this.fitnessName = fitnessName;
     }
 
 
@@ -30,7 +28,7 @@ public class Fitness {
     }
 
     public void setSubname(String subname) {
-        this.subname = subname;
+        this.fitnessName = subname;
     }
 
     public int getId() {
@@ -45,7 +43,7 @@ public class Fitness {
         return name;
     }
 
-    public String getSubname() {
-        return subname;
+    public String getFitnessName() {
+        return fitnessName;
     }
 }

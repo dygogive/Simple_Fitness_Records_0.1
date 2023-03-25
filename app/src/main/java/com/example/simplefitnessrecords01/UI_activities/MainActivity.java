@@ -30,10 +30,8 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-
     //Біндінг цього актівіті
     private ActivityMainBinding binding;
-
 
 
 
@@ -46,10 +44,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-
-
-
-
     //посилання на Помічник по роботі з базою даних
     SQLfitness dbHelp;
     //посилання на База даних
@@ -58,11 +52,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     public SQLiteDatabase getDB() {
         return db;
     }
-
-
-
-
-
 
 
 
@@ -85,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 result -> {
                     if (result) {
                         // Обробіть результат з активності
-                        Toast.makeText(this, "Завершено тренування !!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "End training", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Не завершена тренування", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "End training", Toast.LENGTH_SHORT).show();
                         // Обробіть помилку
                     }
                 }
@@ -113,9 +102,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         super.onDestroy();
         db.close();
     }
-
-
-
 
 
 
@@ -164,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         return fitnessList;
     }
 
+
+
+
     //ініціалізація recycleView списку створених тренувань фітнесу
     private void recycleViewInit() {
         //дістати setTrainingList з бази даних
@@ -207,14 +196,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-
-
-
-
-
-
     /********** Options Menu **************/
-
     //Створення меню
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -269,11 +251,6 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-
-
-
-
-
     /************************ Context Menu  *****************************/
     //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
     private int positioContextMenu = -1;
@@ -286,10 +263,8 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     // Реалізація методу для обробки натискань на пункти контекстного меню
     @Override
     public boolean onContextItemSelected(MenuItem item)       {
-
         // Обробляємо натискання на пункти контекстного меню
         switch (item.getItemId()) {
-
             case R.id.edit:
                 //Обробник натискання кнопки ОК діалогу
                 @SuppressLint("Range") ButtonOK buttonOK = dayNameSubname -> {
@@ -309,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                         db.update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
                         cv.clear();
                         //from db to adapter update data
-                        ((FitnessListAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(getFitnessList());
+                        ((FitnessListAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
                         //notify adapter
                         binding.recyclerView.getAdapter().notifyDataSetChanged();
                     }
@@ -320,14 +295,14 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
                 return true;
 
-
             case R.id.delete:
                 //адаптер
                 FitnessListAdapter fitnessListAdapter = (FitnessListAdapter) binding.recyclerView.getAdapter();
                 fitnessListAdapter.deleteItem(positioContextMenu);
 
                 //from db to adapter update data
-                ((FitnessListAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(getFitnessList());
+                ((FitnessListAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
+
                 //notify adapter
                 binding.recyclerView.getAdapter().notifyDataSetChanged();
 

@@ -3,12 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/theend"
-        android:title="@string/the_end_training"
-        app:showAsAction="withText"/>
+        android:id="@+id/add"
+        android:icon="@drawable/baseline_add_box_24"
+        android:title="@string/add"
+        app:showAsAction="always" />
     <item
         android:id="@+id/settngs"
         android:title="@string/settings"
+        app:showAsAction="withText"/>
+    <item
+        android:id="@+id/theend"
+        android:title="@string/theend"
         app:showAsAction="withText"/>
     <item
         android:id="@+id/action_log_sql2"

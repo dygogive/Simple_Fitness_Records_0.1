@@ -43,7 +43,7 @@ dependencies {
         Додати залежності в файл build.gradle вашого модуля
         додатка, щоб мати змогу використовувати RecyclerView і SQLite:
     """
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'androidx.sqlite:sqlite:2.3.0'
 
     testImplementation 'junit:junit:4.13.2'

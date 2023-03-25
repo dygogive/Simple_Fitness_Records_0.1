@@ -18,4 +18,8 @@ public class Weight {
     public String toString() {
         return String.valueOf(weight);
     }
+
+    public void changeWeight(String w) {
+        weight = Integer.parseInt(w);
+    }
 }

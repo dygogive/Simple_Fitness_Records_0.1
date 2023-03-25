@@ -4,49 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_rounded"
-    android:layout_margin="20dp">
+    android:layout_margin="8dp"
+    android:background="@drawable/background_rounded">
 
     <TextView
         android:id="@+id/tvExerciceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:focusable="true"
         android:hint="Exercise"
         android:inputType="text"
-        android:textColor="#FFFFFF"
+        android:textColor="#FB8C00"
+        android:textColorHint="@color/teal_200"
         android:textIsSelectable="true"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etWeight"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Weight"
         android:inputType="numberDecimal"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="#FB8C00"
+        android:textColorHint="@color/teal_200"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvExerciceName"
         app:layout_constraintTop_toBottomOf="@+id/tvExerciceName" />
 
     <EditText
         android:id="@+id/etRepeat"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:ems="10"
         android:hint="Repeats"
         android:inputType="numberDecimal"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etWeight" />
+        android:textColor="#FB8C00"
+        android:textColorHint="@color/teal_200"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etWeight"
+        app:layout_constraintStart_toEndOf="@+id/etWeight"
+        app:layout_constraintTop_toTopOf="@+id/etWeight" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

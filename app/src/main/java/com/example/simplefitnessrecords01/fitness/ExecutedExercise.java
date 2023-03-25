@@ -1,9 +1,14 @@
 package com.example.simplefitnessrecords01.fitness;
 
-public class RecordExercise {
-    Weight weight;
-    Repeats repeats;
+public class ExecutedExercise {
 
+    /* PARAMETERS */
+    private final Weight weight;
+    private final Repeats repeats;
+
+
+
+    /* GETTERS AND SETTERS */
     public Weight getWeight() {
         return weight;
     }
@@ -12,7 +17,9 @@ public class RecordExercise {
         return repeats;
     }
 
-    public RecordExercise(Weight weight, Repeats repeats) {
+
+    /* CONSTRUCTOR */
+    public ExecutedExercise(Weight weight, Repeats repeats) {
         this.weight = weight;
         this.repeats = repeats;
     }

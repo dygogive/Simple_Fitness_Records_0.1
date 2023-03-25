@@ -3,16 +3,15 @@ package com.example.simplefitnessrecords01.fitness;
 import androidx.annotation.NonNull;
 
 public class Repeats {
-    int repeats;
+    /* PARAMETERS */
+    private int repeats;
 
+
+
+    /* GETTERS AND SETTERS */
     public int getIntRepeats() {
         return repeats;
     }
-
-    public Repeats(int repeats) {
-        this.repeats = repeats;
-    }
-
     @NonNull
     @Override
     public String toString() {
@@ -21,5 +20,13 @@ public class Repeats {
 
     public void changeRepeats(String s) {
         repeats = Integer.parseInt(s);
+    }
+
+
+
+
+    /* CONSTRUCTOR */
+    public Repeats(int repeats) {
+        this.repeats = repeats;
     }
 }

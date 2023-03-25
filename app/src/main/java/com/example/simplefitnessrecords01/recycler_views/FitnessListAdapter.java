@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.GetterDB;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
-import com.example.simplefitnessrecords01.fitness.Fitness;
+import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
 import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
 import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.sql.SQLfitness;
@@ -25,17 +25,17 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
 
 
     //контекст
-    private Context context;
+    private final Context context;
 
 
 
 
     //Список ітемів - тренувань
-    private List<Fitness> setTrainingList;
-    public void setFitnessList(List<Fitness> setTrainingList) {
+    private List<OneFitnessTraining> setTrainingList;
+    public void setFitnessList(List<OneFitnessTraining> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
-    public Fitness getItem(int position) {
+    public OneFitnessTraining getItem(int position) {
         return setTrainingList.get(position);
     }
 
@@ -55,7 +55,7 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
 
 
     //конструктор
-    public FitnessListAdapter(List<Fitness> setTrainingList, Context context) {
+    public FitnessListAdapter(List<OneFitnessTraining> setTrainingList, Context context) {
         this.setTrainingList = setTrainingList;
         this.context = context;
     }
@@ -78,7 +78,7 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
     @Override
     public void onBindViewHolder(@NonNull FitnessListAdapter.SetTrainingHolder holder, int position) {
         //отримати елемент списку
-        Fitness setTraining = setTrainingList.get(position);
+        OneFitnessTraining setTraining = setTrainingList.get(position);
         //закинути з нього інфу у холдер
         holder.onBindData(setTraining);
     }
@@ -113,7 +113,7 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
         Log.d("whereErr", "test 2");
         where_clause = SQLfitness.COLUMN_FITNAME + "=?";
         Log.d("whereErr", "test 3");
-        where_args = new String[] { setTrainingList.get(position).getFitnessName() };
+        where_args = new String[] { setTrainingList.get(position).getUniqueFitTraining() };
         Log.d("whereErr", "test 4");
         sql          = "DELETE FROM " + table_name + " WHERE " + where_clause;
         Log.d("whereErr", "test 5");
@@ -189,8 +189,8 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
             });
         }
 
-        void onBindData(Fitness fitness){
-            binding.textView.setText(fitness.getDay());
+        void onBindData(OneFitnessTraining oneFitnessTraining){
+            binding.textView.setText(oneFitnessTraining.getDay());
         }
 
     }

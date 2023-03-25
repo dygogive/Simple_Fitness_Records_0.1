@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.dialog.ButtonOK;
 import com.example.simplefitnessrecords01.sql.SQLfitness;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.Fitness;
+import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
@@ -108,10 +108,10 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     /**********  RecyclerView ***************/
 
     //метод створює список імен баз даних
-    private List<Fitness>  getFitnessList(){
+    private List<OneFitnessTraining>  getFitnessList(){
 
         //пустий список для SetTraining з бази для рециклера
-        List<Fitness> fitnessList = new ArrayList<>();
+        List<OneFitnessTraining> oneFitnessTrainingList = new ArrayList<>();
 
         //курсор з бази з вибором усього
         Cursor cursor = db.rawQuery("SELECT * FROM " + SQLfitness.DATABASE_TABLE, null);
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_FITNAME));
 
                 //добавити в список
-                fitnessList.add(   new Fitness(id, day, name, subname)   );
+                oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
             } while (cursor.moveToNext());
         } else {
             //Якщо база порожня то запуск діалогу
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
         }
         //повернути список об'єктів тренувань
-        return fitnessList;
+        return oneFitnessTrainingList;
     }
 
 
@@ -156,10 +156,10 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     //ініціалізація recycleView списку створених тренувань фітнесу
     private void recycleViewInit() {
         //дістати setTrainingList з бази даних
-        List<Fitness> fitnessList = getFitnessList();
+        List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
 
         //створити новий адаптер з цим списком
-        FitnessListAdapter adapter = new FitnessListAdapter(fitnessList, this);
+        FitnessListAdapter adapter = new FitnessListAdapter(oneFitnessTrainingList, this);
 
         //менеджер відображення елементів передаємо
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));

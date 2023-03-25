@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.simplefitnessrecords01.fitness.SetFitness;
+import com.example.simplefitnessrecords01.fitness.OneSet;
 
 public class SQLSetFits extends SQLiteOpenHelper {
-    Context context = null;
+    Context context;
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_EXE = "exe";
     public static final String COLUMN_WEIGHT = "weight";
@@ -51,15 +51,17 @@ public class SQLSetFits extends SQLiteOpenHelper {
                         wei + " ; " + COLUMN_REPEATS + " - " +  rep + " ; " + COLUMN_FITNAME + " - " +  fitname + " ; " );
             } while ( c.moveToNext() );
         }else Log.d(logTag, "Table " + DATABASE_TABLE + " is empty.");
+
+        c.close();
     }
 
 
 
-    public void addSetFitToSQL(SetFitness setFitness){
+    public void addSetFitToSQL(OneSet oneSet){
 
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_EXE     , setFitness.getExe().toString());
-        cv.put(COLUMN_FITNAME , setFitness.getFitnessName());
+        cv.put(COLUMN_EXE     , oneSet.getExe().toString());
+        cv.put(COLUMN_FITNAME , oneSet.getUniqueFitTraining());
         getWritableDatabase().insert(DATABASE_TABLE,null,cv);
         cv.clear();
     }

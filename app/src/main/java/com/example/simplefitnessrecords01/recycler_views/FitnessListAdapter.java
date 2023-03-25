@@ -25,28 +25,34 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
     //контекст
     private Context context;
 
+
+
+
     //Список ітемів - тренувань
     private List<Fitness> setTrainingList;
     public void setSetTrainingList(List<Fitness> setTrainingList) {
         this.setTrainingList = setTrainingList;
     }
-
     public Fitness getItem(int position) {
         return setTrainingList.get(position);
     }
 
 
-    //слухач натискань на елементи, якого я створив для того, щоб оброблювати натискання на елементи
+
+
+
+
+    //слухач натискань на елемент
     private OnItemRecyclerClickListener listenerShort;
 
-    //метод для встановлення слухача натискань на елементи Рециклера
+    //метод для ініціалізації слухача натискань
     public void setOnItemRecyclerClickListener(OnItemRecyclerClickListener listener) {
         this.listenerShort = listener;
     }
 
 
 
-    //конструктори
+    //конструктор
     public FitnessListAdapter(List<Fitness> setTrainingList, Context context) {
         this.setTrainingList = setTrainingList;
         this.context = context;
@@ -60,7 +66,6 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
     public SetTrainingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //створення в'ю
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_for_recycler, parent, false);
-
         //створення SetsHolder
         return new SetTrainingHolder(view);
     }
@@ -88,21 +93,16 @@ public class FitnessListAdapter extends RecyclerView.Adapter<FitnessListAdapter.
 
     //Видалити один з обёэктыв ы з бази, ы з рециклера
     public void deleteItem(int position) {
-
         GetterDB getterDB = (GetterDB) context;
-
         //код для видалення
         String table_name = SQLfitness.DATABASE_TABLE;
         String where_clause = SQLfitness.COLUMN_DAY + "=?";
         String[] where_args = new String[] { setTrainingList.get(position).getDay() };
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
-
         //видалити з бази
         getterDB.getDB().execSQL(sql, where_args);
-
         //видалити з адаптера
         setTrainingList.remove(position);
-
         //повідомити адаптер про видалення
         notifyItemRemoved(position);
     }

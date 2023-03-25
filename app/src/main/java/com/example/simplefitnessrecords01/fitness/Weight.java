@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class Weight {
     int weight;
 
-    public int getWeight() {
+    public int getIntWeight() {
         return weight;
     }
 

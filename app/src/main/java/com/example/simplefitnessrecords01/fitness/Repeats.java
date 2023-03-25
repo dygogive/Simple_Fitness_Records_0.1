@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class Repeats {
     int repeats;
 
-    public int getRepeats() {
+    public int getIntRepeats() {
         return repeats;
     }
 

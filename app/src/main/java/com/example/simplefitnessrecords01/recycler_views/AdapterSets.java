@@ -11,14 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.UI_activities.GetterDB;
-import com.example.simplefitnessrecords01.UI_activities.GetterSQLhelper;
-import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.SetFitRecyclerItemBinding;
 import com.example.simplefitnessrecords01.fitness.SetFitness;
-import com.example.simplefitnessrecords01.sql.SQLfitness;
-import com.example.simplefitnessrecords01.sql.SQLsets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +29,13 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
         this.setFitList = setFitList;
     }
 
-    public void resetSetFitList(){
-        setFitList = new ArrayList<>();
-    }
-
     //Добавити в список адаптера ще один сет
-    public void addSet(SetFitness set) {
+    public void addSetFit(SetFitness set) {
         setFitList.add(set);
     }
+
+
+
 
 
 
@@ -62,22 +56,22 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
     public void deleteItem(int position){
 
-        GetterSQLhelper getterSQLhelper = (GetterSQLhelper) context;
-
-        //код для видалення
-        String table_name = ((SQLsets)getterSQLhelper.getHelper()).getTableName();
-        String where_clause = SQLsets.COLUMN_ID + "=?";
-        String[] where_args = new String[] {String.valueOf(setFitList.get(position).getId())};
-        String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
-
-        //видалити з бази
-        getterSQLhelper.getHelper().getWritableDatabase().execSQL(sql, where_args);
-
-        //видалити з адаптера
-        setFitList.remove(position);
-
-        //повідомити адаптер про видалення
-        notifyItemRemoved(position);
+//        GetterSQLhelper getterSQLhelper = (GetterSQLhelper) context;
+//
+//        //код для видалення
+//        String table_name = ((dbHelperSetFits)getterSQLhelper.getHelper()).getFitnessName();
+//        String where_clause = dbHelperSetFits.COLUMN_ID + "=?";
+//        String[] where_args = new String[] {String.valueOf(setFitList.get(position).getId())};
+//        String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
+//
+//        //видалити з бази
+//        getterSQLhelper.getHelper().getWritableDatabase().execSQL(sql, where_args);
+//
+//        //видалити з адаптера
+//        setFitList.remove(position);
+//
+//        //повідомити адаптер про видалення
+//        notifyItemRemoved(position);
     }
 
 
@@ -155,11 +149,11 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
             String exeName = setFitness.getExe().toString();
             binding.tvExerciceName.setText(exeName);
 
-            String weight = setFitness.getRecordSet().getWeight().toString();
-            binding.etWeight.setText(weight);
+            int weight = setFitness.getRecordSet().getWeight().getIntWeight();
+            if(weight != 0) binding.etWeight.setText(String.valueOf(weight));
 
-            String repeats = setFitness.getRecordSet().getRepeats().toString();
-            binding.etRepeat.setText(repeats);
+            int repeats = setFitness.getRecordSet().getRepeats().getIntRepeats();
+            if(repeats != 0) binding.etRepeat.setText(String.valueOf(repeats));
         }
 
 

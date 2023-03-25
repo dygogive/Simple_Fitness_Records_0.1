@@ -28,25 +28,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GetterDB {
 
-    //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
-    private int positioContextMenu = -1;
-
-    //використовується при довгому натисненні на РециклерВ'ю, щоб закинути номер посиції на оброблення контекстного меню
-    public void setPositioContextMenu(int posit) {
-        positioContextMenu = posit;
-    }
-
-
-
-
 
 
 
     //Біндінг цього актівіті
     private ActivityMainBinding binding;
-
-
-
 
 
 
@@ -131,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
+
+
     /**********  RecyclerView ***************/
 
     //метод створює список імен баз даних
@@ -152,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range")
                 String name = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_NAME));
                 @SuppressLint("Range")
-                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_SUBNAME));
+                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_FITNAME));
 
                 //добавити в список
                 fitnessList.add(   new Fitness(id, day, name, subname)   );
@@ -163,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                 cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                cv.put(SQLfitness.COLUMN_SUBNAME,txts[2]);
+                cv.put(SQLfitness.COLUMN_FITNAME,txts[2]);
                 db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                 cv.clear();
                 recycleViewInit();
@@ -198,9 +186,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
             if(c.moveToPosition(position)) {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLfitness.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLfitness.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_SUBNAME));
-
-                Log.d("loga", "test = ");
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_FITNAME));
 
                 //заповнення масиву
                 dayNameSubname = new String[] {day,name,subname};
@@ -246,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
             case R.id.action_new:
                 // Обробка натискання на пункт "NEW"
                 StartDialog dialog = new StartDialog(this, txts -> {
-                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_SUBNAME + "=?";
+                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_FITNAME + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
 
                     Cursor с = db.query(SQLfitness.DATABASE_TABLE,null,selection, selectionArgs,null,null,null);
@@ -257,23 +243,24 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                         ContentValues cv = new ContentValues();
                         cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                         cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                        cv.put(SQLfitness.COLUMN_SUBNAME,txts[2]);
+                        cv.put(SQLfitness.COLUMN_FITNAME,txts[2]);
                         db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                         cv.clear();
                     }
-                    Log.d("Problem", "pizda");
-
                     //оновити список
                     recycleViewInit();
                 });
                 dialog.show();
                 return true;
+
             case R.id.action_settings:
                 // Обробка натискання на пункт "Налаштування"
                 return true;
+
             case R.id.action_log_sql:
                 dbHelp.getTableInLog("MainActSQLog");
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -288,6 +275,13 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
     /************************ Context Menu  *****************************/
+    //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
+    private int positioContextMenu = -1;
+
+    //використовується при довгому натисненні на РециклерВ'ю, щоб закинути номер посиції на оброблення контекстного меню
+    public void setPositioContextMenu(int posit) {
+        positioContextMenu = posit;
+    }
 
     // Реалізація методу для обробки натискань на пункти контекстного меню
     @Override
@@ -297,31 +291,30 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         switch (item.getItemId()) {
 
             case R.id.edit:
-                // Додаткові дії при натисканні на пункт "Редагувати"
-
                 //Обробник натискання кнопки ОК діалогу
                 @SuppressLint("Range") ButtonOK buttonOK = dayNameSubname -> {
-                    Log.d("log12",dayNameSubname[0] + " / " + dayNameSubname[1] + " / " + dayNameSubname[2]);
-                    SQLfitness dbHelp = new SQLfitness(MainActivity.this);
-                    SQLiteDatabase db = dbHelp.getWritableDatabase();
-
+                    //get strings from dialog
                     ContentValues cv = new ContentValues();
                     cv.put(SQLfitness.COLUMN_DAY, dayNameSubname[0]);
                     cv.put(SQLfitness.COLUMN_NAME, dayNameSubname[1]);
-                    cv.put(SQLfitness.COLUMN_SUBNAME, dayNameSubname[2]);
+                    cv.put(SQLfitness.COLUMN_FITNAME, dayNameSubname[2]);
+                    //get cursor from table sql
                     Cursor c = db.query(SQLfitness.DATABASE_TABLE,null,null,null,null,null,null);
+                    //put cursor to chosen position of recycler
                     if(c.moveToPosition(positioContextMenu)) {
+                        //update the table in selected id parameter
                         int id = c.getInt(c.getColumnIndexOrThrow(SQLfitness.COLUMN_ID));
                         String whereClause = SQLfitness.COLUMN_ID + " = ?";
                         String[] whereArgs = new String[] {Integer.toString(id)};
-                        int rowsUpd = db.update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
+                        db.update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
                         cv.clear();
-
+                        //from db to adapter update data
                         ((FitnessListAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(getFitnessList());
+                        //notify adapter
                         binding.recyclerView.getAdapter().notifyDataSetChanged();
-
                     }
                 };
+
                 StartDialog dialog = new StartDialog(this, buttonOK);
                 dialog.show();
 
@@ -332,6 +325,11 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 //адаптер
                 FitnessListAdapter fitnessListAdapter = (FitnessListAdapter) binding.recyclerView.getAdapter();
                 fitnessListAdapter.deleteItem(positioContextMenu);
+
+                //from db to adapter update data
+                ((FitnessListAdapter)binding.recyclerView.getAdapter()).setSetTrainingList(getFitnessList());
+                //notify adapter
+                binding.recyclerView.getAdapter().notifyDataSetChanged();
 
                 return true;
 

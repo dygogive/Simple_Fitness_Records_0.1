@@ -1,11 +1,11 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
+import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_FITNAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,16 +17,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.simplefitnessrecords01.dialog.StartDialog;
 import com.example.simplefitnessrecords01.fitness.Exercise;
-import com.example.simplefitnessrecords01.fitness.Fitness;
 import com.example.simplefitnessrecords01.fitness.RecordExercise;
 import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.SetFitness;
 import com.example.simplefitnessrecords01.fitness.Weight;
 import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
 import com.example.simplefitnessrecords01.sql.SQLfitness;
-import com.example.simplefitnessrecords01.sql.SQLsets;
+import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
 
@@ -43,19 +41,21 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
 
     //посилання на Помічник по роботі з базою даних
-    private SQLsets sqLsets;
+    private SQLSetFits SQLSetFits;
     @Override
     public SQLiteOpenHelper getHelper() {
-        return sqLsets;
+        return SQLSetFits;
     }
     //база
     SQLiteDatabase db;
 
 
+
+
     //назва таблиці бази даних
-    private String nameTableDB = "testName";
-    public String getNameTableDB() {
-        return nameTableDB;
+    private String nameFitness = "testName";
+    public String getNameFitness() {
+        return nameFitness;
     }
     //посилання на База даних
     public SQLiteDatabase getDB() {
@@ -63,7 +63,11 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
     }
 
 
-    private int positionForContextMenu = -1;
+
+
+
+    AdapterSets adapter;
+
 
 
 
@@ -78,8 +82,13 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Log.d("findErr", "test - 0  onCreate");
+
         //обробити інфу від екстра чз інтент
         procIntentExtra();
+
+        Log.d("findErr", "test - 1  onCreate");
+
     }
     //Обробити дані, що отримані від попереднього актівіті
     private void procIntentExtra() {
@@ -99,7 +108,10 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         binding.tvSubName.setText(textSubname);
 
         //унікальна назва тренування
-        nameTableDB = textDay + textName + textSubname;
+        nameFitness = textDay + textName + textSubname;
+
+
+        Log.d("findErr", "test - 2  onCreate");
     }
     //метод життєвого циклу актівіті
     @Override
@@ -107,12 +119,16 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         super.onResume();
 
         //ініціалізація посилань на базу даних
-        if (  !nameTableDB.equals("")  ) {
-            sqLsets = new SQLsets(SetActivity.this, "nameTableDB");
-            db = sqLsets.getWritableDatabase();
-        }
+        SQLSetFits = new SQLSetFits(SetActivity.this);
+        db = SQLSetFits.getWritableDatabase();
+
+        Log.d("findErr", "test - 3  onCreate");
+
         //ініціалізація Рециклера в'ю
         recycleViewInit();
+
+        Log.d("findErr", "test - 4  onCreate");
+
     }
 
     @Override
@@ -120,7 +136,6 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         //Закрити базу
 //        getHelper().close();
 //        db.close();
-
         super.onPause();
     }
     @Override
@@ -138,11 +153,11 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
     /**********  RecyclerView ***************/
     private void recycleViewInit() {
-
-
+        Log.d("findErr", "test - 3.1  ");
         List<SetFitness> setsFitness = getSetsFitness();
+        Log.d("findErr", "test - 3.2  ");
 
-        AdapterSets adapter = new AdapterSets(SetActivity.this, setsFitness);
+        adapter = new AdapterSets(SetActivity.this, setsFitness);
         //менеджер для РЕЦИКЛЕРА В'Ю
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //Адаптер для рециклера
@@ -153,23 +168,33 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         //пустий список для SetTraining з бази для рециклера
         List<SetFitness> setsFitness = new ArrayList<>();
 
-        //курсор з бази з вибором усього
-        Cursor c = db.rawQuery("SELECT * FROM " + "nameTableDB", null);
+        Log.d("findErr", "test - 3.11  ");
 
+        //курсор з бази з вибором усього
+        //Cursor c = db.rawQuery("SELECT * FROM " + SQLSetFits.DATABASE_TABLE, null);+
+        String selection = COLUMN_FITNAME + " = ?";
+        String[] selectionArgs = new String[] {getNameFitness()};
+        Cursor c = db.query(SQLSetFits.DATABASE_TABLE, null, selection, selectionArgs, null, null, null);
+
+
+        Log.d("findErr", "test - 3.12  ");
         //перебрати рядки курсору
         if(c.moveToNext()){
-            int id_id = c.getColumnIndex(SQLsets.COLUMN_ID);
-            int id_exe = c.getColumnIndex(SQLsets.COLUMN_EXE);
-            int id_wei = c.getColumnIndex(SQLsets.COLUMN_WEIGHT);
-            int id_rep = c.getColumnIndex(SQLsets.COLUMN_REPEATS);
+            int id_id = c.getColumnIndex(SQLSetFits.COLUMN_ID);
+            int id_fitName = c.getColumnIndex(COLUMN_FITNAME);
+            int id_exe = c.getColumnIndex(SQLSetFits.COLUMN_EXE);
+            int id_wei = c.getColumnIndex(SQLSetFits.COLUMN_WEIGHT);
+            int id_rep = c.getColumnIndex(SQLSetFits.COLUMN_REPEATS);
             do {
-                int id     = c.getInt(id_id);
-                String exe = c.getString(id_exe);
-                int wei    = c.getInt(id_wei);
-                int rep    = c.getInt(id_rep);
+                int id         = c.getInt(id_id);
+                String fitName = c.getString(id_fitName);
+                String exe     = c.getString(id_exe);
+                int wei        = c.getInt(id_wei);
+                int rep        = c.getInt(id_rep);
 
                 //добавити в список
-                setsFitness.add(   new SetFitness(id, new Exercise(exe) , new RecordExercise(new Weight(wei) , new Repeats(rep)))   );
+                setsFitness.add(   new SetFitness( id, new Exercise(exe) , new RecordExercise(new Weight(wei) , new Repeats(rep)) , fitName  )   );
+
             } while (c.moveToNext());
         } else {
             Toast.makeText(this, "Виконай перший підхід!", Toast.LENGTH_SHORT).show();
@@ -178,7 +203,11 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         return setsFitness;
     }
 
-
+    private void updateRecycler(){
+        List<SetFitness> setsFitness = getSetsFitness();
+        adapter.setSetFitList(setsFitness);
+        adapter.notifyDataSetChanged();
+    }
 
 
 
@@ -190,8 +219,9 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         switch (view.getId()){
 
             case R.id.btnAddExe:{
-//                SetFitness setFitness = new SetFitness();
-//                sqLsets.addSetFitnessToSQL(setFitness);
+                SetFitness setFitness = new SetFitness(nameFitness);
+                SQLSetFits.addSetFitToSQL(setFitness);
+                updateRecycler();
             } break;
 
             default:{
@@ -243,7 +273,7 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
                 return true;
 
             case R.id.action_log_sql2:
-                sqLsets.getTableInLog("MainActSQLog");
+                SQLSetFits.getTableInLog("MainActSQLog");
                 return true;
 
             default:
@@ -262,6 +292,8 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
 
     /************************ Context Menu  *****************************/
+
+    private int positionForContextMenu = -1;
 
     // Реалізація методу для обробки натискань на пункти контекстного меню
     @Override

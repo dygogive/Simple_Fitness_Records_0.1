@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitList> {
+public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerViewOneSetsAdapter.HolderSetFitList> {
 
     Context context;
 
@@ -47,11 +47,11 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
 
 
     // Конструктори
-    public AdapterSets(Context context) {
+    public RecyclerViewOneSetsAdapter(Context context) {
         this.context = context;
     }
 
-    public AdapterSets(Context context, List<OneSet> oneSetList) {
+    public RecyclerViewOneSetsAdapter(Context context, List<OneSet> oneSetList) {
         this.context = context;
         this.setFitList = oneSetList;
     }
@@ -165,7 +165,7 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
                         public void run() {
                             Log.d("TextWatcher",s.toString());
                             if( !(s.toString()).equals("") ) oneSet1.getExe().setExeName(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
                 }
@@ -192,7 +192,7 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
                         public void run() {
                             Log.d("TextWatcher",s.toString());
                             if( !(s.toString()).equals("") ) oneSet1.getRecordSet().getRepeats().changeRepeats(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
                 }
@@ -219,7 +219,7 @@ public class AdapterSets extends RecyclerView.Adapter<AdapterSets.HolderSetFitLi
                         public void run() {
                             Log.d("TextWatcher",s.toString());
                             if( !(s.toString()).equals("") ) oneSet1.getRecordSet().getWeight().changeWeight(s.toString());
-                            ((SetActivity)context).saveToDBFromRecycler(AdapterSets.this);
+                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
                 }

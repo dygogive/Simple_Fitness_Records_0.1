@@ -14,14 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.simplefitnessrecords01.dialog.ButtonOK;
+import com.example.simplefitnessrecords01.dialog.UniqueNameProcessor;
+import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.sql.SQLfitness;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
-import com.example.simplefitnessrecords01.recycler_views.FitnessListAdapter;
+import com.example.simplefitnessrecords01.recycler_views.RecyclerViewFitnessTrainingsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
     //посилання на Помічник по роботі з базою даних
-    SQLfitness dbHelp;
+    SQLfitness sqLfitness;
+    SQLSetFits sqlSetFits;
     //посилання на База даних
     SQLiteDatabase db;
 
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //ініціалізація посилань на базу даних
-        dbHelp = new SQLfitness(MainActivity.this);
-        db     = dbHelp.getWritableDatabase();
+        //ініціалізація посилань на бази даних
+        sqLfitness = new SQLfitness(MainActivity.this);
+        sqlSetFits = new SQLSetFits(MainActivity.this);
+
+        db     = sqLfitness.getWritableDatabase();
 
 
         //ланчер з обробником
@@ -91,17 +95,17 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         recycleViewInit();
     }
     @Override
-    protected void onPause() {
-        super.onPause();
-//        db.close();
-//        dbHelp.close();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        db.close();
+
+        //close dadabases
+        sqLfitness.close();
+        sqlSetFits.close();
     }
+
+
+
+
 
 
 
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range")
                 String name = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_NAME));
                 @SuppressLint("Range")
-                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_FITNAME));
+                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_UNIQ_NAME));
 
                 //добавити в список
                 oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                 cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                cv.put(SQLfitness.COLUMN_FITNAME,txts[2]);
+                cv.put(SQLfitness.COLUMN_UNIQ_NAME,txts[2]);
                 db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                 cv.clear();
                 recycleViewInit();
@@ -159,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
         List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
 
         //створити новий адаптер з цим списком
-        FitnessListAdapter adapter = new FitnessListAdapter(oneFitnessTrainingList, this);
+        RecyclerViewFitnessTrainingsAdapter adapter = new RecyclerViewFitnessTrainingsAdapter(oneFitnessTrainingList, this);
 
         //менеджер відображення елементів передаємо
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -175,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
             if(c.moveToPosition(position)) {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLfitness.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLfitness.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_FITNAME));
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_UNIQ_NAME));
 
                 //заповнення масиву
                 dayNameSubname = new String[] {day,name,subname};
@@ -214,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
             case R.id.action_new:
                 // Обробка натискання на пункт "NEW"
                 StartDialog dialog = new StartDialog(this, txts -> {
-                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_FITNAME + "=?";
+                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_UNIQ_NAME + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
 
                     Cursor с = db.query(SQLfitness.DATABASE_TABLE,null,selection, selectionArgs,null,null,null);
@@ -225,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                         ContentValues cv = new ContentValues();
                         cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                         cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                        cv.put(SQLfitness.COLUMN_FITNAME,txts[2]);
+                        cv.put(SQLfitness.COLUMN_UNIQ_NAME,txts[2]);
                         db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                         cv.clear();
                     }
@@ -240,13 +244,15 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 return true;
 
             case R.id.action_log_sql:
-                dbHelp.getTableInLog("MainActSQLog");
+                sqLfitness.getTableInLog("MainActSQLog");
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 
 
 
@@ -265,53 +271,77 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
     public boolean onContextItemSelected(MenuItem item)       {
         // Обробляємо натискання на пункти контекстного меню
         switch (item.getItemId()) {
-            case R.id.edit:
-                //Обробник натискання кнопки ОК діалогу
-                @SuppressLint("Range") ButtonOK buttonOK = dayNameSubname -> {
-                    //get strings from dialog
-                    ContentValues cv = new ContentValues();
-                    cv.put(SQLfitness.COLUMN_DAY, dayNameSubname[0]);
-                    cv.put(SQLfitness.COLUMN_NAME, dayNameSubname[1]);
-                    cv.put(SQLfitness.COLUMN_FITNAME, dayNameSubname[2]);
-                    //get cursor from table sql
-                    Cursor c = db.query(SQLfitness.DATABASE_TABLE,null,null,null,null,null,null);
-                    //put cursor to chosen position of recycler
-                    if(c.moveToPosition(positioContextMenu)) {
-                        //update the table in selected id parameter
-                        int id = c.getInt(c.getColumnIndexOrThrow(SQLfitness.COLUMN_ID));
-                        String whereClause = SQLfitness.COLUMN_ID + " = ?";
-                        String[] whereArgs = new String[] {Integer.toString(id)};
-                        db.update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
-                        cv.clear();
-                        //from db to adapter update data
-                        ((FitnessListAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
-                        //notify adapter
-                        binding.recyclerView.getAdapter().notifyDataSetChanged();
-                    }
-                };
-
-                StartDialog dialog = new StartDialog(this, buttonOK);
-                dialog.show();
-
+            case R.id.edit: changeDataOfItem();  //change names
                 return true;
-
-            case R.id.delete:
-                //адаптер
-                FitnessListAdapter fitnessListAdapter = (FitnessListAdapter) binding.recyclerView.getAdapter();
-                fitnessListAdapter.deleteItem(positioContextMenu);
-
-                //from db to adapter update data
-                ((FitnessListAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
-
-                //notify adapter
-                binding.recyclerView.getAdapter().notifyDataSetChanged();
-
+            case R.id.delete: deleteOneItem();  //delete training
                 return true;
-
             default:
-                return super.onContextItemSelected(item);
+                return super.onContextItemSelected(item);  //default
         }
     }
 
+
+
+
+
+
+
+
+
+
+    /* **************  manipulations with trainings   *********** */
+
+    //change data of item
+    private void changeDataOfItem(){
+        //The processor of received information from the dialog
+        @SuppressLint("Range") UniqueNameProcessor uniqueNameProcessor = dayNameSubname -> {
+            //update info in database 1
+            sqLfitness.updateRow(positioContextMenu, dayNameSubname);
+
+            //update info in database 2
+            sqlSetFits.updateRow(getUniqueName(positioContextMenu) ,dayNameSubname[0] + dayNameSubname[1] + dayNameSubname[2]);
+
+            //update RecyclerView
+            updateRecyclerView();
+        };
+
+        //Start Dialog
+        StartDialog dialog = new StartDialog(this, uniqueNameProcessor);
+        // show Dialog
+        dialog.show();
+    }
+
+
+    //delete item from database and from recycler view
+    private void deleteOneItem(){
+
+
+        //delete from the database of Fitness Trainings
+        sqLfitness.deleteRow(getUniqueName(positioContextMenu));
+
+        //delete from the database of performed sets
+        sqlSetFits.deleteRow(getUniqueName(positioContextMenu));
+
+        updateRecyclerView();
+    }
+
+
+    //update recycler view
+    private void updateRecyclerView(){
+        //from db to adapter update data
+        ((RecyclerViewFitnessTrainingsAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
+        //notify adapter
+        binding.recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    private String getUniqueName(int position) {
+        //адаптер
+        RecyclerViewFitnessTrainingsAdapter recyclerViewFitnessTrainingsAdapter = (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
+
+        //unique Name To Delete
+        String uniqueName = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu).getUniqueName();
+
+        return uniqueName;
+    }
 
 }

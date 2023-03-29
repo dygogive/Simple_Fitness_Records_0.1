@@ -9,48 +9,51 @@ import androidx.annotation.NonNull;
 
 import com.example.simplefitnessrecords01.databinding.DialogNewTrainingBinding;
 
-import java.util.UUID;
-
+//Dialog for construct one training
 public class StartDialog extends Dialog {
     private DialogNewTrainingBinding mBinding;
     private final Context context;
+    private UniqueNameProcessor uniqueNameProcessor;
 
-    ButtonOK buttonOK;
 
-    public StartDialog(@NonNull Context context, ButtonOK buttonOK) {
+    //Constructor
+    public StartDialog(@NonNull Context context, UniqueNameProcessor uniqueNameProcessor) {
         super(context);
         this.context = context;
-        this.buttonOK = buttonOK;
-        // Викликаємо метод, який налаштує зовнішній вигляд діалогу
+        this.uniqueNameProcessor = uniqueNameProcessor;
+
+        // We call the method that configures the appearance of the dialog
         setupDialog();
     }
 
 
+    //set up this dialog
     private void setupDialog() {
-        // Налаштування зовнішнього вигляду діалогу з використанням view binding
+        // Setting the appearance of the dialog using view binding
         mBinding = DialogNewTrainingBinding.inflate(LayoutInflater.from(getContext()));
         setContentView(mBinding.getRoot());
-        setTitle("Custom Dialog");
 
-        mBinding.buttonStart.setOnClickListener(view -> {
+        //listener og button in dialog
+        mBinding.buttonCreate.setOnClickListener(view -> {
 
-            //отримати тексти з полів в діалозі
+            // get texts from the fields in the dialog
             String day = mBinding.editTextDay.getText().toString();
             String name = mBinding.editTextName.getText().toString();
             String subname = mBinding.editTextSubname.getText().toString();
 
-            //перевіряємо якщо хоча б одне поле пусте
+            //check if at least one field is empty, then fill it in red
             if (day.equals("") | name.equals("") | subname.equals("")) {
-                //червоний колір
+                //Red color
                 int redColor = Color.RED;
-                //задати прихований текст червоним кольором
+                //set the hidden text in red
                 mBinding.editTextDay.setHintTextColor(redColor);
                 mBinding.editTextName.setHintTextColor(redColor);
                 mBinding.editTextSubname.setHintTextColor(redColor);
             } else {
-                //створити тестові дані
+                //create a unique workout name
                 String[] texts = new String[]{day, name, subname};
-                buttonOK.pressBtnOK(texts);
+                //process unique name
+                uniqueNameProcessor.processUniqueName(texts);
                 //закрити діалог
                 dismiss();
             }

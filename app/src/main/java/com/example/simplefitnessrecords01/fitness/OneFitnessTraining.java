@@ -38,7 +38,7 @@ public class OneFitnessTraining {
         return name;
     }
 
-    public String getUniqueFitTraining() {
+    public String getUniqueName() {
         return uniqueFitTraining;
     }
 

@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_FITNAME;
+import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_UNIQ_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +23,7 @@ import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
 import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 import com.example.simplefitnessrecords01.fitness.Weight;
-import com.example.simplefitnessrecords01.recycler_views.AdapterSets;
+import com.example.simplefitnessrecords01.recycler_views.RecyclerViewOneSetsAdapter;
 import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
@@ -63,7 +63,7 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
 
 
-    AdapterSets adapter;
+    RecyclerViewOneSetsAdapter adapter;
 
 
 
@@ -143,7 +143,7 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
     private void recycleViewInit() {
         List<OneSet> setsFitness = getSetsFitness();
         //
-        adapter = new AdapterSets(SetActivity.this, setsFitness);
+        adapter = new RecyclerViewOneSetsAdapter(SetActivity.this, setsFitness);
         //менеджер для РЕЦИКЛЕРА В'Ю
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //Адаптер для рециклера
@@ -155,14 +155,14 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
         List<OneSet> setsFitness = new ArrayList<>();
         //курсор з бази з вибором усього
         //Cursor c = db.rawQuery("SELECT * FROM " + SQLSetFits.DATABASE_TABLE, null);+
-        String selection = COLUMN_FITNAME + " = ?";
+        String selection = COLUMN_UNIQ_NAME + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
         Cursor c = db.query(sqlSetFits.DATABASE_TABLE, null, selection, selectionArgs, null, null, null);
 
         //перебрати рядки курсору
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqlSetFits.COLUMN_ID);
-            int id_fitName = c.getColumnIndex(COLUMN_FITNAME);
+            int id_fitName = c.getColumnIndex(COLUMN_UNIQ_NAME);
             int id_exe = c.getColumnIndex(sqlSetFits.COLUMN_EXE);
             int id_wei = c.getColumnIndex(sqlSetFits.COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(sqlSetFits.COLUMN_REPEATS);
@@ -288,13 +288,13 @@ public class SetActivity extends AppCompatActivity implements GetterDB, GetterSQ
 
 
     /**************  Save DATA TO DB ****************/
-    public void saveToDBFromRecycler(AdapterSets adapterSets){
+    public void saveToDBFromRecycler(RecyclerViewOneSetsAdapter recyclerViewOneSetsAdapter){
         //
         ContentValues cv = new ContentValues();
         //
-        List<OneSet> setsFitness = adapterSets. getSetFitList();
+        List<OneSet> setsFitness = recyclerViewOneSetsAdapter. getSetFitList();
         //
-        String where_clause = SQLfitness.COLUMN_FITNAME + "=?";
+        String where_clause = SQLfitness.COLUMN_UNIQ_NAME + "=?";
         String[] where_args = new String[] { nameFitness };
         Cursor cursor = db.query(sqlSetFits.DATABASE_TABLE, null,where_clause,where_args,null,null,null);
         cursor.moveToFirst();

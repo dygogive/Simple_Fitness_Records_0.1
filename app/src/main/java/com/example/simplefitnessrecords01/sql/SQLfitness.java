@@ -10,22 +10,21 @@ import android.util.Log;
 
 public class SQLfitness extends SQLiteOpenHelper {
 
-    /************   НАЗВА БД ТА ТАБЛИЦЬ *************************/
+    /************   NAME OF DB AND TABLES *************************/
     private static final String DATABASE_NAME = "tablesWithSets";
     public static final String DATABASE_TABLE = "fitnessDay";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_UNIQ_NAME = "fitname";
+    public static final String COLUMN_SUB_NAME = "fitname";
 
     private static final int DATABASE_VERSION = 1;
 
 
 
 
-
-    /************* КОНСТРУКТОР  ********************/
+    /************* CONSTRUCTOR  ********************/
     public SQLfitness(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -41,7 +40,7 @@ public class SQLfitness extends SQLiteOpenHelper {
                 int id_id      = c.getColumnIndex(COLUMN_ID);
                 int id_day     = c.getColumnIndex(COLUMN_DAY);
                 int id_name    = c.getColumnIndex(COLUMN_NAME);
-                int id_subname = c.getColumnIndex(COLUMN_UNIQ_NAME);
+                int id_subname = c.getColumnIndex(COLUMN_SUB_NAME);
                 //
                 int id     = c.getInt(id_id);
                 String day = c.getString(id_day);
@@ -50,20 +49,18 @@ public class SQLfitness extends SQLiteOpenHelper {
                 //
                 Log.d(logTag, "Table " + DATABASE_TABLE + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_DAY + " - " +
                         day + " ; " + COLUMN_NAME + " - " +
-                        name + " ; " + COLUMN_UNIQ_NAME + " - " +  subname + " ; " );
+                        name + " ; " + COLUMN_SUB_NAME + " - " +  subname + " ; " );
             }while (c.moveToNext());
         }else Log.d(logTag, "Table " + DATABASE_TABLE + " is empty.");
     }
 
 
 
-
-
-
+    //methods for changing rows
     public void deleteRow(String uniqueName) {
         //code to delete
         String table_name = DATABASE_TABLE;
-        String where_clause = COLUMN_UNIQ_NAME + "=?";
+        String where_clause = COLUMN_SUB_NAME + "=?";
         String[] where_args = new String[] { uniqueName };
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
         //delete from database
@@ -75,7 +72,7 @@ public class SQLfitness extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(SQLfitness.COLUMN_DAY, data[0]);
         cv.put(SQLfitness.COLUMN_NAME, data[1]);
-        cv.put(SQLfitness.COLUMN_UNIQ_NAME, data[2]);
+        cv.put(SQLfitness.COLUMN_SUB_NAME, data[2]);
 
 
         //get cursor from table sql
@@ -94,34 +91,23 @@ public class SQLfitness extends SQLiteOpenHelper {
 
 
 
-
-
-
-
-
-
-    /*************** СТВОРЕННЯ ТАБЛИЦЬ **********************/
+    /*************** CREATION OF TABLES **********************/
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Створення таблиць бази даних
         db.execSQL("CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE + " " +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_DAY + " TEXT, " + COLUMN_NAME + " TEXT, " +
-                "" + COLUMN_UNIQ_NAME + " TEXT)" );
+                "" + COLUMN_SUB_NAME + " TEXT)" );
     }
 
 
-
-
-
-    /************************* ОНОВЛЕННЯ ТАБЛИЦЬ ********************************/
+    /************************* UPDATE TABLES ********************************/
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Оновлення таблиць бази даних
         db.execSQL("DROP TABLE IF EXISTS users");
         onCreate(db);
     }
-
-
 
 }
 

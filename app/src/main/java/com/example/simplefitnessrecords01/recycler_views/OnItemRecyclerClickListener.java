@@ -1,7 +1,9 @@
 package com.example.simplefitnessrecords01.recycler_views;
 
 
-//інтерфейс слухача натискань на елементи RecyclerView
+//click listener interface for RecyclerView elements
 public interface OnItemRecyclerClickListener {
+
+    //on item click
     void onItemClick(int position);
 }

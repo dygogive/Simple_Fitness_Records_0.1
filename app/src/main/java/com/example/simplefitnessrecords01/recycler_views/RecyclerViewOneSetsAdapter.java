@@ -26,34 +26,53 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     Context context;
 
-    //СПИСОК виконаних підходів на тренуванні
-    private List<OneSet> setFitList = new ArrayList<>();
+
+    //LIST of performed approaches in training
+    private List<OneSet> setOneSetList = new ArrayList<>();
+
+
+
+    /********  GETTERS-SETTERS ********************/
+    public List<OneSet> getSetOneSetList() {
+        return setOneSetList;
+    }
+
     //Задати список підходів
-    public void setSetFitList(List<OneSet> setFitList) {
-        this.setFitList = setFitList;
+    public void setSetOneSetList(List<OneSet> setOneSetList) {
+        this.setOneSetList = setOneSetList;
     }
 
-    //Добавити в список адаптера ще один сет
-    public void addSetFit(OneSet set) {
-        setFitList.add(set);
+    //Add another set to the adapter list
+    public void addOneSet(OneSet set) {
+        setOneSetList.add(set);
+    }
+    public OneSet getOneSet(int position) {
+        return setOneSetList.get(position);
     }
 
-    public List<OneSet> getSetFitList() {
-        return setFitList;
-    }
-    public OneSet getSetFitness(int position) {
-        return setFitList.get(position);
+    //The method returns the number of objects
+    @Override
+    public int getItemCount() {
+        return setOneSetList.size();
     }
 
 
-    // Конструктори
+
+
+
+
+
+
+
+
+    // Constructors
     public RecyclerViewOneSetsAdapter(Context context) {
         this.context = context;
     }
 
     public RecyclerViewOneSetsAdapter(Context context, List<OneSet> oneSetList) {
         this.context = context;
-        this.setFitList = oneSetList;
+        this.setOneSetList = oneSetList;
     }
 
 
@@ -61,7 +80,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
 
-    // **************Створення заготовки В'ю ТА Холдера ********
+    // **************   Creation of View and Holder blank   ********
     @NonNull
     @Override
     public HolderSetFitList onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -74,103 +93,98 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-    //****** Ініціалізувати (Оживити) В'ю та холдер даними об'єкту з списку
+
+
+    /****** Initialize (Animate) the View and the holder with the data of the object from the list **********/
     @Override
     public void onBindViewHolder(@NonNull HolderSetFitList holder, int position) {
         //Витягти об'єкт зі списку
-        OneSet oneSet = setFitList.get(position);
+        OneSet oneSet = setOneSetList.get(position);
         //Через метод в холдері запихнути дані в В'ю
         holder.initItemView(oneSet);
     }
 
-    //Метод повертає кількість об'єктів
-    @Override
-    public int getItemCount() {
-        return setFitList.size();
-    }
 
 
 
 
-    // *******************  Холдер *****************
+
+
+    /*******************  Holder  *****************/
     public class HolderSetFitList extends RecyclerView.ViewHolder {
 
+        //object in holder
         OneSet oneSet1 = null;
 
-        //біндер
+        //binder
         SetFitRecyclerItemBinding binding = SetFitRecyclerItemBinding.bind(itemView);
 
-        //Конструктор
+        //constructor
         public HolderSetFitList(@NonNull View itemView) {
             super(itemView);
 
-            //встановити слухач Long натискань на елемент в'ю
+            //set the listener for Long clicks on the view element
             itemView.setOnLongClickListener(v -> {
-                //позиція
+                //position
                 int position = getAbsoluteAdapterPosition();
 
-
-
-                //реєстр контекстного меню
+                //context menu registry
                 v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {
-                    // Встановлюємо заголовок контекстного меню
-                    menu.setHeaderTitle("Опції");
-                    Log.d("isErrorOr", "v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {");
-                    // Заповнюємо контекстне меню пунктами
+                    // We set the title of the context menu
+                    //menu.setHeaderTitle("Опції");
+
+                    // We fill the context menu with items
                     ((SetActivity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
                 });
 
-
-
-
-                //Якщо контекст це МейнАктівіті (краще використати інтерфейс)
+                //If the context is SetActivity
                 if (context instanceof SetActivity) {
                     SetActivity child = (SetActivity) context;
-                    //Задаєш позицію
+                    //You set a position
                     child.setPosition(position);
                 } else Toast.makeText(context, "Error! SetActivity renamed!", Toast.LENGTH_SHORT).show();
 
 
-
-
-                //показати контекстне меню
+                //show the context menu
                 v.showContextMenu();
-                Log.d("findErr2" , "test0");
-
 
 
                 return true;
             });
 
 
-            //Слухачі зміни тексту
+
+            //Text change listeners in items of RecyclerView
             binding.tvExerciceName.addTextChangedListener(new TextWatcher() {
+                //Create time delaying.
                 Timer timer = new Timer();
                 final long DELAY = 1000; // time delay msec
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                 }
-
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
-
                 @Override
                 public void afterTextChanged(Editable s) {
                     timer.cancel();
                     timer = new Timer();
+                    //create new schedule and change object in holder
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) oneSet1.getExe().setExeName(s.toString());
+                            //change object in holder
+                            if( !(s.toString()).equals("") )
+                                oneSet1.getExe().setExeName(s.toString());
+                            //save change in DataBase
                             ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
                 }
             });
             binding.etRepeat.addTextChangedListener(new TextWatcher() {
+                //Create time delaying.
                 Timer timer = new Timer();
                 final long DELAY = 1000; // time delay msec
                 @Override
@@ -187,11 +201,14 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                 public void afterTextChanged(Editable s) {
                     timer.cancel();
                     timer = new Timer();
+                    //create new schedule and change object in holder
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) oneSet1.getRecordSet().getRepeats().changeRepeats(s.toString());
+                            //change object in holder
+                            if( !(s.toString()).equals("") )
+                                oneSet1.getRecordSet().getRepeats().changeRepeats(s.toString());
+                            //save change in DataBase
                             ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
@@ -214,11 +231,14 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                 public void afterTextChanged(Editable s) {
                     timer.cancel();
                     timer = new Timer();
+                    //create new schedule and change object in holder
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            Log.d("TextWatcher",s.toString());
-                            if( !(s.toString()).equals("") ) oneSet1.getRecordSet().getWeight().changeWeight(s.toString());
+                            //change object in holder
+                            if( !(s.toString()).equals("") )
+                                oneSet1.getRecordSet().getWeight().changeWeight(s.toString());
+                            //save change in DataBase
                             ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
                         }
                     } , DELAY);
@@ -228,23 +248,22 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
 
-        //Оброблення даних від об'єкту щоб оживити в'ю у цьому холдері
+        //Processing data from the object to animate the view in this holder
         void initItemView(OneSet oneSet){
-
+            //object in holder
             oneSet1 = oneSet;
 
+            //put data to item from object
             String exeName = oneSet.getExe().toString();
             binding.tvExerciceName.setText(exeName);
-
+            //
             int weight = oneSet.getRecordSet().getWeight().getIntWeight();
             binding.etWeight.setText(String.valueOf(weight));
             if (weight == 0) binding.etWeight.setText("");
-
+            //
             int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
-
         }
-
     }
 }

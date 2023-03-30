@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,73 +26,76 @@ import com.example.simplefitnessrecords01.recycler_views.RecyclerViewFitnessTrai
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetterDB {
+public class MainActivity extends AppCompatActivity {
 
-
-
-    //Біндінг цього актівіті
+    //references
     private ActivityMainBinding binding;
 
-
-
-    //Запускач інших актівіті із цього актівіті
+    //Triggers other activities from this activity
     private ActivityResultLauncher activityResultLauncher;
-    //метод гетер для торимання посилання на запускач актівіті
+
+    //link to the Database Assistant
+    SQLfitness sqLfitness;
+    SQLSetFits sqlSetFits;
+    //link to the Database SQLfitness
+    SQLiteDatabase db;
+
+
+
+
+
+    /************** GETTERS SETTERS **********************/
+    public SQLiteDatabase getDB() {
+        return db;
+    }
+
+    //getter method to get the reference to the activity launcher
     public ActivityResultLauncher getActivityResultLauncher() {
         return activityResultLauncher;
     }
 
 
 
-    //посилання на Помічник по роботі з базою даних
-    SQLfitness sqLfitness;
-    SQLSetFits sqlSetFits;
-    //посилання на База даних
-    SQLiteDatabase db;
-
-    public SQLiteDatabase getDB() {
-        return db;
-    }
 
 
 
-    /**********  Activity Lifecycle ***************/
-    //метод життєвого циклу актівіті
+    /**********  ACTIVITY LIFECYCLE ***************/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("loga", "ON CREATE IN MainActivity" );
+
+        //binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //ініціалізація посилань на бази даних
+        //initialization of links to databases
         sqLfitness = new SQLfitness(MainActivity.this);
         sqlSetFits = new SQLSetFits(MainActivity.this);
-
+        //database sqLfitness
         db     = sqLfitness.getWritableDatabase();
 
 
-        //ланчер з обробником
+        //luncher with handler
         activityResultLauncher = registerForActivityResult(new MyActivityResultContract(),
                 result -> {
                     if (result) {
                         // Обробіть результат з активності
-                        Toast.makeText(this, "End training", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "End training", Toast.LENGTH_SHORT).show();
                         // Обробіть помилку
                     }
                 }
         );
     }
-    //метод життєвого циклу актівіті
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        //ініціалізація recycleView
+        //initialize recycleView
         recycleViewInit();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -111,16 +113,58 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
     /**********  RecyclerView ***************/
 
-    //метод створює список імен баз даних
+    //initialization recycleView list of created fitness workouts
+    private void recycleViewInit() {
+        //get setTrainingList from database
+        List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
+
+        //create a new adapter with this list
+        RecyclerViewFitnessTrainingsAdapter adapter =
+                new RecyclerViewFitnessTrainingsAdapter(oneFitnessTrainingList, this);
+
+        //the display manager of the elements is transferred
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //set up our listener for short-click processing and code the processing itself
+        adapter.setOnItemRecyclerClickListener((position) -> {
+
+            //let's create an array with unique name
+            String[] uniqueName = null;
+
+            //cursor
+            Cursor c = db.query(SQLfitness.DATABASE_TABLE,null,null,null,null,null,null);
+            //
+            if(c.moveToPosition(position)) {
+                @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLfitness.COLUMN_DAY));
+                @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLfitness.COLUMN_NAME));
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_SUB_NAME));
+
+                //array filling
+                uniqueName = new String[] {day,name,subname};
+
+                //run the activity SetActivity representing the training process by passing the training information to it
+                MainActivity.this.getActivityResultLauncher().launch(uniqueName);
+
+            }else {
+                //in case of an error, start the toast like this
+                Toast.makeText(this, "Position: " + position + " wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //pass adapter to Recyclerview
+        binding.recyclerView.setAdapter(adapter);
+    }
+
+    //method creates a list of database names
     private List<OneFitnessTraining>  getFitnessList(){
 
-        //пустий список для SetTraining з бази для рециклера
+        //empty list for SetTraining from base for recycler
         List<OneFitnessTraining> oneFitnessTrainingList = new ArrayList<>();
 
-        //курсор з бази з вибором усього
+        //cursor from base with selection of all
         Cursor cursor = db.rawQuery("SELECT * FROM " + SQLfitness.DATABASE_TABLE, null);
 
-        //перебрати рядки курсору
+        //iterate through the cursor lines
         if (cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range")
@@ -130,25 +174,26 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 @SuppressLint("Range")
                 String name = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_NAME));
                 @SuppressLint("Range")
-                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_UNIQ_NAME));
+                String subname = cursor.getString(cursor.getColumnIndex(SQLfitness.COLUMN_SUB_NAME));
 
-                //добавити в список
+                //add a row from the database to the list
                 oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
             } while (cursor.moveToNext());
         } else {
-            //Якщо база порожня то запуск діалогу
+
+            //If the base is empty, then the dialog is started
             StartDialog dialog = new StartDialog(this, txts -> {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                 cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                cv.put(SQLfitness.COLUMN_UNIQ_NAME,txts[2]);
+                cv.put(SQLfitness.COLUMN_SUB_NAME,txts[2]);
                 db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                 cv.clear();
                 recycleViewInit();
                 });
-            //показати діалог
-            dialog.show();
 
+            //show dialogue
+            dialog.show();
         }
         //повернути список об'єктів тренувань
         return oneFitnessTrainingList;
@@ -157,68 +202,28 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-    //ініціалізація recycleView списку створених тренувань фітнесу
-    private void recycleViewInit() {
-        //дістати setTrainingList з бази даних
-        List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
-
-        //створити новий адаптер з цим списком
-        RecyclerViewFitnessTrainingsAdapter adapter = new RecyclerViewFitnessTrainingsAdapter(oneFitnessTrainingList, this);
-
-        //менеджер відображення елементів передаємо
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        //встановлюємо наш слухач оброблень короткого натискання і закодуємо саме оброблення
-        adapter.setOnItemRecyclerClickListener((position) -> {
-
-            //створимо масив з інфою про тренування при натисканні на елемент рециклера
-            String[] dayNameSubname = null;
-
-            //курсор
-            Cursor c = db.query(SQLfitness.DATABASE_TABLE,null,null,null,null,null,null);
-            if(c.moveToPosition(position)) {
-                @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLfitness.COLUMN_DAY));
-                @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLfitness.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLfitness.COLUMN_UNIQ_NAME));
-
-                //заповнення масиву
-                dayNameSubname = new String[] {day,name,subname};
-
-                //запустити актівіті, що представляє процес тренування, передавши йому інформацію про тренування
-                MainActivity.this.getActivityResultLauncher().launch(dayNameSubname);
-
-            }else {
-                //при помилці запустити тост такий
-                Toast.makeText(this, "Немає в БВ позиції - " + position, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //передати адаптер
-        binding.recyclerView.setAdapter(adapter);
-    }
-
 
 
 
     /********** Options Menu **************/
-    //Створення меню
+    //Creating a menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Роздування ресурсу меню з використанням MenuInflater
+        // Inflating the menu resource using MenuInflater
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-    /*Listener of Options Menu */
+    //Listener of Options Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Обробка натискання пунктів меню
+        // Handle clicks on menu items
         int id = item.getItemId();
         switch (id) {
             case R.id.action_new:
-                // Обробка натискання на пункт "NEW"
+                // Handling the click on the "NEW" item
                 StartDialog dialog = new StartDialog(this, txts -> {
-                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_UNIQ_NAME + "=?";
+                    String selection = SQLfitness.COLUMN_DAY + "=? AND " + SQLfitness.COLUMN_NAME + "=? AND " + SQLfitness.COLUMN_SUB_NAME + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
 
                     Cursor с = db.query(SQLfitness.DATABASE_TABLE,null,selection, selectionArgs,null,null,null);
@@ -229,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                         ContentValues cv = new ContentValues();
                         cv.put(SQLfitness.COLUMN_DAY,    txts[0]);
                         cv.put(SQLfitness.COLUMN_NAME,   txts[1]);
-                        cv.put(SQLfitness.COLUMN_UNIQ_NAME,txts[2]);
+                        cv.put(SQLfitness.COLUMN_SUB_NAME,txts[2]);
                         db.insert(SQLfitness.DATABASE_TABLE,null,cv);
                         cv.clear();
                     }
@@ -240,13 +245,13 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
                 return true;
 
             case R.id.action_settings:
-                // Обробка натискання на пункт "Налаштування"
+                // Processing clicks on the "Settings" item
                 return true;
 
             case R.id.action_log_sql:
+                //show table SQL in LOG
                 sqLfitness.getTableInLog("MainActSQLog");
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -258,18 +263,19 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
     /************************ Context Menu  *****************************/
-    //Позиція елемента в РециклерВ'ю, використовується для контекстного меню, щоб оприділити який елемент був натиснений
+
+    //The position of the item in the RecyclerView, used for the context menu to identify which item was clicked
     private int positioContextMenu = -1;
 
-    //використовується при довгому натисненні на РециклерВ'ю, щоб закинути номер посиції на оброблення контекстного меню
+    //setter positioContextMenu
     public void setPositioContextMenu(int posit) {
         positioContextMenu = posit;
     }
 
-    // Реалізація методу для обробки натискань на пункти контекстного меню
+    // implementation of a method for processing clicks on context menu items
     @Override
-    public boolean onContextItemSelected(MenuItem item)       {
-        // Обробляємо натискання на пункти контекстного меню
+    public boolean onContextItemSelected(MenuItem item) {
+        // We process clicking on the context menu items
         switch (item.getItemId()) {
             case R.id.edit: changeDataOfItem();  //change names
                 return true;
@@ -286,10 +292,7 @@ public class MainActivity extends AppCompatActivity implements GetterDB {
 
 
 
-
-
-
-    /* **************  manipulations with trainings   *********** */
+    /***************  manipulations with trainings   ***************/
 
     //change data of item
     private void changeDataOfItem(){

@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class SQLfitness extends SQLiteOpenHelper {
+public class SQLtrainings extends SQLiteOpenHelper {
+
 
     /************   NAME OF DB AND TABLES *************************/
-    private static final String DATABASE_NAME = "tablesWithSets";
+    private static final String DATABASE_NAME = "tablesWithTrainings";
     public static final String DATABASE_TABLE = "fitnessDay";
 
     public static final String COLUMN_ID = "_id";
@@ -21,13 +22,6 @@ public class SQLfitness extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-
-
-
-    /************* CONSTRUCTOR  ********************/
-    public SQLfitness(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
 
 
 
@@ -56,6 +50,19 @@ public class SQLfitness extends SQLiteOpenHelper {
 
 
 
+
+
+
+    /************* CONSTRUCTOR  ********************/
+    public SQLtrainings(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+
+
+
+
+
     //methods for changing rows
     public void deleteRow(String uniqueName) {
         //code to delete
@@ -70,9 +77,9 @@ public class SQLfitness extends SQLiteOpenHelper {
     public void updateRow(int position, String[] data) {
         //get strings from dialog
         ContentValues cv = new ContentValues();
-        cv.put(SQLfitness.COLUMN_DAY, data[0]);
-        cv.put(SQLfitness.COLUMN_NAME, data[1]);
-        cv.put(SQLfitness.COLUMN_SUB_NAME, data[2]);
+        cv.put(SQLtrainings.COLUMN_DAY, data[0]);
+        cv.put(SQLtrainings.COLUMN_NAME, data[1]);
+        cv.put(SQLtrainings.COLUMN_SUB_NAME, data[2]);
 
 
         //get cursor from table sql
@@ -83,10 +90,15 @@ public class SQLfitness extends SQLiteOpenHelper {
             int id = c.getInt(c.getColumnIndexOrThrow(COLUMN_ID));
             String whereClause = COLUMN_ID + " = ?";
             String[] whereArgs = new String[] {Integer.toString(id)};
-            getWritableDatabase().update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
+            getWritableDatabase().update(SQLtrainings.DATABASE_TABLE, cv, whereClause, whereArgs);
             cv.clear();
         }
     }
+
+
+
+
+
 
 
 

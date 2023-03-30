@@ -3,7 +3,6 @@ package com.example.simplefitnessrecords01.recycler_views;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,7 +177,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                             if( !(s.toString()).equals("") )
                                 oneSet1.getExe().setExeName(s.toString());
                             //save change in DataBase
-                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
+                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
                     } , DELAY);
                 }
@@ -209,7 +208,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                             if( !(s.toString()).equals("") )
                                 oneSet1.getRecordSet().getRepeats().changeRepeats(s.toString());
                             //save change in DataBase
-                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
+                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
                     } , DELAY);
                 }
@@ -239,7 +238,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                             if( !(s.toString()).equals("") )
                                 oneSet1.getRecordSet().getWeight().changeWeight(s.toString());
                             //save change in DataBase
-                            ((SetActivity)context).saveToDBFromRecycler(RecyclerViewOneSetsAdapter.this);
+                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
                     } , DELAY);
                 }

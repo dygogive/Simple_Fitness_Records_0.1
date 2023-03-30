@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.sql;
 
-import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_SUB_NAME;
+import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_SUB_NAME;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -94,7 +94,7 @@ public class SQLSetFits extends SQLiteOpenHelper {
             //update the table in selected id parameter
             String whereClause = COLUMN_SUB_NAME + " = ?";
             String[] whereArgs = new String[] {oldUniqueName};
-            getWritableDatabase().update(SQLfitness.DATABASE_TABLE, cv, whereClause, whereArgs);
+            getWritableDatabase().update(SQLtrainings.DATABASE_TABLE, cv, whereClause, whereArgs);
             cv.clear();
         }
     }

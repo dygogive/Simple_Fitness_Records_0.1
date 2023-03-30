@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLfitness.COLUMN_SUB_NAME;
+import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_SUB_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,7 +25,7 @@ import com.example.simplefitnessrecords01.recycler_views.RecyclerViewOneSetsAdap
 import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
-import com.example.simplefitnessrecords01.sql.SQLfitness;
+import com.example.simplefitnessrecords01.sql.SQLtrainings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,99 +33,74 @@ import java.util.List;
 public class SetActivity extends AppCompatActivity {
 
 
-    //біндінг
+    //binding
     private ActivitySetBinding binding;
 
-
-
-    //посилання на Помічник по роботі з базою даних
+    //link to the Database Assistant
     private SQLSetFits sqlSetFits;
 
-    //база
+    //Database
     SQLiteDatabase db;
 
+    //database table name
+    private String nameFitness;
 
-    //назва таблиці бази даних
-    private String nameFitness = "testName";
-    public String getNameFitness() {
-        return nameFitness;
-    }
-    //посилання на База даних
-    public SQLiteDatabase getDB() {
-        return db;
-    }
-
-
-
+    //Adapter RecyclerView
     RecyclerViewOneSetsAdapter adapter;
 
 
 
 
-    /**********  Activity Lifecycle ***************/
+
+    /************************ SET GET *******************************/
+    //GET DATABASE
+    public SQLiteDatabase getDB() {
+        return db;
+    }
+
+    //GET NAME OF TRAINING
+    public String getNameFitness() {
+        return nameFitness;
+    }
+
+
+
+
+
+    /************************  Activity Lifecycle **********************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-        //обробити інфу від екстра чз інтент
-        procIntentExtra();
+        //process info from extra via intent
+        processIntentExtra();
     }
-    //Обробити дані, що отримані від попереднього актівіті
-    private void procIntentExtra() {
-        //Інтент з інфою
-        Intent intent = getIntent();
-        //Інфа з інтенту
-        String[] getExtraArray = intent.getStringArrayExtra("start fitness");
-        //текстові строки з інфи з інтенту
-        String textDay =     getExtraArray[0];
-        String textName =    getExtraArray[1];
-        String textSubname = getExtraArray[2];
 
-
-        //показати тексти на екрані
-        binding.tvDay.setText(textDay);
-        binding.tvName.setText(textName);
-        binding.tvSubName.setText(textSubname);
-
-        //унікальна назва тренування
-        nameFitness = textDay + textName + textSubname;
-
-
-        Log.d("findErr", "test - 2  onCreate");
-    }
-    //метод життєвого циклу актівіті
     @Override
     protected void onResume() {
         super.onResume();
 
-        //ініціалізація посилань на базу даних
+        //initialization of database links
         sqlSetFits = new SQLSetFits(SetActivity.this);
         db = sqlSetFits.getWritableDatabase();
 
-        Log.d("findErr", "test - 3  onCreate");
-
-        //ініціалізація Рециклера в'ю
+        //initialization of the Recycler view
         recycleViewInit();
-
-        Log.d("findErr", "test - 4  onCreate");
-
     }
+
     @Override
     protected void onPause() {
-
         //save all to db
-        saveToDBFromRecycler(adapter);
+        updateTableDBFromList(adapter.getSetOneSetList());
 
-        //Закрити базу
-//        getHelper().close();
-//        db.close();
         super.onPause();
     }
+
     @Override
     protected void onDestroy() {
+        //close database
         db.close();
         super.onDestroy();
     }
@@ -134,27 +108,58 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-    /**********  RecyclerView ***************/
+
+
+
+
+    //Process the data obtained from the previous activity
+    private void processIntentExtra() {
+        //Intent with info
+        Intent intent = getIntent();
+        //Info from the intent
+        String[] getExtraArray = intent.getStringArrayExtra("start fitness");
+        //text strings from the info from the intent
+        String textDay =     getExtraArray[0];
+        String textName =    getExtraArray[1];
+        String textSubname = getExtraArray[2];
+
+
+        //display texts on the screen
+        binding.tvDay.setText(textDay);
+        binding.tvName.setText(textName);
+        binding.tvSubName.setText(textSubname);
+
+        //a unique workout name
+        nameFitness = textDay + textName + textSubname;
+    }
+
+
+
+
+
+
+
+
+    /******************  RecyclerView **********************/
     private void recycleViewInit() {
         List<OneSet> setsFitness = getSetsFitness();
-        //
+        //Adapter for recycler
         adapter = new RecyclerViewOneSetsAdapter(SetActivity.this, setsFitness);
-        //менеджер для РЕЦИКЛЕРА В'Ю
+        //manager for RECYCLER
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //Адаптер для рециклера
+        //set Adapter for recycler
         binding.recyclerView.setAdapter(adapter);
     }
 
     private List<OneSet> getSetsFitness() {
-        //пустий список для SetTraining з бази для рециклера
+        //empty list for SetTraining from base for recycler
         List<OneSet> setsFitness = new ArrayList<>();
-        //курсор з бази з вибором усього
-        //Cursor c = db.rawQuery("SELECT * FROM " + SQLSetFits.DATABASE_TABLE, null);+
+
         String selection = COLUMN_SUB_NAME + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
         Cursor c = db.query(sqlSetFits.DATABASE_TABLE, null, selection, selectionArgs, null, null, null);
 
-        //перебрати рядки курсору
+        //iterate through the cursor lines
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqlSetFits.COLUMN_ID);
             int id_fitName = c.getColumnIndex(COLUMN_SUB_NAME);
@@ -168,20 +173,24 @@ public class SetActivity extends AppCompatActivity {
                 int wei        = c.getInt(id_wei);
                 int rep        = c.getInt(id_rep);
 
-                //добавити в список
+                //add to list
                 setsFitness.add(   new OneSet( id, new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , fitName  )   );
 
             } while (c.moveToNext());
         } else {
-            Toast.makeText(this, "Виконай перший підхід!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Press the plus, write a new set.", Toast.LENGTH_SHORT).show();
         }
-        //повернути список об'єктів тренувань
+        //return a list of training objects
         return setsFitness;
     }
 
-    private void updateRecycler(){
+    //update Recycler View
+    private void updateRecycler() {
+        // get List<OneSet>
         List<OneSet> setsFitness = getSetsFitness();
+        //put into adapter
         adapter.setSetOneSetList(setsFitness);
+        //renew display
         adapter.notifyDataSetChanged();
     }
 
@@ -190,11 +199,9 @@ public class SetActivity extends AppCompatActivity {
 
 
 
+    /******************* Options Menu **********************/
 
-
-    /********** Options Menu **************/
-
-    /* Створення меню */
+    // Creating a menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Роздування ресурсу меню з використанням MenuInflater
@@ -202,8 +209,8 @@ public class SetActivity extends AppCompatActivity {
 
         return true;
     }
-    /* Listener of Options Menu */
 
+    //Prepare Menu
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add);
@@ -211,19 +218,22 @@ public class SetActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    //listener menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Обробка натискання пунктів меню
+        // Handle clicks on menu items
         int id = item.getItemId();
         switch (id) {
             case R.id.add:
+                //add Set
                 OneSet oneSet = new OneSet(nameFitness);
+                //add this set to sql
                 sqlSetFits.addRow(oneSet);
+                //
                 updateRecycler();
                 return true;
             case R.id.theend:
-                // Обробка натискання на пункт "Закінчити тренування"
-                //тестове натиснення з передаванням інфи вииваючому актівіті і завершенні цього актівіті
+                // End workout click processing
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result fitness", true);
                 setResult(Activity.RESULT_OK, returnIntent);
@@ -231,10 +241,11 @@ public class SetActivity extends AppCompatActivity {
                 return true;
 
             case R.id.settngs:
-                // Обробка натискання на пункт "Налаштування"
+                // Processing clicks on the "Settings" item
                 return true;
 
             case R.id.action_log_sql2:
+                //table SQL to log
                 sqlSetFits.getTableInLog("MainActSQLog", nameFitness);
                 return true;
 
@@ -249,22 +260,24 @@ public class SetActivity extends AppCompatActivity {
 
     /************************ Context Menu  *****************************/
 
+    // position For ContextMenu
     private int positionForContextMenu = -1;
 
-    // Реалізація методу для обробки натискань на пункти контекстного меню
+    // Implementation of a method for processing clicks on context menu items
     @Override
     public boolean onContextItemSelected(MenuItem item)       {
-        // Обробляємо натискання на пункти контекстного меню
+        // We process clicking on the context menu items
         switch (item.getItemId()) {
 
             case R.id.delete_set:
+                //get OneSet for deleting
                 OneSet oneSet = adapter.getOneSet(positionForContextMenu);
-                //
+                //delete from DB
                 String query = "DELETE FROM " + SQLSetFits.DATABASE_TABLE + " WHERE " + SQLSetFits.COLUMN_ID + " = " + oneSet.getId();
                 db.execSQL(query);
-                //
+                //update OneSetList in adapter
                 adapter.setSetOneSetList(getSetsFitness());
-                //
+                //renew display
                 adapter.notifyDataSetChanged();
 
                 return true;
@@ -272,7 +285,6 @@ public class SetActivity extends AppCompatActivity {
             default:
                 return super.onContextItemSelected(item);
     }
-
 }
 
     public void setPosition(int position) {
@@ -282,45 +294,51 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-    /**************  Save DATA TO DB ****************/
-    public void saveToDBFromRecycler(RecyclerViewOneSetsAdapter recyclerViewOneSetsAdapter){
+
+
+    /********************  Save DATA TO DB **********************/
+    public void updateTableDBFromList(List<OneSet> setsFitness1){
         //
         ContentValues cv = new ContentValues();
-        //
-        List<OneSet> setsFitness = recyclerViewOneSetsAdapter.getSetOneSetList();
-        //
-        String where_clause = SQLfitness.COLUMN_SUB_NAME + "=?";
+
+        // get OneSet list from recycler
+        List<OneSet> setsFitness = setsFitness1;
+
+        // create selection from database
+        String where_clause = SQLtrainings.COLUMN_SUB_NAME + "=?";
         String[] where_args = new String[] { nameFitness };
+
+        // get cursor with selection
         Cursor cursor = db.query(sqlSetFits.DATABASE_TABLE, null,where_clause,where_args,null,null,null);
         cursor.moveToFirst();
-        //
+
+        //number of elements in database and recycler must be equal
         if(cursor.getCount() == setsFitness.size()) {
+            //iteration for OneSet list
             for (OneSet oneSet : setsFitness) {
                 //get data from setFitness
                 String exe  = oneSet.getExe().toString();
                 int weight  = oneSet.getRecordSet().getWeight().getIntWeight();
                 int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
                 int id      = oneSet.getId();
+
                 //put data in content
                 cv.put(sqlSetFits.COLUMN_EXE, exe);
                 cv.put(sqlSetFits.COLUMN_WEIGHT, weight);
                 cv.put(sqlSetFits.COLUMN_REPEATS, repeats);
-                //
+
+                //get id from database
                 @SuppressLint("Range") int id1 = cursor.getInt(cursor.getColumnIndex(sqlSetFits.COLUMN_ID));
-                Log.d("isCounts",  id + " " + exe + " " + weight + " " + repeats + " " + id1);
-                if(id == id1) db.update(sqlSetFits.DATABASE_TABLE, cv, sqlSetFits.COLUMN_ID + " = ?" , new String[] {String.valueOf(id)} );
-                //
+
+                //if id equals - update database
+                if(id == id1)
+                    db.update(sqlSetFits.DATABASE_TABLE, cv, sqlSetFits.COLUMN_ID + " = ?" , new String[] {String.valueOf(id)} );
+
+                // next iteration
                 cv.clear();
                 cursor.moveToNext();
             }
         }
     }
 
-
-
-
-
-    public void toast(String s){
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
 }

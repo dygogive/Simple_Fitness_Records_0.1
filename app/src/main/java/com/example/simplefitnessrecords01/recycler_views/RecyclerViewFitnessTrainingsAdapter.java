@@ -99,7 +99,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
 
 
 
-    //*******   RecyclerView.    ViewHolder    *************
+    /*******************   RecyclerView.ViewHolder *********************/
     public class SetTrainingHolder extends RecyclerView.ViewHolder {
 
         //біндер для елементів лайаута ітема рецикла в'ю
@@ -157,9 +157,12 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
 
         // fill the item holder item with information
         void onBindData(OneFitnessTraining oneFitnessTraining){
-            binding.textView.setText(oneFitnessTraining.getDay());
+            binding.textView. setText(oneFitnessTraining.getDay());
+            binding.tvName.   setText(oneFitnessTraining.getName());
+            binding.tvSubName.setText(oneFitnessTraining.getSubName());
         }
 
     }
+
 
 }

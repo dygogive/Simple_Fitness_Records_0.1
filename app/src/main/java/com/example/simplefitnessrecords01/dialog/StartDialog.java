@@ -42,13 +42,13 @@ public class StartDialog extends Dialog {
             String subname = mBinding.editTextSubname.getText().toString();
 
             //check if at least one field is empty, then fill it in red
-            if (day.equals("") | name.equals("") | subname.equals("")) {
+            if (day.equals("") | name.equals("") ) {
                 //Red color
                 int redColor = Color.RED;
                 //set the hidden text in red
                 mBinding.editTextDay.setHintTextColor(redColor);
                 mBinding.editTextName.setHintTextColor(redColor);
-                mBinding.editTextSubname.setHintTextColor(redColor);
+                //mBinding.editTextSubname.setHintTextColor(redColor);
             } else {
                 //create a unique workout name
                 String[] texts = new String[]{day, name, subname};

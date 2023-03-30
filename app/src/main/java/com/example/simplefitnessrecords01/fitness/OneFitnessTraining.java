@@ -4,7 +4,7 @@ public class OneFitnessTraining {
     
     /* PARAMETERS */
     private int id;
-    private String day, name, uniqueFitTraining;
+    private String day, name, subName;
 
 
     
@@ -23,7 +23,7 @@ public class OneFitnessTraining {
     }
 
     public void setSubname(String subname) {
-        this.uniqueFitTraining = subname;
+        this.subName = subname;
     }
 
     public int getId() {
@@ -38,8 +38,8 @@ public class OneFitnessTraining {
         return name;
     }
 
-    public String getUniqueName() {
-        return uniqueFitTraining;
+    public String getSubName() {
+        return subName;
     }
 
     
@@ -48,10 +48,10 @@ public class OneFitnessTraining {
     
 
     /* CONSTRUCTOR */
-    public OneFitnessTraining(int id, String day, String name, String uniqueFitTraining) {
+    public OneFitnessTraining(int id, String day, String name, String subName) {
         this.id = id;
         this.day = day;
         this.name = name;
-        this.uniqueFitTraining = uniqueFitTraining;
+        this.subName = subName;
     }
 }

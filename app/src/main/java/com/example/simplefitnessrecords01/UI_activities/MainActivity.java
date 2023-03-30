@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     /************** GETTERS SETTERS **********************/
     public SQLiteDatabase getDB() {
         return db;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public ActivityResultLauncher getActivityResultLauncher() {
         return activityResultLauncher;
     }
+
 
 
 
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        String uniqueName = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu).getUniqueName();
+        String uniqueName = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu).getSubName();
 
         return uniqueName;
     }

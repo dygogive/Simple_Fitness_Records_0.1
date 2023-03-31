@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_SUB_NAME;
+import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_INFO;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -155,14 +155,14 @@ public class SetActivity extends AppCompatActivity {
         //empty list for SetTraining from base for recycler
         List<OneSet> setsFitness = new ArrayList<>();
 
-        String selection = COLUMN_SUB_NAME + " = ?";
+        String selection = COLUMN_INFO + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
         Cursor c = db.query(sqlSetFits.DATABASE_TABLE, null, selection, selectionArgs, null, null, null);
 
         //iterate through the cursor lines
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqlSetFits.COLUMN_ID);
-            int id_fitName = c.getColumnIndex(COLUMN_SUB_NAME);
+            int id_fitName = c.getColumnIndex(COLUMN_INFO);
             int id_exe = c.getColumnIndex(sqlSetFits.COLUMN_EXE);
             int id_wei = c.getColumnIndex(sqlSetFits.COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(sqlSetFits.COLUMN_REPEATS);
@@ -305,7 +305,7 @@ public class SetActivity extends AppCompatActivity {
         List<OneSet> setsFitness = setsFitness1;
 
         // create selection from database
-        String where_clause = SQLtrainings.COLUMN_SUB_NAME + "=?";
+        String where_clause = SQLtrainings.COLUMN_INFO + "=?";
         String[] where_args = new String[] { nameFitness };
 
         // get cursor with selection

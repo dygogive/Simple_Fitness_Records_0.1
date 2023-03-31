@@ -13,7 +13,7 @@
         app:showAsAction="withText"/>
     <item
         android:id="@+id/theend"
-        android:title="@string/theend"
+        android:title="@string/stop"
         app:showAsAction="withText"/>
     <item
         android:id="@+id/action_log_sql2"

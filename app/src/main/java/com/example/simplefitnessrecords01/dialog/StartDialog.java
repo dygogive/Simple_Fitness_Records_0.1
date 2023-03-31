@@ -7,20 +7,33 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 
+
+import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.DialogNewTrainingBinding;
 
 //Dialog for construct one training
 public class StartDialog extends Dialog {
     private DialogNewTrainingBinding mBinding;
     private final Context context;
-    private UniqueNameProcessor uniqueNameProcessor;
+    private DialogUniqueNameProcessor dialogUniqueNameProcessor;
+
+    private String[] dataToDialogue = null;
 
 
     //Constructor
-    public StartDialog(@NonNull Context context, UniqueNameProcessor uniqueNameProcessor) {
+    public StartDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor) {
         super(context);
         this.context = context;
-        this.uniqueNameProcessor = uniqueNameProcessor;
+        this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;
+
+        // We call the method that configures the appearance of the dialog
+        setupDialog();
+    }
+    public StartDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor, String[] strings) {
+        super(context);
+        this.context = context;
+        this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;
+        dataToDialogue = strings;
 
         // We call the method that configures the appearance of the dialog
         setupDialog();
@@ -33,6 +46,14 @@ public class StartDialog extends Dialog {
         mBinding = DialogNewTrainingBinding.inflate(LayoutInflater.from(getContext()));
         setContentView(mBinding.getRoot());
 
+        //setup data in dialog
+        if(dataToDialogue != null) {
+            mBinding.editTextDay.    setText(dataToDialogue[0]);
+            mBinding.editTextName.   setText(dataToDialogue[1]);
+            mBinding.editTextSubname.setText(dataToDialogue[2]);
+            mBinding.buttonCreate.setText(R.string.edit);
+        }
+
         //listener og button in dialog
         mBinding.buttonCreate.setOnClickListener(view -> {
 
@@ -40,6 +61,7 @@ public class StartDialog extends Dialog {
             String day = mBinding.editTextDay.getText().toString();
             String name = mBinding.editTextName.getText().toString();
             String subname = mBinding.editTextSubname.getText().toString();
+
 
             //check if at least one field is empty, then fill it in red
             if (day.equals("") | name.equals("") ) {
@@ -53,7 +75,7 @@ public class StartDialog extends Dialog {
                 //create a unique workout name
                 String[] texts = new String[]{day, name, subname};
                 //process unique name
-                uniqueNameProcessor.processUniqueName(texts);
+                dialogUniqueNameProcessor.processUniqueName(texts);
                 //закрити діалог
                 dismiss();
             }

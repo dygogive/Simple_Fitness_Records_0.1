@@ -157,7 +157,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             binding.tvExerciceName.addTextChangedListener(new TextWatcher() {
                 //Create time delaying.
                 Timer timer = new Timer();
-                final long DELAY = 1000; // time delay msec
+                final long DELAY = 500; // time delay msec
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

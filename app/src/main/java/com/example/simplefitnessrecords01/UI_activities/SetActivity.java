@@ -241,7 +241,7 @@ public class SetActivity extends AppCompatActivity {
                 return true;
 
             case R.id.settngs:
-                // Processing clicks on the "Settings" item
+                openSettingsLayout();
                 return true;
 
             case R.id.action_log_sql2:
@@ -341,4 +341,15 @@ public class SetActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+
+
+
+    /********************** SETTINGS OF THE PROGRAM ************************/
+    private void openSettingsLayout(){
+        Intent intent = new Intent(SetActivity.this,  SettingsActivity.class);
+        startActivity(intent);
+    }
 }

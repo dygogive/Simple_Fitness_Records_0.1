@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -270,8 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
                 return true;
 
-            case R.id.action_settings:
-                // Processing clicks on the "Settings" item
+            case R.id.action_settings: openSettingsLayout();
                 return true;
 
             case R.id.action_log_sql:
@@ -374,6 +374,21 @@ public class MainActivity extends AppCompatActivity {
         //show dialog DELETE OR CANCEL
         new DeleteDialog(MainActivity.this, dialogOnClick).show();
 
+    }
+
+
+
+
+
+
+
+
+
+
+    /********************** SETTINGS OF THE PROGRAM ************************/
+    private void openSettingsLayout(){
+        Intent intent = new Intent(MainActivity.this,  SettingsActivity.class);
+        startActivity(intent);
     }
 
 }

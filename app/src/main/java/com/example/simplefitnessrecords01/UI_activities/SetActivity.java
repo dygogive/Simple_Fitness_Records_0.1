@@ -2,13 +2,16 @@ package com.example.simplefitnessrecords01.UI_activities;
 
 import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_INFO;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -50,8 +53,6 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-
-
     /************************ SET GET *******************************/
     //GET DATABASE
     public SQLiteDatabase getDB() {
@@ -74,6 +75,12 @@ public class SetActivity extends AppCompatActivity {
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //set action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Sets");
+        actionBar.setSubtitle("Put your records");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         //process info from extra via intent
         processIntentExtra();
     }
@@ -81,6 +88,13 @@ public class SetActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //set size of text
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SetActivity.this);
+        String selectedTextSize = preferences.getString("text_size_preference", getResources().getString(R.string.default_text_size));
+        binding.tvSubName.setTextSize(Float.parseFloat(selectedTextSize));
+        binding.tvName.setTextSize(Float.parseFloat(selectedTextSize));
+        binding.tvDay.setTextSize(Float.parseFloat(selectedTextSize));
 
         //initialization of database links
         sqlSetFits = new SQLSetFits(SetActivity.this);
@@ -232,13 +246,13 @@ public class SetActivity extends AppCompatActivity {
                 //
                 updateRecycler();
                 return true;
-            case R.id.theend:
-                // End workout click processing
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("result fitness", true);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
-                return true;
+//            case R.id.theend:
+//                // End workout click processing
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra("result fitness", true);
+//                setResult(Activity.RESULT_OK, returnIntent);
+//                finish();
+//                return true;
 
             case R.id.settngs:
                 openSettingsLayout();
@@ -247,6 +261,13 @@ public class SetActivity extends AppCompatActivity {
             case R.id.action_log_sql2:
                 //table SQL to log
                 sqlSetFits.getTableInLog("MainActSQLog", nameFitness);
+                return true;
+
+            case android.R.id.home:
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result fitness", true);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
                 return true;
 
             default:

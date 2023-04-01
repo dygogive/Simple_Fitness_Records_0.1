@@ -1,12 +1,15 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -71,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //set action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Trainings");
+        actionBar.setSubtitle("Create new training");
 
         //binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());

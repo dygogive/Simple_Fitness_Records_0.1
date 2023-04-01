@@ -1,6 +1,7 @@
 package com.example.simplefitnessrecords01.recycler_views;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
@@ -64,7 +66,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
 
-    // Constructors
+    /************* Constructors ***********************/
     public RecyclerViewOneSetsAdapter(Context context) {
         this.context = context;
     }
@@ -112,6 +114,10 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
     /*******************  Holder  *****************/
     public class HolderSetFitList extends RecyclerView.ViewHolder {
 
+        //text size
+        String selectedTextSize = context.getString(R.string.default_text_size);
+
+
         //object in holder
         OneSet oneSet1 = null;
 
@@ -121,6 +127,11 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
         //constructor
         public HolderSetFitList(@NonNull View itemView) {
             super(itemView);
+
+            //set size of text
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            selectedTextSize = preferences.getString("text_size_preference", context.getString(R.string.default_text_size));
+
 
             //set the listener for Long clicks on the view element
             itemView.setOnLongClickListener(v -> {
@@ -263,6 +274,12 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
+
+
+            //
+            binding.tvExerciceName.setTextSize(Float.parseFloat(selectedTextSize));
+            binding.etWeight.      setTextSize(Float.parseFloat(selectedTextSize));
+            binding.etRepeat.      setTextSize(Float.parseFloat(selectedTextSize));
         }
     }
 }

@@ -2,12 +2,15 @@ package com.example.simplefitnessrecords01.recycler_views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
@@ -20,6 +23,7 @@ import java.util.List;
 public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<RecyclerViewFitnessTrainingsAdapter.SetTrainingHolder> {
 
     private final Context context;
+
 
 
 
@@ -102,12 +106,20 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
     /*******************   RecyclerView.ViewHolder *********************/
     public class SetTrainingHolder extends RecyclerView.ViewHolder {
 
+        //text size
+        String selectedTextSize = context.getString(R.string.default_text_size);
+
+
         //біндер для елементів лайаута ітема рецикла в'ю
         TextForRecyclerBinding binding = TextForRecyclerBinding.bind(itemView);
 
         //конструктор
         public SetTrainingHolder(@NonNull View itemView) {
             super(itemView);
+
+            //set size of text
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            selectedTextSize = preferences.getString("text_size_preference", context.getString(R.string.default_text_size));
 
 
 
@@ -160,6 +172,13 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
             binding.textView. setText(oneFitnessTraining.getDay());
             binding.tvName.   setText(oneFitnessTraining.getName());
             binding.tvSubName.setText(oneFitnessTraining.getSubName());
+
+            //set size of text
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String selectedTextSize = preferences.getString("text_size_preference", context.getString(R.string.default_text_size));
+            binding.textView. setTextSize(Float.parseFloat(selectedTextSize));
+            binding.tvName.   setTextSize(Float.parseFloat(selectedTextSize));
+            binding.tvSubName.setTextSize(Float.parseFloat(selectedTextSize));
         }
 
     }

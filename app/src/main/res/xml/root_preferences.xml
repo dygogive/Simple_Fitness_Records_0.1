@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/text_settings">
+
+        <ListPreference
+            android:defaultValue="@string/default_text_size"
+            android:entries="@array/size_text"
+            android:entryValues="@array/size_text_values"
+            android:key="text_size_preference"
+            android:title="@string/text_size"
+            android:summary="Change the size of all text in the app"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

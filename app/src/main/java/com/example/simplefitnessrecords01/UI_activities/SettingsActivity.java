@@ -1,7 +1,9 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 
 
@@ -9,12 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
+import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.SettingsActivityBinding;
 
 public class SettingsActivity extends AppCompatActivity {
+
 
     SettingsActivityBinding binding;
 
@@ -24,27 +30,44 @@ public class SettingsActivity extends AppCompatActivity {
         binding = SettingsActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
+        //initial
+        init();
     }
 
 
 
+
+
+
+
+
+
+
+    /************************ INITIAL METHOD ********************************/
     private void init() {
 
+
+
+
+        //set size of text
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        String selectedTextSize = preferences.getString("text_size_preference", getString(R.string.default_text_size));
+
+
+
         //initial my Toolbar
-        Toolbar myToolbar = (Toolbar) binding.toolbarSettings;
-        setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(getString(R.string.settings));
+
 
 
         getSupportFragmentManager().
                 beginTransaction().
-                replace(binding.toolbarSettings.getId(),new SettingsFragment()).
+                replace(binding.frameSettings.getId(),new SettingsFragment()).
                 commit();
 
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null ) {
 
-        }
 
     }
 
@@ -58,13 +81,26 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
-    public static class SettingsFragment extends Fragment {
-
-    }
-
+    /************ SETTINGS MENU *************************/
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+
+        if  (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
+
+
+
+
+
+
 }

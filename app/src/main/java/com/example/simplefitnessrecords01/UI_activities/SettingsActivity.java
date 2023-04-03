@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.simplefitnessrecords01.R;
@@ -39,10 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
-
-
-
-
     /************************ INITIAL METHOD ********************************/
     private void init() {
 
@@ -62,9 +59,10 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
+        //initial Fragment in this activity for Settings
         getSupportFragmentManager().
                 beginTransaction().
-                replace(binding.frameSettings.getId(),new SettingsFragment()).
+                replace(binding.frameSettings.getId(), new SettingsFragment()).
                 commit();
 
 
@@ -101,6 +99,15 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
+    //Fragment in this activity for Settings
+    public static class SettingsFragment extends PreferenceFragmentCompat {
 
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+
+        }
+    }
 
 }

@@ -87,7 +87,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
     public HolderSetFitList onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //Створення В'ю
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.set_fit_recycler_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_set_activity, parent, false);
 
         //Створення холдера
         return new HolderSetFitList(view);
@@ -144,7 +144,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
                     //menu.setHeaderTitle("Опції");
 
                     // We fill the context menu with items
-                    ((SetActivity)context).getMenuInflater().inflate(R.menu.context_menu_recycler_setfitness, menu);
+                    ((SetActivity)context).getMenuInflater().inflate(R.menu.context_set_activity, menu);
                 });
 
                 //If the context is SetActivity

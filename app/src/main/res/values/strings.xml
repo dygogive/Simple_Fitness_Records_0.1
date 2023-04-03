@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Simple Fitness Records 0.1</string>
+    <string name="app_name" translatable="false">Simple Fitness Records 0.1</string>
     <string name="new_">New</string>
     <string name="settings">Settings</string>
     <string name="stop">Stop</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
-    <string name="table_in_log">Log table SQL</string>
+    <string name="table_in_log" translatable="false">Log table SQL</string>
     <string name="add">Add</string>
     <string name="date">Date</string>
     <string name="name">Name</string>
@@ -21,19 +21,19 @@
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="sync_header" translatable="false">Sync</string>
     <string name="text_size">Text size</string>
-    <string name="default_text_size">24</string>
+    <string name="default_text_size" translatable="false">24</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="signature_title" translatable="false">Your signature</string>
+    <string name="reply_title" translatable="false">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <string name="sync_title" translatable="false">Sync email periodically</string>
+    <string name="attachment_title" translatable="false">Download incoming attachments</string>
+    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <string name="text_settings">Text settings</string>
 </resources>

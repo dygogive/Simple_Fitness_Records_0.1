@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLtrainings.COLUMN_INFO;
+import static com.example.simplefitnessrecords01.sql.SQLhelper.COLUMN_INFO;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,10 +25,9 @@ import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 import com.example.simplefitnessrecords01.fitness.Weight;
 import com.example.simplefitnessrecords01.recycler_views.RecyclerViewOneSetsAdapter;
-import com.example.simplefitnessrecords01.sql.SQLSetFits;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
-import com.example.simplefitnessrecords01.sql.SQLtrainings;
+import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ public class SetActivity extends AppCompatActivity {
     private ActivitySetBinding binding;
 
     //link to the Database Assistant
-    private SQLSetFits sqlSetFits;
+    private SQLhelper sqLhelper;
 
     //Database
     SQLiteDatabase db;
@@ -97,8 +96,8 @@ public class SetActivity extends AppCompatActivity {
         binding.tvDay.setTextSize(Float.parseFloat(selectedTextSize));
 
         //initialization of database links
-        sqlSetFits = new SQLSetFits(SetActivity.this);
-        db = sqlSetFits.getWritableDatabase();
+        sqLhelper = new SQLhelper(SetActivity.this);
+        db = sqLhelper.getWritableDatabase();
 
         //initialization of the Recycler view
         recycleViewInit();
@@ -171,15 +170,15 @@ public class SetActivity extends AppCompatActivity {
 
         String selection = COLUMN_INFO + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
-        Cursor c = db.query(sqlSetFits.DATABASE_TABLE, null, selection, selectionArgs, null, null, null);
+        Cursor c = db.query(sqLhelper.TABLE_SETS, null, selection, selectionArgs, null, null, null);
 
         //iterate through the cursor lines
         if(c.moveToNext()){
-            int id_id = c.getColumnIndex(sqlSetFits.COLUMN_ID);
+            int id_id = c.getColumnIndex(sqLhelper.COLUMN_ID);
             int id_fitName = c.getColumnIndex(COLUMN_INFO);
-            int id_exe = c.getColumnIndex(sqlSetFits.COLUMN_EXE);
-            int id_wei = c.getColumnIndex(sqlSetFits.COLUMN_WEIGHT);
-            int id_rep = c.getColumnIndex(sqlSetFits.COLUMN_REPEATS);
+            int id_exe = c.getColumnIndex(sqLhelper.COLUMN_EXE);
+            int id_wei = c.getColumnIndex(sqLhelper.COLUMN_WEIGHT);
+            int id_rep = c.getColumnIndex(sqLhelper.COLUMN_REPEATS);
             do {
                 int id         = c.getInt(id_id);
                 String fitName = c.getString(id_fitName);
@@ -219,7 +218,7 @@ public class SetActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Роздування ресурсу меню з використанням MenuInflater
-        getMenuInflater().inflate(R.menu.menu_training, menu);
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
 
         return true;
     }
@@ -227,7 +226,7 @@ public class SetActivity extends AppCompatActivity {
     //Prepare Menu
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.add);
+        MenuItem item = menu.findItem(R.id.action_new);
         item.setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -238,11 +237,11 @@ public class SetActivity extends AppCompatActivity {
         // Handle clicks on menu items
         int id = item.getItemId();
         switch (id) {
-            case R.id.add:
+            case R.id.action_new:
                 //add Set
                 OneSet oneSet = new OneSet(nameFitness);
                 //add this set to sql
-                sqlSetFits.addRow(oneSet);
+                sqLhelper.addRowSets(oneSet);
                 //
                 updateRecycler();
                 return true;
@@ -254,13 +253,13 @@ public class SetActivity extends AppCompatActivity {
 //                finish();
 //                return true;
 
-            case R.id.settngs:
+            case R.id.action_settings:
                 openSettingsLayout();
                 return true;
 
-            case R.id.action_log_sql2:
+            case R.id.action_log_sql:
                 //table SQL to log
-                sqlSetFits.getTableInLog("MainActSQLog", nameFitness);
+                sqLhelper.getTableInLogSets("MainActSQLog", nameFitness);
                 return true;
 
             case android.R.id.home:
@@ -294,7 +293,7 @@ public class SetActivity extends AppCompatActivity {
                 //get OneSet for deleting
                 OneSet oneSet = adapter.getOneSet(positionForContextMenu);
                 //delete from DB
-                String query = "DELETE FROM " + SQLSetFits.DATABASE_TABLE + " WHERE " + SQLSetFits.COLUMN_ID + " = " + oneSet.getId();
+                String query = "DELETE FROM " + sqLhelper.TABLE_SETS + " WHERE " + sqLhelper.COLUMN_ID + " = " + oneSet.getId();
                 db.execSQL(query);
                 //update OneSetList in adapter
                 adapter.setSetOneSetList(getSetsFitness());
@@ -326,11 +325,11 @@ public class SetActivity extends AppCompatActivity {
         List<OneSet> setsFitness = setsFitness1;
 
         // create selection from database
-        String where_clause = SQLtrainings.COLUMN_INFO + "=?";
+        String where_clause = SQLhelper.COLUMN_INFO + "=?";
         String[] where_args = new String[] { nameFitness };
 
         // get cursor with selection
-        Cursor cursor = db.query(sqlSetFits.DATABASE_TABLE, null,where_clause,where_args,null,null,null);
+        Cursor cursor = db.query(sqLhelper.TABLE_SETS, null,where_clause,where_args,null,null,null);
         cursor.moveToFirst();
 
         //number of elements in database and recycler must be equal
@@ -344,16 +343,16 @@ public class SetActivity extends AppCompatActivity {
                 int id      = oneSet.getId();
 
                 //put data in content
-                cv.put(sqlSetFits.COLUMN_EXE, exe);
-                cv.put(sqlSetFits.COLUMN_WEIGHT, weight);
-                cv.put(sqlSetFits.COLUMN_REPEATS, repeats);
+                cv.put(sqLhelper.COLUMN_EXE, exe);
+                cv.put(sqLhelper.COLUMN_WEIGHT, weight);
+                cv.put(sqLhelper.COLUMN_REPEATS, repeats);
 
                 //get id from database
-                @SuppressLint("Range") int id1 = cursor.getInt(cursor.getColumnIndex(sqlSetFits.COLUMN_ID));
+                @SuppressLint("Range") int id1 = cursor.getInt(cursor.getColumnIndex(sqLhelper.COLUMN_ID));
 
                 //if id equals - update database
                 if(id == id1)
-                    db.update(sqlSetFits.DATABASE_TABLE, cv, sqlSetFits.COLUMN_ID + " = ?" , new String[] {String.valueOf(id)} );
+                    db.update(sqLhelper.TABLE_SETS, cv, sqLhelper.COLUMN_ID + " = ?" , new String[] {String.valueOf(id)} );
 
                 // next iteration
                 cv.clear();

@@ -3,7 +3,6 @@ package com.example.simplefitnessrecords01.recycler_views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +81,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
     @Override
     public SetTrainingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //creating a view
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_for_recycler, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_main_activity, parent, false);
         //creating a SetsHolder
         return new SetTrainingHolder(view);
     }
@@ -144,7 +143,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
                 //context menu registry
                 v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {
                     // We fill the context menu with items
-                    ((Activity)context).getMenuInflater().inflate(R.menu.menu_for_recycler_viev, menu);
+                    ((Activity)context).getMenuInflater().inflate(R.menu.context_main_activity, menu);
                 });
 
 

@@ -2,13 +2,16 @@ package com.example.simplefitnessrecords01.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.DialogNewTrainingBinding;
 
 //Dialog for construct one training
@@ -45,6 +48,14 @@ public class StartDialog extends Dialog {
         // Setting the appearance of the dialog using view binding
         mBinding = DialogNewTrainingBinding.inflate(LayoutInflater.from(getContext()));
         setContentView(mBinding.getRoot());
+
+        //set size of text
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String selectedTextSize = preferences.getString("text_size_preference", context.getResources().getString(R.string.default_text_size));
+        mBinding.editTextDay.setTextSize(Float.parseFloat(selectedTextSize));
+        mBinding.editTextName.setTextSize(Float.parseFloat(selectedTextSize));
+        mBinding.editTextSubname.setTextSize(Float.parseFloat(selectedTextSize));
+        mBinding.buttonCreate.setTextSize(Float.parseFloat(selectedTextSize));
 
         //setup data in dialog
         if(dataToDialogue != null) {

@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
+import com.example.simplefitnessrecords01.databinding.RecyclerMainActivityBinding;
 import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
-import com.example.simplefitnessrecords01.databinding.TextForRecyclerBinding;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
 
 
         //біндер для елементів лайаута ітема рецикла в'ю
-        TextForRecyclerBinding binding = TextForRecyclerBinding.bind(itemView);
+        RecyclerMainActivityBinding binding = RecyclerMainActivityBinding.bind(itemView);
 
         //конструктор
         public SetTrainingHolder(@NonNull View itemView) {

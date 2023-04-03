@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.SetActivity;
-import com.example.simplefitnessrecords01.databinding.SetFitRecyclerItemBinding;
+import com.example.simplefitnessrecords01.databinding.RecyclerSetActivityBinding;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 
 import java.util.ArrayList;
@@ -122,7 +122,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
         OneSet oneSet1 = null;
 
         //binder
-        SetFitRecyclerItemBinding binding = SetFitRecyclerItemBinding.bind(itemView);
+        RecyclerSetActivityBinding binding = RecyclerSetActivityBinding.bind(itemView);
 
         //constructor
         public HolderSetFitList(@NonNull View itemView) {

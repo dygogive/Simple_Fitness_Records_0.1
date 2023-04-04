@@ -24,7 +24,7 @@
     <string name="messages_header">Messages</string>
     <string name="sync_header" translatable="false">Sync</string>
     <string name="text_size">Text size</string>
-    <string name="default_text_size" translatable="false">24</string>
+    <string name="default_text_size" translatable="false">20</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title" translatable="false">Your signature</string>

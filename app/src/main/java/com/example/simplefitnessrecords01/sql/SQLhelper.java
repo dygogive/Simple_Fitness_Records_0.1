@@ -26,6 +26,7 @@ public class SQLhelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     public static final String COLUMN_EXE = "exe";
+    public static final String COLUMN_GROUP = "exegroup";
     public static final String COLUMN_WEIGHT = "weight";
     public static final String COLUMN_REPEATS = "repeats";
     public static final String TABLE_SETS = "tableSets";
@@ -65,19 +66,21 @@ public class SQLhelper extends SQLiteOpenHelper {
 
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(COLUMN_ID);
+            int id_group = c.getColumnIndex(COLUMN_GROUP);
             int id_exe = c.getColumnIndex(COLUMN_EXE);
             int id_wei = c.getColumnIndex(COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(COLUMN_REPEATS);
             int id_fitname = c.getColumnIndex(COLUMN_INFO);
             do {
                 int id     = c.getInt(id_id);
+                String group = c.getString(id_group);
                 String exe = c.getString(id_exe);
                 int wei    = c.getInt(id_wei);
                 int rep    = c.getInt(id_rep);
                 String fitname = c.getString(id_fitname);
 
-                Log.d(logTag, "Table " + "tableName" + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_EXE + " - " +
-                        exe + " ; " + COLUMN_WEIGHT + " - " +
+                Log.d(logTag, "Table " + "tableName" + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_GROUP + " - " +
+                        group + " ; " + COLUMN_EXE + " - " +  exe + " ; " + COLUMN_WEIGHT + " - " +
                         wei + " ; " + COLUMN_REPEATS + " - " +  rep + " ; " + COLUMN_INFO + " - " +  fitname + " ; " );
             } while ( c.moveToNext() );
         }else Log.d(logTag, "Table " + TABLE_SETS + " is empty.");
@@ -216,8 +219,8 @@ public class SQLhelper extends SQLiteOpenHelper {
                 "" + COLUMN_INFO + " TEXT)" );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " " +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_INFO + " TEXT, " + COLUMN_EXE + " TEXT, "
-                + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_INFO + " TEXT, " + COLUMN_GROUP + " TEXT, "
+                + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
     }
 
 

@@ -51,23 +51,25 @@ public class OneSet {
 
 
     /* CONSTRUCTOR */
-    public OneSet(int id, Exercise exe, ExerciseGroup exerciseGroup, ExecutedExercise executedExercise, String uniqueFitTraining) {
+    public OneSet(int id, ExerciseGroup exerciseGroup, Exercise exe, ExecutedExercise executedExercise, String uniqueFitTraining) {
         this.exe = exe;
+        this.exerciseGroup = exerciseGroup;
         this.executedExercise = executedExercise;
         this.id = id;
         this.uniqueFitTraining = uniqueFitTraining;
-        this.exerciseGroup = exerciseGroup;
     }
 
     public OneSet(int id, Exercise exe, ExecutedExercise executedExercise, String uniqueFitTraining) {
         this.exe = exe;
+        this.exerciseGroup = new ExerciseGroup();
         this.executedExercise = executedExercise;
         this.id = id;
         this.uniqueFitTraining = uniqueFitTraining;
     }
 
     public OneSet(String uniqueFitTraining) {
-        this.exe = new Exercise("");
+        this.exe = new Exercise();
+        this.exerciseGroup = new ExerciseGroup();
         this.executedExercise = new ExecutedExercise(new Weight(0),new Repeats(0));
         this.id = -1;
         this.uniqueFitTraining = uniqueFitTraining;

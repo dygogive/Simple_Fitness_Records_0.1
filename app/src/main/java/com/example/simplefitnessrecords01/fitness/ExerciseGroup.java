@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 public class ExerciseGroup {
 
     /* PARAMETERS */
-    private String exerciseGroup;
+    private String exerciseGroup = "";
 
 
     /* GETTERS AND SETTERS */
@@ -25,6 +25,9 @@ public class ExerciseGroup {
     /* CONSTRUCTOR */
     public ExerciseGroup(String exerciseGroup1) {
         exerciseGroup = exerciseGroup1;
+    }
+    public ExerciseGroup() {
+        exerciseGroup = "";
     }
 
 }

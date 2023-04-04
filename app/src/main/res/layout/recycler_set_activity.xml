@@ -16,7 +16,7 @@
         android:focusable="true"
         android:hint="@string/exercise_group"
         android:inputType="text"
-        android:textIsSelectable="true"
+        android:textIsSelectable="false"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

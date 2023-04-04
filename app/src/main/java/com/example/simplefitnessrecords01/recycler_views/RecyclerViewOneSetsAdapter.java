@@ -1,6 +1,7 @@
 package com.example.simplefitnessrecords01.recycler_views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +15,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.MusclesGroupsActivity;
 import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerSetActivityBinding;
 import com.example.simplefitnessrecords01.fitness.OneSet;
@@ -25,12 +27,11 @@ import java.util.TimerTask;
 
 public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerViewOneSetsAdapter.HolderSetFitList> {
 
-    Context context;
+    SetActivity context;
 
 
     //LIST of performed approaches in training
     private List<OneSet> setOneSetList = new ArrayList<>();
-
 
 
     /********  GETTERS-SETTERS ********************/
@@ -68,11 +69,11 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     /************* Constructors ***********************/
     public RecyclerViewOneSetsAdapter(Context context) {
-        this.context = context;
+        this.context = (SetActivity) context;
     }
 
     public RecyclerViewOneSetsAdapter(Context context, List<OneSet> oneSetList) {
-        this.context = context;
+        this.context = (SetActivity) context;
         this.setOneSetList = oneSetList;
     }
 
@@ -165,6 +166,34 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
             //Text change listeners in items of RecyclerView
+            binding.tvExerciceGroup.addTextChangedListener(new TextWatcher() {
+                //Create time delaying.
+                Timer timer = new Timer();
+                final long DELAY = 500; // time delay msec
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                    timer.cancel();
+                    timer = new Timer();
+                    //create new schedule and change object in holder
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            //change object in holder
+                            if( !(s.toString()).equals("") )
+                                oneSet1.getExerciseGroup().setExeGroupName(s.toString());
+                            //save change in DataBase
+                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
+                        }
+                    } , DELAY);
+                }
+            });
             binding.tvExerciceName.addTextChangedListener(new TextWatcher() {
                 //Create time delaying.
                 Timer timer = new Timer();
@@ -264,6 +293,9 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             oneSet1 = oneSet;
 
             //put data to item from object
+            String exeGroupName = oneSet.getExerciseGroup().toString();
+            binding.tvExerciceGroup.setText(exeGroupName);
+            //
             String exeName = oneSet.getExe().toString();
             binding.tvExerciceName.setText(exeName);
             //
@@ -274,12 +306,24 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
+            //
+
 
 
             //
-            binding.tvExerciceName.setTextSize(Float.parseFloat(selectedTextSize));
-            binding.etWeight.      setTextSize(Float.parseFloat(selectedTextSize));
-            binding.etRepeat.      setTextSize(Float.parseFloat(selectedTextSize));
+            binding.tvExerciceName. setTextSize(Float.parseFloat(selectedTextSize));
+            binding.etWeight.       setTextSize(Float.parseFloat(selectedTextSize));
+            binding.etRepeat.       setTextSize(Float.parseFloat(selectedTextSize));
+            binding.tvExerciceGroup.setTextSize(Float.parseFloat(selectedTextSize));
+
+            //onClick TextViews
+            binding.tvExerciceGroup.setOnClickListener(v -> {
+                Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+                //launch the activity with groups of muscles
+                Intent intent = new Intent(context, MusclesGroupsActivity.class);
+                context.getActivityResultLauncher().launch(intent);
+            });
+
         }
     }
 }

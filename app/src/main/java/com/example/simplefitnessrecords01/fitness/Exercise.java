@@ -25,4 +25,7 @@ public class Exercise {
     public Exercise(String exercise) {
         this.exercise = exercise;
     }
+    public Exercise() {
+        this.exercise = "";
+    }
 }

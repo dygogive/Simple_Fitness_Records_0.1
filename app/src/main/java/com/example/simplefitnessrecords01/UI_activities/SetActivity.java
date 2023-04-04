@@ -2,6 +2,8 @@ package com.example.simplefitnessrecords01.UI_activities;
 
 import static com.example.simplefitnessrecords01.sql.SQLhelper.COLUMN_INFO;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
@@ -19,8 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
+import com.example.simplefitnessrecords01.fitness.ExerciseGroup;
 import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 import com.example.simplefitnessrecords01.fitness.Weight;
@@ -50,6 +54,9 @@ public class SetActivity extends AppCompatActivity {
     //Adapter RecyclerView
     RecyclerViewOneSetsAdapter adapter;
 
+    //Triggers other activities from this activity
+    private ActivityResultLauncher activityResultLauncher;
+
 
 
     /************************ SET GET *******************************/
@@ -63,9 +70,9 @@ public class SetActivity extends AppCompatActivity {
         return nameFitness;
     }
 
-
-
-
+    public ActivityResultLauncher getActivityResultLauncher() {
+        return activityResultLauncher;
+    }
 
     /************************  Activity Lifecycle **********************/
     @Override
@@ -73,6 +80,18 @@ public class SetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+
+        //launcher for activity to chose group of muscles
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
+            if(result.getResultCode() == Activity.RESULT_OK) {
+                //
+                //String[] stringArrayExtra = result.getData().getStringArrayExtra("key1");
+            }
+        });
+
+
 
         //set action bar
         ActionBar actionBar = getSupportActionBar();
@@ -176,18 +195,20 @@ public class SetActivity extends AppCompatActivity {
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqLhelper.COLUMN_ID);
             int id_fitName = c.getColumnIndex(COLUMN_INFO);
+            int id_group = c.getColumnIndex(sqLhelper.COLUMN_GROUP);
             int id_exe = c.getColumnIndex(sqLhelper.COLUMN_EXE);
             int id_wei = c.getColumnIndex(sqLhelper.COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(sqLhelper.COLUMN_REPEATS);
             do {
                 int id         = c.getInt(id_id);
                 String fitName = c.getString(id_fitName);
+                String group     = c.getString(id_group);
                 String exe     = c.getString(id_exe);
                 int wei        = c.getInt(id_wei);
                 int rep        = c.getInt(id_rep);
 
                 //add to list
-                setsFitness.add(   new OneSet( id, new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , fitName  )   );
+                setsFitness.add(   new OneSet( id, new ExerciseGroup(group), new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , fitName  )   );
 
             } while (c.moveToNext());
         } else {
@@ -337,12 +358,14 @@ public class SetActivity extends AppCompatActivity {
             //iteration for OneSet list
             for (OneSet oneSet : setsFitness) {
                 //get data from setFitness
-                String exe  = oneSet.getExe().toString();
-                int weight  = oneSet.getRecordSet().getWeight().getIntWeight();
-                int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
-                int id      = oneSet.getId();
+                String exe       = oneSet.getExe().toString();
+                String exeGroup  = oneSet.getExerciseGroup().toString();
+                int weight       = oneSet.getRecordSet().getWeight().getIntWeight();
+                int repeats      = oneSet.getRecordSet().getRepeats().getIntRepeats();
+                int id           = oneSet.getId();
 
                 //put data in content
+                cv.put(sqLhelper.COLUMN_GROUP, exeGroup);
                 cv.put(sqLhelper.COLUMN_EXE, exe);
                 cv.put(sqLhelper.COLUMN_WEIGHT, weight);
                 cv.put(sqLhelper.COLUMN_REPEATS, repeats);

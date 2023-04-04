@@ -319,9 +319,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             //onClick TextViews
             binding.tvExerciceGroup.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
-                //launch the activity with groups of muscles
-                Intent intent = new Intent(context, MusclesGroupsActivity.class);
-                context.getActivityResultLauncher().launch(intent);
+
             });
 
         }

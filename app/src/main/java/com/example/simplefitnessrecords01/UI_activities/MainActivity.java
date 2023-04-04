@@ -1,6 +1,7 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -96,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+
+
     }
 
     @Override

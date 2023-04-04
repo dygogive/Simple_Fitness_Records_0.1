@@ -74,6 +74,13 @@ public class SetActivity extends AppCompatActivity {
         return activityResultLauncher;
     }
 
+
+
+
+
+
+
+
     /************************  Activity Lifecycle **********************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +91,9 @@ public class SetActivity extends AppCompatActivity {
 
 
         //launcher for activity to chose group of muscles
-        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
-            if(result.getResultCode() == Activity.RESULT_OK) {
-                //
-                //String[] stringArrayExtra = result.getData().getStringArrayExtra("key1");
-            }
-        });
+        activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
 
 
 
@@ -281,6 +285,11 @@ public class SetActivity extends AppCompatActivity {
             case R.id.action_log_sql:
                 //table SQL to log
                 sqLhelper.getTableInLogSets("MainActSQLog", nameFitness);
+
+                //launch the activity with groups of muscles
+                Intent intent = new Intent(SetActivity.this, MusclesGroupsActivity.class);
+                getActivityResultLauncher().launch(intent);
+
                 return true;
 
             case android.R.id.home:

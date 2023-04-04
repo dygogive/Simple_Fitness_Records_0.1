@@ -9,6 +9,7 @@ public class OneSet {
         return id;
     }
     private Exercise exe;
+    ExerciseGroup exerciseGroup;
     private ExecutedExercise executedExercise;
     private String uniqueFitTraining;
 
@@ -28,6 +29,15 @@ public class OneSet {
     public Exercise getExe() {
         return exe;
     }
+
+    public void setExerciseGroup(ExerciseGroup exerciseGroup) {
+        this.exerciseGroup = exerciseGroup;
+    }
+
+    public ExerciseGroup getExerciseGroup() {
+        return exerciseGroup;
+    }
+
     public ExecutedExercise getRecordSet() {
         return executedExercise;
     }
@@ -39,7 +49,16 @@ public class OneSet {
 
 
 
+
     /* CONSTRUCTOR */
+    public OneSet(int id, Exercise exe, ExerciseGroup exerciseGroup, ExecutedExercise executedExercise, String uniqueFitTraining) {
+        this.exe = exe;
+        this.executedExercise = executedExercise;
+        this.id = id;
+        this.uniqueFitTraining = uniqueFitTraining;
+        this.exerciseGroup = exerciseGroup;
+    }
+
     public OneSet(int id, Exercise exe, ExecutedExercise executedExercise, String uniqueFitTraining) {
         this.exe = exe;
         this.executedExercise = executedExercise;

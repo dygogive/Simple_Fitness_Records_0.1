@@ -10,6 +10,7 @@
     <string name="date">Date</string>
     <string name="name">Name</string>
     <string name="exercise">Exercise</string>
+    <string name="exercise_group">Group</string>
     <string name="weight">Weight</string>
     <string name="repeats">Repeats</string>
     <string name="day">Day</string>

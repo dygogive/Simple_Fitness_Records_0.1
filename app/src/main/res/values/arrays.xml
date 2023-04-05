@@ -26,12 +26,45 @@
     </string-array>
 
     <string-array name="muscles_groups">
-        <item>Chest muscles</item>
-        <item>Back muscles</item>
-        <item>Shoulder muscles</item>
-        <item>Abdominal muscles</item>
-        <item>Leg muscles</item>
-        <item>Arm muscles</item>
+        <item>Lower body</item>
+        <item>Back</item>
+        <item>Chest</item>
+        <item>Shoulders</item>
+        <item>Arms</item>
+        <item>Abdominals</item>
+    </string-array>
+
+    <string-array name="lower_body">
+        <item>glutes</item>
+        <item>quadriceps</item>
+        <item>hamstrings</item>
+        <item>calves</item>
+    </string-array>
+
+    <string-array name="back">
+        <item>latissimus dorsi</item>
+        <item>trapezius</item>
+        <item>erector spinae</item>
+    </string-array>
+
+    <string-array name="chest">
+        <item>pectoralis lower</item>
+        <item>pectoralis upper</item>
+    </string-array>
+
+    <string-array name="shoulders">
+        <item>deltoids</item>
+        <item>back deltoids</item>
+    </string-array>
+
+    <string-array name="arms">
+        <item>biceps</item>
+        <item>triceps</item>
+        <item>forearm</item>
+    </string-array>
+
+    <string-array name="abdominals">
+        <item>abdominals</item>
     </string-array>
 
 

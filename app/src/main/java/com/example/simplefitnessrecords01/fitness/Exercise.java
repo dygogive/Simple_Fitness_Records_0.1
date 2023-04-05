@@ -9,6 +9,8 @@ public class Exercise {
     /* PARAMETERS */
     private String exercise;
 
+    private Muscle muscle;
+
 
     /* GETTERS AND SETTERS */
     @NonNull
@@ -21,7 +23,13 @@ public class Exercise {
     }
 
 
+
     /* CONSTRUCTOR */
+    public Exercise(String exercise, Muscle muscle) {
+
+        this.exercise = exercise;
+        this.muscle = muscle;
+    }
     public Exercise(String exercise) {
         this.exercise = exercise;
     }

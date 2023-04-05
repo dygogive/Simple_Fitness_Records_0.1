@@ -121,8 +121,6 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
             selectedTextSize = preferences.getString("text_size_preference", context.getString(R.string.default_text_size));
 
 
-
-
             //set a short-click listener on the view element
             itemView.setOnClickListener(v -> {
                 int position = getAbsoluteAdapterPosition();

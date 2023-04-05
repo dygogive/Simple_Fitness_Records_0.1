@@ -55,7 +55,7 @@ public class SetActivity extends AppCompatActivity {
     RecyclerViewOneSetsAdapter adapter;
 
     //Triggers other activities from this activity
-    private ActivityResultLauncher activityResultLauncher;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
 
 
@@ -93,7 +93,11 @@ public class SetActivity extends AppCompatActivity {
         //launcher for activity to chose group of muscles
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if(result.getResultCode() == RESULT_OK) {
+                        Toast.makeText(this, "RESULT_OK", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
 
@@ -288,7 +292,7 @@ public class SetActivity extends AppCompatActivity {
 
                 //launch the activity with groups of muscles
                 Intent intent = new Intent(SetActivity.this, MusclesGroupsActivity.class);
-                getActivityResultLauncher().launch(intent);
+                activityResultLauncher.launch(intent);
 
                 return true;
 

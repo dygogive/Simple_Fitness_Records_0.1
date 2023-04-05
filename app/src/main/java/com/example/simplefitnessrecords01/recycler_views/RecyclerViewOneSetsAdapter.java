@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +34,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     //LIST of performed approaches in training
     private List<OneSet> setOneSetList = new ArrayList<>();
+
 
 
     /********  GETTERS-SETTERS ********************/
@@ -115,6 +118,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
     /*******************  Holder  *****************/
     public class HolderSetFitList extends RecyclerView.ViewHolder {
 
+
         //text size
         String selectedTextSize = context.getString(R.string.default_text_size);
 
@@ -128,6 +132,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
         //constructor
         public HolderSetFitList(@NonNull View itemView) {
             super(itemView);
+
 
             //set size of text
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -319,7 +324,11 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             //onClick TextViews
             binding.tvExerciceGroup.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+                //onClick to get Exercises Groups Activity
 
+                //launch the activity with groups of muscles
+                Intent intent = new Intent(context, MusclesGroupsActivity.class);
+                context.getActivityResultLauncher().launch(intent);
             });
 
         }

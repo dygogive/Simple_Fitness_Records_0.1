@@ -3,18 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".UI_activities.MusclesGroupsActivity">
+    android:layout_height="wrap_content">
 
-    <ListView
-        android:id="@+id/lv_groups"
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="100dp"
+        android:text="TextView"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

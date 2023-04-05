@@ -12,7 +12,7 @@
         android:theme="@style/Theme.AppCompat.Light"
         tools:targetApi="33">
         <activity
-            android:name=".MusclesGroupsActivity"
+            android:name=".UI_activities.MusclesGroupsActivity"
             android:exported="false" />
         <activity
             android:name=".UI_activities.SetActivity"

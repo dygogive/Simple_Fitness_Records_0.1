@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".UI_activities.MusclesGroupsActivity">
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/lv_groups"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -95,7 +95,8 @@ public class SetActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
-                        Toast.makeText(this, "RESULT_OK", Toast.LENGTH_SHORT).show();
+                        String[] extra = result.getData().getStringArrayExtra("muscleGroupsExtra");
+                        Toast.makeText(this, "RESULT_OK, extra - " + extra[0] + ", " + extra[1] + ", " + extra[2], Toast.LENGTH_SHORT).show();
                     }
                 });
 

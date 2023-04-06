@@ -38,6 +38,9 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
 
+    //Extra from Exercises Activity
+    String[] extraFromExercisesActiv = new String[] {"text1", "text2"};
+
 
 
 
@@ -66,6 +69,15 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
                         Toast.makeText(this, "RESULT_OK", Toast.LENGTH_SHORT).show();
+
+                        //get extra
+                        String[] extra = result.getData().getStringArrayExtra("exercisesExtra");
+
+                        //put extra
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("muscleGroupsExtra", extra);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
                     }
                 });
 
@@ -230,12 +242,13 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result musclesGroups", true);
-                setResult(Activity.RESULT_OK, returnIntent);
+                setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

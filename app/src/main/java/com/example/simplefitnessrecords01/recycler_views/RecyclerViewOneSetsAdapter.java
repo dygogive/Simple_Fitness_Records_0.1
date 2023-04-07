@@ -155,9 +155,9 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
                 //If the context is SetActivity
                 if (context instanceof SetActivity) {
-                    SetActivity child = (SetActivity) context;
+                    SetActivity setActivity = (SetActivity) context;
                     //You set a position
-                    child.setPosition(position);
+                    setActivity.setPosition(position);
                 } else Toast.makeText(context, "Error! SetActivity renamed!", Toast.LENGTH_SHORT).show();
 
 
@@ -324,13 +324,27 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
             //onClick TextViews
             binding.tvExerciceGroup.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
-                //onClick to get Exercises Groups Activity
 
-                //launch the activity with groups of muscles
-                Intent intent = new Intent(context, MusclesGroupsActivity.class);
-                context.getActivityResultLauncher().launch(intent);
+                lunchActivityToChoiseExercise();
+            });
+            //onClick TextViews
+            binding.tvExerciceName.setOnClickListener(v -> {
+                Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+
+                lunchActivityToChoiseExercise();
             });
 
+        }
+
+
+        //lunch Activity To Choise Exercise
+        private void lunchActivityToChoiseExercise(){
+            //launch the activity with groups of muscles
+            Intent intent = new Intent(context, MusclesGroupsActivity.class);
+            context.getActivityResultLauncher().launch(intent);
+
+            //save the position in SetActivity
+            ((SetActivity) context).setPosition(getAbsoluteAdapterPosition());
         }
     }
 }

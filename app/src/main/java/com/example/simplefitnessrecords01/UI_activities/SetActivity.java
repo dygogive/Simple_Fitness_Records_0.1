@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLhelper.COLUMN_INFO;
+import static com.example.simplefitnessrecords01.sql.SQLhelper.COLUMN_UNIQUE_NAME;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,11 +17,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
 import com.example.simplefitnessrecords01.fitness.ExerciseGroup;
@@ -54,6 +54,12 @@ public class SetActivity extends AppCompatActivity {
     //Adapter RecyclerView
     RecyclerViewOneSetsAdapter adapter;
 
+    // current position of recycler
+    private int positionOfRecycler = -1;
+
+    //extra From Exercise with name og group and exercise
+    String[] extraFromExercise = null;
+
     //Triggers other activities from this activity
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
@@ -63,6 +69,11 @@ public class SetActivity extends AppCompatActivity {
     //GET DATABASE
     public SQLiteDatabase getDB() {
         return db;
+    }
+
+    //set Position
+    public void setPosition(int position) {
+        positionOfRecycler = position;
     }
 
     //GET NAME OF TRAINING
@@ -88,6 +99,9 @@ public class SetActivity extends AppCompatActivity {
         binding = ActivitySetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //initialization of database links
+        sqLhelper = new SQLhelper(SetActivity.this);
+        db = sqLhelper.getWritableDatabase();
 
 
         //launcher for activity to chose group of muscles
@@ -95,8 +109,14 @@ public class SetActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
-                        String[] extra = result.getData().getStringArrayExtra("muscleGroupsExtra");
-                        Toast.makeText(this, "RESULT_OK, extra - " + extra[0] + ", " + extra[1] + ", " + extra[2], Toast.LENGTH_SHORT).show();
+                        extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
+
+                        //change in database
+                        sqLhelper.updateRowSets(0, extraFromExercise);
+
+                        Log.d("findErr", "activityResult");
+
+                        Toast.makeText(this, "RESULT_OK, extraFromExercise - " + extraFromExercise[0] + ", " + extraFromExercise[1] + ", " + extraFromExercise[2], Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -123,12 +143,12 @@ public class SetActivity extends AppCompatActivity {
         binding.tvName.setTextSize(Float.parseFloat(selectedTextSize));
         binding.tvDay.setTextSize(Float.parseFloat(selectedTextSize));
 
-        //initialization of database links
-        sqLhelper = new SQLhelper(SetActivity.this);
-        db = sqLhelper.getWritableDatabase();
+
 
         //initialization of the Recycler view
         recycleViewInit();
+
+        Log.d("findErr", "onResume");
     }
 
     @Override
@@ -196,14 +216,14 @@ public class SetActivity extends AppCompatActivity {
         //empty list for SetTraining from base for recycler
         List<OneSet> setsFitness = new ArrayList<>();
 
-        String selection = COLUMN_INFO + " = ?";
+        String selection = COLUMN_UNIQUE_NAME + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
         Cursor c = db.query(sqLhelper.TABLE_SETS, null, selection, selectionArgs, null, null, null);
 
         //iterate through the cursor lines
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqLhelper.COLUMN_ID);
-            int id_fitName = c.getColumnIndex(COLUMN_INFO);
+            int id_fitName = c.getColumnIndex(COLUMN_UNIQUE_NAME);
             int id_group = c.getColumnIndex(sqLhelper.COLUMN_GROUP);
             int id_exe = c.getColumnIndex(sqLhelper.COLUMN_EXE);
             int id_wei = c.getColumnIndex(sqLhelper.COLUMN_WEIGHT);
@@ -315,8 +335,6 @@ public class SetActivity extends AppCompatActivity {
 
     /************************ Context Menu  *****************************/
 
-    // position For ContextMenu
-    private int positionForContextMenu = -1;
 
     // Implementation of a method for processing clicks on context menu items
     @Override
@@ -326,7 +344,7 @@ public class SetActivity extends AppCompatActivity {
 
             case R.id.delete_set:
                 //get OneSet for deleting
-                OneSet oneSet = adapter.getOneSet(positionForContextMenu);
+                OneSet oneSet = adapter.getOneSet(positionOfRecycler);
                 //delete from DB
                 String query = "DELETE FROM " + sqLhelper.TABLE_SETS + " WHERE " + sqLhelper.COLUMN_ID + " = " + oneSet.getId();
                 db.execSQL(query);
@@ -342,9 +360,7 @@ public class SetActivity extends AppCompatActivity {
     }
 }
 
-    public void setPosition(int position) {
-        positionForContextMenu = position;
-    }
+
 
 
 
@@ -360,7 +376,7 @@ public class SetActivity extends AppCompatActivity {
         List<OneSet> setsFitness = setsFitness1;
 
         // create selection from database
-        String where_clause = SQLhelper.COLUMN_INFO + "=?";
+        String where_clause = SQLhelper.COLUMN_UNIQUE_NAME + "=?";
         String[] where_args = new String[] { nameFitness };
 
         // get cursor with selection

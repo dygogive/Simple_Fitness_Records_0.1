@@ -31,7 +31,7 @@
         android:focusable="true"
         android:hint="@string/exercise"
         android:inputType="textMultiLine|text"
-        android:textIsSelectable="true"
+        android:textIsSelectable="false"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tvExerciceGroup"
         app:layout_constraintTop_toBottomOf="@+id/tvExerciceGroup" />

@@ -1,7 +1,6 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             if(c.moveToPosition(position)) {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLhelper.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLhelper.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_INFO));
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_UNIQUE_NAME));
 
                 //array filling
                 uniqueName = new String[] {day,name,subname};
@@ -187,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("Range")
                 String name = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_NAME));
                 @SuppressLint("Range")
-                String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
+                String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_UNIQUE_NAME));
 
                 //add a row from the database to the list
                 oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLhelper.COLUMN_DAY,    txts[0]);
                 cv.put(SQLhelper.COLUMN_NAME,   txts[1]);
-                cv.put(SQLhelper.COLUMN_INFO,txts[2]);
+                cv.put(SQLhelper.COLUMN_UNIQUE_NAME,txts[2]);
                 db.insert(SQLhelper.TABLE_TRAININGS,null,cv);
                 cv.clear();
                 recycleViewInit();
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_new:
                 // Handling the click on the "NEW" item
                 StartDialog dialog = new StartDialog(this, txts -> {
-                    String selection = SQLhelper.COLUMN_DAY + "=? AND " + SQLhelper.COLUMN_NAME + "=? AND " + SQLhelper.COLUMN_INFO + "=?";
+                    String selection = SQLhelper.COLUMN_DAY + "=? AND " + SQLhelper.COLUMN_NAME + "=? AND " + SQLhelper.COLUMN_UNIQUE_NAME + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
 
                     Cursor с = db.query(SQLhelper.TABLE_TRAININGS,null,selection, selectionArgs,null,null,null);
@@ -274,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                         ContentValues cv = new ContentValues();
                         cv.put(SQLhelper.COLUMN_DAY,    txts[0]);
                         cv.put(SQLhelper.COLUMN_NAME,   txts[1]);
-                        cv.put(SQLhelper.COLUMN_INFO,txts[2]);
+                        cv.put(SQLhelper.COLUMN_UNIQUE_NAME,txts[2]);
                         db.insert(SQLhelper.TABLE_TRAININGS,null,cv);
                         cv.clear();
                     }

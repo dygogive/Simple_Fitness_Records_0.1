@@ -1,7 +1,5 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
-import static com.example.simplefitnessrecords01.sql.SQLhelper.COLUMN_UNIQUE_NAME;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
@@ -112,11 +110,9 @@ public class SetActivity extends AppCompatActivity {
                         extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
 
                         //change in database
-                        sqLhelper.updateRowSets(0, extraFromExercise);
+                        sqLhelper.updateRowSets(positionOfRecycler, nameFitness, extraFromExercise);
 
-                        Log.d("findErr", "activityResult");
-
-                        Toast.makeText(this, "RESULT_OK, extraFromExercise - " + extraFromExercise[0] + ", " + extraFromExercise[1] + ", " + extraFromExercise[2], Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, adapter.getOneSet(positionOfRecycler).getUniqueFitTraining(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -216,28 +212,28 @@ public class SetActivity extends AppCompatActivity {
         //empty list for SetTraining from base for recycler
         List<OneSet> setsFitness = new ArrayList<>();
 
-        String selection = COLUMN_UNIQUE_NAME + " = ?";
+        String selection = SQLhelper.COLUMN_UNIC_NAME + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
         Cursor c = db.query(sqLhelper.TABLE_SETS, null, selection, selectionArgs, null, null, null);
 
         //iterate through the cursor lines
         if(c.moveToNext()){
             int id_id = c.getColumnIndex(sqLhelper.COLUMN_ID);
-            int id_fitName = c.getColumnIndex(COLUMN_UNIQUE_NAME);
+            int id_uniName = c.getColumnIndex(SQLhelper.COLUMN_UNIC_NAME);
             int id_group = c.getColumnIndex(sqLhelper.COLUMN_GROUP);
             int id_exe = c.getColumnIndex(sqLhelper.COLUMN_EXE);
             int id_wei = c.getColumnIndex(sqLhelper.COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(sqLhelper.COLUMN_REPEATS);
             do {
                 int id         = c.getInt(id_id);
-                String fitName = c.getString(id_fitName);
+                String uniName = c.getString(id_uniName);
                 String group     = c.getString(id_group);
                 String exe     = c.getString(id_exe);
                 int wei        = c.getInt(id_wei);
                 int rep        = c.getInt(id_rep);
 
                 //add to list
-                setsFitness.add(   new OneSet( id, new ExerciseGroup(group), new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , fitName  )   );
+                setsFitness.add(   new OneSet( id, new ExerciseGroup(group), new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , uniName  )   );
 
             } while (c.moveToNext());
         } else {
@@ -311,9 +307,6 @@ public class SetActivity extends AppCompatActivity {
                 //table SQL to log
                 sqLhelper.getTableInLogSets("MainActSQLog", nameFitness);
 
-                //launch the activity with groups of muscles
-                Intent intent = new Intent(SetActivity.this, MusclesGroupsActivity.class);
-                activityResultLauncher.launch(intent);
 
                 return true;
 
@@ -376,7 +369,7 @@ public class SetActivity extends AppCompatActivity {
         List<OneSet> setsFitness = setsFitness1;
 
         // create selection from database
-        String where_clause = SQLhelper.COLUMN_UNIQUE_NAME + "=?";
+        String where_clause = SQLhelper.COLUMN_UNIC_NAME + "=?";
         String[] where_args = new String[] { nameFitness };
 
         // get cursor with selection

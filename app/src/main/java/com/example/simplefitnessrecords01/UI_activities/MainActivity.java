@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -80,8 +81,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
+
         //initialization of links to databases
         sqLhelper = new SQLhelper(MainActivity.this);
+
+
         //database sqLfitness
         db     = sqLhelper.getWritableDatabase();
 
@@ -149,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             if(c.moveToPosition(position)) {
                 @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLhelper.COLUMN_DAY));
                 @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLhelper.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_UNIQUE_NAME));
+                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_INFO));
 
                 //array filling
                 uniqueName = new String[] {day,name,subname};
@@ -186,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("Range")
                 String name = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_NAME));
                 @SuppressLint("Range")
-                String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_UNIQUE_NAME));
+                String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
 
                 //add a row from the database to the list
                 oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLhelper.COLUMN_DAY,    txts[0]);
                 cv.put(SQLhelper.COLUMN_NAME,   txts[1]);
-                cv.put(SQLhelper.COLUMN_UNIQUE_NAME,txts[2]);
+                cv.put(SQLhelper.COLUMN_INFO,txts[2]);
                 db.insert(SQLhelper.TABLE_TRAININGS,null,cv);
                 cv.clear();
                 recycleViewInit();
@@ -226,7 +231,24 @@ public class MainActivity extends AppCompatActivity {
                 (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        String uniqueName = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu).getSubName();
+        OneFitnessTraining training = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu);
+        String uniqueName = training.getDay() + training.getName() + training.getInfo();
+
+        return uniqueName;
+    }
+    private String[] getUniqueNameArray(int position) {
+        //адаптер
+        RecyclerViewFitnessTrainingsAdapter recyclerViewFitnessTrainingsAdapter =
+                (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
+
+        //unique Name To Delete
+        OneFitnessTraining training = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu);
+
+        String[] uniqueName = new String[3];
+
+        uniqueName[0] = training.getDay();
+        uniqueName[1] = training.getName();
+        uniqueName[2] = training.getInfo();
 
         return uniqueName;
     }
@@ -262,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_new:
                 // Handling the click on the "NEW" item
                 StartDialog dialog = new StartDialog(this, txts -> {
-                    String selection = SQLhelper.COLUMN_DAY + "=? AND " + SQLhelper.COLUMN_NAME + "=? AND " + SQLhelper.COLUMN_UNIQUE_NAME + "=?";
+                    String selection = SQLhelper.COLUMN_DAY + "=? AND " + SQLhelper.COLUMN_NAME + "=? AND " + SQLhelper.COLUMN_INFO + "=?";
                     String[] selectionArgs = {txts[0] , txts[1] , txts[2]};
 
                     Cursor с = db.query(SQLhelper.TABLE_TRAININGS,null,selection, selectionArgs,null,null,null);
@@ -273,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                         ContentValues cv = new ContentValues();
                         cv.put(SQLhelper.COLUMN_DAY,    txts[0]);
                         cv.put(SQLhelper.COLUMN_NAME,   txts[1]);
-                        cv.put(SQLhelper.COLUMN_UNIQUE_NAME,txts[2]);
+                        cv.put(SQLhelper.COLUMN_INFO,txts[2]);
                         db.insert(SQLhelper.TABLE_TRAININGS,null,cv);
                         cv.clear();
                     }
@@ -375,8 +397,9 @@ public class MainActivity extends AppCompatActivity {
         //RUN delete for dialog
         DialogOnClick dialogOnClick = () -> {
             //delete from the database of Fitness Trainings
-            sqLhelper.deleteRowTrainings(getUniqueName(positioContextMenu));
+            sqLhelper.deleteRowTrainings(getUniqueNameArray(positioContextMenu));
 
+            Log.d("howDel" , getUniqueName(positioContextMenu));
             //delete from the database of performed sets
             sqLhelper.deleteRowSets(getUniqueName(positioContextMenu));
 

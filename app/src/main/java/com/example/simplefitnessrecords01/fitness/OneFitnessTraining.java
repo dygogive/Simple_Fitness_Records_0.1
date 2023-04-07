@@ -38,7 +38,7 @@ public class OneFitnessTraining {
         return name;
     }
 
-    public String getSubName() {
+    public String getInfo() {
         return subName;
     }
 

@@ -168,7 +168,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
         void onBindData(OneFitnessTraining oneFitnessTraining){
             binding.textView. setText(oneFitnessTraining.getDay());
             binding.tvName.   setText(oneFitnessTraining.getName());
-            binding.tvSubName.setText(oneFitnessTraining.getSubName());
+            binding.tvSubName.setText(oneFitnessTraining.getInfo());
 
             //set size of text
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

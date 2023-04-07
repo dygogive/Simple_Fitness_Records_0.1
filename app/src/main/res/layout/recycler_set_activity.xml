@@ -9,15 +9,17 @@
 
     <TextView
         android:id="@+id/tvExerciceGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:focusable="true"
         android:hint="@string/exercise_group"
-        android:inputType="text"
+        android:inputType="textMultiLine|text"
         android:textIsSelectable="false"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,21 +27,20 @@
         android:id="@+id/tvExerciceName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:focusable="true"
         android:hint="@string/exercise"
-        android:inputType="text"
+        android:inputType="textMultiLine|text"
         android:textIsSelectable="true"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/tvExerciceGroup"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/tvExerciceGroup"
+        app:layout_constraintTop_toBottomOf="@+id/tvExerciceGroup" />
 
     <EditText
         android:id="@+id/etWeight"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/weight"

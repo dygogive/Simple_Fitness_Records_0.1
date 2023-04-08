@@ -46,62 +46,6 @@
         <item>calves</item>
     </string-array>
 
-    <string-array name="exe_lower_body_glutes">
-        <item>Deadlift "Sumo" - 119</item>
-        <item>Glute Bridge + Shoulders
-        bench - 138</item>
-        <item>"Buttock bridge" +</item>
-        <item>Ascent to a high step - 137</item>
-        <item>Lower block squats
-        (we hold the rope between the legs) - 129</item>
-        <item>"Flying Dog" - 108</item>
-        <item>Reverse leg abductions
-        machine for hyperextension - 110</item>
-        <item>Reverse Hyperextensions
-        (we raise our legs) - 103</item>
-    </string-array>
-
-    <string-array name="exe_lower_body_quadriceps">
-        <item>Full squat (barbell high
-        on the shoulders) - 194</item>
-        <item>Parallel squat (barbell)
-        high on the shoulders) - 189</item>
-        <item>Partial squat (1/2 +
-        barbell high on the shoulders) - 153</item>
-        <item>Partial squat (1/4 +
-        barbell high on the shoulders) - 160</item>
-        <item>Deep squat low
-        chair (barbell low on the back) - 153</item>
-        <item>High chair squat
-        (barbell low on the back) - 146</item>
-        <item>Parallel narrow squat
-        positioning of the legs (barbell low
-        on the back) - 135</item>
-        <item>Barbell Front Squat - 152</item>
-        <item>Gakk Deadlift (barbell
-        behind) - 158</item>
-        <item>Glute Bridge + Shoulders
-        bench - 165</item>
-        <item>Bulgarian squats
-        one leg (second on the bench
-        behind) - 131</item>
-        <item>Climbing a low step - 137</item>
-        <item>Abduction bent at the knee
-        legs back - 143</item>
-        <item>The same with weight (push
-        bent leg platform) - 171</item>
-    </string-array>
-
-    <string-array name="exe_lower_body_biceps_femoris">
-
-    </string-array>
-
-
-
-
-
-
-
     <string-array name="back">
         <item>latissimus dorsi</item>
         <item>trapezius</item>

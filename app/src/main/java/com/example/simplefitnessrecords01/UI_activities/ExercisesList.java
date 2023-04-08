@@ -20,6 +20,14 @@ public class ExercisesList extends AppCompatActivity {
     String[] extraArrayGroupMuscle = null;
 
 
+    //Names of muscle groups
+    String textGroup;
+    String textMuscle;
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +40,10 @@ public class ExercisesList extends AppCompatActivity {
         actionBar.setSubtitle("Select/Create exercise");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
+        //get info from intent
         processIntentExtra();
 
+        initializingListView();
     }
 
 
@@ -46,14 +55,22 @@ public class ExercisesList extends AppCompatActivity {
         //Info from the intent
         extraArrayGroupMuscle = intent.getStringArrayExtra("muscleGroup");
         //text strings from the info from the intent
-        String textGroup =     extraArrayGroupMuscle[0];
-        String textMuscle =    extraArrayGroupMuscle[1];
+        textGroup =     extraArrayGroupMuscle[0];
+        textMuscle =    extraArrayGroupMuscle[1];
 
 
         //display texts on the screen
         binding.tvGroup.setText(textGroup);
         binding.tvChild.setText(textMuscle);
     }
+
+
+    private void initializingListView() {
+
+
+
+    }
+
 
 
 
@@ -74,4 +91,5 @@ public class ExercisesList extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

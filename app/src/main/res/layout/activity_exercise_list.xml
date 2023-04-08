@@ -24,4 +24,15 @@
         android:text="@string/muscles_of_group"
         app:layout_constraintStart_toStartOf="@+id/tvGroup"
         app:layout_constraintTop_toBottomOf="@+id/tvGroup" />
+
+    <ListView
+        android:id="@+id/lv_exercises"
+        android:layout_width="409dp"
+        android:layout_height="675dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvChild" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

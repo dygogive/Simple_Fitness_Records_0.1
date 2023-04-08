@@ -63,6 +63,8 @@ public class SetActivity extends AppCompatActivity {
 
 
 
+
+
     /************************ SET GET *******************************/
     //GET DATABASE
     public SQLiteDatabase getDB() {

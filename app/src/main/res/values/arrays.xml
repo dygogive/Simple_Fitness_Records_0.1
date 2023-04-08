@@ -72,12 +72,19 @@
         <item>abdominals</item>
     </string-array>
 
-
-
-
-
-
-
-
+    <!-- Types of weight -->
+    <string-array name="types_weight">
+        <item>Barbell</item>
+        <item>One dumbbell</item>
+        <item>Two dumbbells</item>
+        <item>One kettlebell</item>
+        <item>Two kettlebells</item>
+        <item>Own body weight</item>
+        <item>Body weight of friend</item>
+        <item>Backpack</item>
+        <item>Block and cable</item>
+        <item>Rubber</item>
+        <item>Simulator</item>
+    </string-array>
 
 </resources>

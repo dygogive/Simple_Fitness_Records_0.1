@@ -3,19 +3,32 @@ package com.example.simplefitnessrecords01.UI_activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
+import com.example.simplefitnessrecords01.fitness.Exercise;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
+import com.example.simplefitnessrecords01.sql.SQLhelper;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ExercisesActivity extends AppCompatActivity {
 
 
-    ActivityExerciseListBinding binding;
+    private ActivityExerciseListBinding binding;
+
+    SQLhelper sqLhelper;
+    SQLiteDatabase database;
+
+    private AdapterRecyclerExercises adapterRecyclerExercises;
 
     String[] extraArrayGroupMuscle = null;
 
@@ -34,6 +47,10 @@ public class ExercisesActivity extends AppCompatActivity {
         binding = ActivityExerciseListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //SQL database
+        sqLhelper = new SQLhelper(this);
+        database  = sqLhelper.getWritableDatabase();
+
         //set action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Exercices");
@@ -45,7 +62,12 @@ public class ExercisesActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        recyclerInit();
+    }
 
     //Process the data obtained from the previous activity
     private void processIntentExtra() {
@@ -71,6 +93,34 @@ public class ExercisesActivity extends AppCompatActivity {
     }
 
 
+    //RecyclerView initializing
+    private void recyclerInit() {
+        adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
+        binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvExercises.setAdapter(adapterRecyclerExercises);
+    }
+
+    private List<Exercise> getExercises() {
+        List<Exercise> exerciseList = new LinkedList<>();
+        for(int i = 0; i < 10; i++) {
+            Exercise exe = new Exercise("Exe " + i , null , null);
+            exerciseList.add(exe);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        return  exerciseList;
+    }
 
 
 

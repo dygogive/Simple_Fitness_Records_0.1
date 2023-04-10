@@ -20,24 +20,29 @@ public class SQLhelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     public static final String COLUMN_ID = "_id";
 
+
+
+    /*********************** TABLE_TRAININGS *****************************/
     public static final String TABLE_TRAININGS = "tableTraining";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_INFO = "info";
 
-
+    /******************* TABLE_SETS ***********************/
     public static final String TABLE_SETS = "tableSets";
     public static final String COLUMN_EXE = "exe";
+    public static final String COLUMN_WEIGHT = "weight";
+    public static final String COLUMN_REPEATS = "repeats";
+    public static final String COLUMN_UNIC_NAME = "unicName";
+
+    /************************** TABLE_EXERCISES ******************************/
+    public static final String TABLE_EXERCISES = "tableExercises";
+    public static final String COLUMN_NAME_EXE = "nameExe";
     public static final String COLUMN_GROUP = "exegroup";
     public static final String COLUMN_MUSCLES1 = "muscles1";
     public static final String COLUMN_MUSCLES2 = "muscles2";
     public static final String COLUMN_MUSCLES3 = "muscles3";
     public static final String COLUMN_MUSCLES4 = "muscles4";
-    public static final String COLUMN_WEIGHT = "weight";
-    public static final String COLUMN_REPEATS = "repeats";
-    public static final String COLUMN_UNIC_NAME = "unicName";
-
-
 
 
 
@@ -251,6 +256,10 @@ public class SQLhelper extends SQLiteOpenHelper {
                 + COLUMN_MUSCLES1 + " TEXT, " + COLUMN_MUSCLES2 + " TEXT, " + COLUMN_MUSCLES3 + " TEXT, "
                 + COLUMN_MUSCLES4 + " TEXT, " + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EXERCISES + " " +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME_EXE + " TEXT, " + COLUMN_GROUP + " TEXT, "
+                + COLUMN_MUSCLES1 + " TEXT, " + COLUMN_MUSCLES2 + " TEXT, " + COLUMN_MUSCLES3 + " TEXT, "
+                + COLUMN_MUSCLES4 + " TEXT)");
     }
 
 

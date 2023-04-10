@@ -30,7 +30,7 @@ public class Exercise {
 
 
     /* CONSTRUCTOR */
-    public Exercise(String exerciseName,BodyPart bodyPart, Muscles muscles) {
+    public Exercise(String exerciseName, BodyPart bodyPart, Muscles muscles) {
         this.exerciseName = exerciseName;
         this.bodyPart = bodyPart;
         this.muscles = muscles;

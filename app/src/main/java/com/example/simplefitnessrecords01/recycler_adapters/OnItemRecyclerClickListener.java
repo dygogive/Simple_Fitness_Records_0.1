@@ -1,4 +1,4 @@
-package com.example.simplefitnessrecords01.recycler_views;
+package com.example.simplefitnessrecords01.recycler_adapters;
 
 
 //click listener interface for RecyclerView elements

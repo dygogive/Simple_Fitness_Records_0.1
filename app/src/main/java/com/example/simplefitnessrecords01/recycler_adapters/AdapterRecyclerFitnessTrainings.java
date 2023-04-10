@@ -1,4 +1,4 @@
-package com.example.simplefitnessrecords01.recycler_views;
+package com.example.simplefitnessrecords01.recycler_adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,7 +19,7 @@ import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
 
 import java.util.List;
 
-public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<RecyclerViewFitnessTrainingsAdapter.SetTrainingHolder> {
+public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<AdapterRecyclerFitnessTrainings.SetTrainingHolder> {
 
     private final Context context;
 
@@ -67,7 +67,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
 
 
     //Constructor
-    public RecyclerViewFitnessTrainingsAdapter(List<OneFitnessTraining> setTrainingList, Context context) {
+    public AdapterRecyclerFitnessTrainings(List<OneFitnessTraining> setTrainingList, Context context) {
         this.setTrainingList = setTrainingList;
         this.context = context;
     }
@@ -92,7 +92,7 @@ public class RecyclerViewFitnessTrainingsAdapter extends RecyclerView.Adapter<Re
 
     //the method fills the created views in the holders with information
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewFitnessTrainingsAdapter.SetTrainingHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapterRecyclerFitnessTrainings.SetTrainingHolder holder, int position) {
         //get a list item
         OneFitnessTraining setTraining = setTrainingList.get(position);
         //throw information from it into the holder

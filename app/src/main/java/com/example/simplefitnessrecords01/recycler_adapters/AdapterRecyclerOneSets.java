@@ -1,4 +1,4 @@
-package com.example.simplefitnessrecords01.recycler_views;
+package com.example.simplefitnessrecords01.recycler_adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +25,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerViewOneSetsAdapter.HolderSetFitList> {
+public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecyclerOneSets.HolderSetFitList> {
 
     SetActivity context;
 
@@ -71,11 +69,11 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     /************* Constructors ***********************/
-    public RecyclerViewOneSetsAdapter(Context context) {
+    public AdapterRecyclerOneSets(Context context) {
         this.context = (SetActivity) context;
     }
 
-    public RecyclerViewOneSetsAdapter(Context context, List<OneSet> oneSetList) {
+    public AdapterRecyclerOneSets(Context context, List<OneSet> oneSetList) {
         this.context = (SetActivity) context;
         this.setOneSetList = oneSetList;
     }
@@ -341,7 +339,7 @@ public class RecyclerViewOneSetsAdapter extends RecyclerView.Adapter<RecyclerVie
         private void lunchActivityToChoiseExercise(){
             //launch the activity with groups of muscles
             Intent intent = new Intent(context, MusclesGroupsActivity.class);
-            context.getActivityResultLauncher().launch(intent);
+            context.getActivityChoseExeLauncher().launch(intent);
 
             //save the position in SetActivity
             ((SetActivity) context).setPosition(getAbsoluteAdapterPosition());

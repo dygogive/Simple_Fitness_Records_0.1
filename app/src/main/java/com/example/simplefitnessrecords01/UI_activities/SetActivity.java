@@ -28,7 +28,7 @@ import com.example.simplefitnessrecords01.fitness.Muscles;
 import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 import com.example.simplefitnessrecords01.fitness.Weight;
-import com.example.simplefitnessrecords01.recycler_views.RecyclerViewOneSetsAdapter;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerOneSets;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
@@ -53,7 +53,7 @@ public class SetActivity extends AppCompatActivity {
     private String nameFitness;
 
     //Adapter RecyclerView
-    RecyclerViewOneSetsAdapter adapter;
+    AdapterRecyclerOneSets adapter;
 
     // current position of recycler
     private int positionOfRecycler = -1;
@@ -62,7 +62,7 @@ public class SetActivity extends AppCompatActivity {
     String[] extraFromExercise = null;
 
     //Triggers other activities from this activity
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<Intent> activityChoseExeLauncher, activityExercisesLauncher;
 
 
 
@@ -84,8 +84,8 @@ public class SetActivity extends AppCompatActivity {
         return nameFitness;
     }
 
-    public ActivityResultLauncher getActivityResultLauncher() {
-        return activityResultLauncher;
+    public ActivityResultLauncher getActivityChoseExeLauncher() {
+        return activityChoseExeLauncher;
     }
 
 
@@ -108,7 +108,7 @@ public class SetActivity extends AppCompatActivity {
 
 
         //launcher for activity to chose group of muscles
-        activityResultLauncher = registerForActivityResult(
+        activityChoseExeLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
@@ -126,6 +126,18 @@ public class SetActivity extends AppCompatActivity {
                         Toast.makeText(this, adapter.getOneSet(positionOfRecycler).getUniqueFitTraining(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+
+        activityExercisesLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == RESULT_OK) {
+                        Toast.makeText(this, "return from Exercises Activity", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
 
         //set action bar
         ActionBar actionBar = getSupportActionBar();
@@ -210,7 +222,7 @@ public class SetActivity extends AppCompatActivity {
     private void recycleViewInit() {
         List<OneSet> setsFitness = getSetsFitness();
         //Adapter for recycler
-        adapter = new RecyclerViewOneSetsAdapter(SetActivity.this, setsFitness);
+        adapter = new AdapterRecyclerOneSets(SetActivity.this, setsFitness);
         //manager for RECYCLER
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //set Adapter for recycler
@@ -310,6 +322,14 @@ public class SetActivity extends AppCompatActivity {
 
             case R.id.action_settings:
                 openSettingsLayout();
+                return true;
+
+            case R.id.exercises:
+
+                //launch the activity with all Exercises
+                Intent intent = new Intent(SetActivity.this, ExercisesActivity.class);
+                this.activityExercisesLauncher.launch(intent);
+
                 return true;
 
             case R.id.action_log_sql:

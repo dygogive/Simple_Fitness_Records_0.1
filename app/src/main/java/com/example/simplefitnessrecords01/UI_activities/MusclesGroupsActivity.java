@@ -38,8 +38,6 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
 
-    //Extra from Exercises Activity
-    String[] extraFromExercisesActiv = new String[] {"text1", "text2"};
 
 
 
@@ -215,7 +213,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             String childName = getChildText(expandableListView , groupPosition, childPosition);
 
             //Toast.makeText(this, groupName + " -> " + childName , Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MusclesGroupsActivity.this, ExercisesList.class);
+            Intent intent = new Intent(MusclesGroupsActivity.this, ExercisesActivity.class);
             intent.putExtra("muscleGroup" , new String[]{groupName,childName});
             activityResultLauncher.launch(intent);
 

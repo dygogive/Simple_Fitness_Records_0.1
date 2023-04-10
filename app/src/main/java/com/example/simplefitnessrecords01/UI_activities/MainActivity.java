@@ -1,6 +1,7 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,7 @@ import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
-import com.example.simplefitnessrecords01.recycler_views.RecyclerViewFitnessTrainingsAdapter;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerFitnessTrainings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Triggers other activities from this activity
     private ActivityResultLauncher activityResultLauncher;
+
+    //Triggers other activities from this activity
+    private ActivityResultLauncher<Intent> activityExercisesLauncher;
 
     //link to the Database Assistant
     SQLhelper sqLhelper;
@@ -102,6 +106,14 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        //launcher ExercisesActivity
+        activityExercisesLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == RESULT_OK) {
+                        Toast.makeText(this, "return from Exercises Activity", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
     }
@@ -136,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
         List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
 
         //create a new adapter with this list
-        RecyclerViewFitnessTrainingsAdapter adapter =
-                new RecyclerViewFitnessTrainingsAdapter(oneFitnessTrainingList, this);
+        AdapterRecyclerFitnessTrainings adapter =
+                new AdapterRecyclerFitnessTrainings(oneFitnessTrainingList, this);
 
         //the display manager of the elements is transferred
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -219,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     //update recycler view
     private void updateRecyclerView(){
         //from db to adapter update data
-        ((RecyclerViewFitnessTrainingsAdapter)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
+        ((AdapterRecyclerFitnessTrainings)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
         //notify adapter
         binding.recyclerView.getAdapter().notifyDataSetChanged();
     }
@@ -227,22 +239,22 @@ public class MainActivity extends AppCompatActivity {
     //getUniqueName
     private String getUniqueName(int position) {
         //адаптер
-        RecyclerViewFitnessTrainingsAdapter recyclerViewFitnessTrainingsAdapter =
-                (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
+        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
+                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        OneFitnessTraining training = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu);
+        OneFitnessTraining training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
         String uniqueName = training.getDay() + training.getName() + training.getInfo();
 
         return uniqueName;
     }
     private String[] getUniqueNameArray(int position) {
         //адаптер
-        RecyclerViewFitnessTrainingsAdapter recyclerViewFitnessTrainingsAdapter =
-                (RecyclerViewFitnessTrainingsAdapter) binding.recyclerView.getAdapter();
+        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
+                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        OneFitnessTraining training = recyclerViewFitnessTrainingsAdapter.getItem(positioContextMenu);
+        OneFitnessTraining training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
 
         String[] uniqueName = new String[3];
 
@@ -307,6 +319,15 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_settings: openSettingsLayout();
                 return true;
+
+            case R.id.exercises:
+
+                //launch the activity with all Exercises
+                Intent intent = new Intent(MainActivity.this, ExercisesActivity.class);
+                this.activityExercisesLauncher.launch(intent);
+
+                return true;
+
 
             case R.id.action_log_sql:
                 //show table SQL in LOG

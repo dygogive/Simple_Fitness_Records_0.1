@@ -32,6 +32,7 @@ public class SQLhelper extends SQLiteOpenHelper {
     public static final String COLUMN_MUSCLES1 = "muscles1";
     public static final String COLUMN_MUSCLES2 = "muscles2";
     public static final String COLUMN_MUSCLES3 = "muscles3";
+    public static final String COLUMN_MUSCLES4 = "muscles4";
     public static final String COLUMN_WEIGHT = "weight";
     public static final String COLUMN_REPEATS = "repeats";
     public static final String COLUMN_UNIC_NAME = "unicName";
@@ -247,7 +248,8 @@ public class SQLhelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " " +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_UNIC_NAME + " TEXT, " + COLUMN_GROUP + " TEXT, "
-                + COLUMN_MUSCLES1 + " TEXT, " + COLUMN_MUSCLES2 + " TEXT, " + COLUMN_MUSCLES3 + " TEXT, " + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
+                + COLUMN_MUSCLES1 + " TEXT, " + COLUMN_MUSCLES2 + " TEXT, " + COLUMN_MUSCLES3 + " TEXT, "
+                + COLUMN_MUSCLES4 + " TEXT, " + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
 
     }
 

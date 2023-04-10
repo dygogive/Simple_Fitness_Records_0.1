@@ -20,35 +20,37 @@
         android:textIsSelectable="false"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvExerciceName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:focusable="true"
         android:hint="@string/exercise"
         android:inputType="textMultiLine|text"
         android:textIsSelectable="false"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvExerciceGroup"
-        app:layout_constraintTop_toBottomOf="@+id/tvExerciceGroup" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_muskles" />
 
     <EditText
         android:id="@+id/etWeight"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/weight"
         android:inputType="numberDecimal"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvExerciceGroup"
-        app:layout_constraintTop_toBottomOf="@+id/tvExerciceName" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_tuype_set" />
 
     <EditText
         android:id="@+id/etRepeat"
@@ -62,6 +64,33 @@
         app:layout_constraintBottom_toBottomOf="@+id/etWeight"
         app:layout_constraintStart_toEndOf="@+id/etWeight"
         app:layout_constraintTop_toTopOf="@+id/etWeight" />
+
+    <TextView
+        android:id="@+id/tv_tuype_set"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="Type of set"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvExerciceName" />
+
+    <TextView
+        android:id="@+id/tv_muskles"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="Muscles"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvExerciceGroup" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

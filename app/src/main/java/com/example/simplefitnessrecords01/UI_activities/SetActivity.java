@@ -20,9 +20,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.simplefitnessrecords01.fitness.BodyPart;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
 import com.example.simplefitnessrecords01.fitness.ExerciseGroup;
+import com.example.simplefitnessrecords01.fitness.Muscles;
 import com.example.simplefitnessrecords01.fitness.Repeats;
 import com.example.simplefitnessrecords01.fitness.OneSet;
 import com.example.simplefitnessrecords01.fitness.Weight;
@@ -32,6 +34,7 @@ import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SetActivity extends AppCompatActivity {
@@ -109,7 +112,13 @@ public class SetActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
+
+                        //get data for new Exercise
                         extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
+
+                        //new Exercise
+                        Exercise exe = new Exercise("exe chosen" ,  new BodyPart(extraFromExercise[0]),
+                                new Muscles( Arrays.copyOfRange(extraFromExercise,1,extraFromExercise.length - 1) ));
 
                         //change in database
                         sqLhelper.updateRowSets(positionOfRecycler, nameFitness, extraFromExercise);
@@ -117,8 +126,6 @@ public class SetActivity extends AppCompatActivity {
                         Toast.makeText(this, adapter.getOneSet(positionOfRecycler).getUniqueFitTraining(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
 
         //set action bar
         ActionBar actionBar = getSupportActionBar();
@@ -235,7 +242,7 @@ public class SetActivity extends AppCompatActivity {
                 int rep        = c.getInt(id_rep);
 
                 //add to list
-                setsFitness.add(   new OneSet( id, new ExerciseGroup(group), new Exercise(exe) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , uniName  )   );
+                setsFitness.add(   new OneSet( id, new ExerciseGroup(group), new Exercise(exe, null,null) , new ExecutedExercise(new Weight(wei) , new Repeats(rep)) , uniName  )   );
 
             } while (c.moveToNext());
         } else {

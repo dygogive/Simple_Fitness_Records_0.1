@@ -68,7 +68,7 @@ public class OneSet {
     }
 
     public OneSet(String uniqueFitTraining) {
-        this.exe = new Exercise();
+        this.exe = new Exercise("",null , null);
         this.exerciseGroup = new ExerciseGroup();
         this.executedExercise = new ExecutedExercise(new Weight(0),new Repeats(0));
         this.id = -1;

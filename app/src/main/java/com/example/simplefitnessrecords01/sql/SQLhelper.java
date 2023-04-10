@@ -29,6 +29,9 @@ public class SQLhelper extends SQLiteOpenHelper {
     public static final String TABLE_SETS = "tableSets";
     public static final String COLUMN_EXE = "exe";
     public static final String COLUMN_GROUP = "exegroup";
+    public static final String COLUMN_MUSCLES1 = "muscles1";
+    public static final String COLUMN_MUSCLES2 = "muscles2";
+    public static final String COLUMN_MUSCLES3 = "muscles3";
     public static final String COLUMN_WEIGHT = "weight";
     public static final String COLUMN_REPEATS = "repeats";
     public static final String COLUMN_UNIC_NAME = "unicName";
@@ -102,7 +105,6 @@ public class SQLhelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-
     //methods for changing rows
     public void deleteRowTrainings(String[] uniqueName) {
         //code to delete
@@ -114,6 +116,7 @@ public class SQLhelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL(sql, where_args);
     }
 
+    //
     public void updateRowTrainings(int position, String[] data) {
         //get strings from dialog
         ContentValues cv = new ContentValues();
@@ -195,10 +198,8 @@ public class SQLhelper extends SQLiteOpenHelper {
 
     public void updateRowSets(int position, String unicName, String[] groupExercise) {
 
-
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_GROUP, groupExercise[0] + ": " + groupExercise[1]);
-        cv.put(COLUMN_EXE, "Some exe");
+        cv.put(COLUMN_GROUP, groupExercise[0]);
 
         //get cursor from table sql
         Cursor c = getWritableDatabase().query(TABLE_SETS,null,COLUMN_UNIC_NAME + " = ?",new String[]{unicName},null,null,null);
@@ -211,7 +212,6 @@ public class SQLhelper extends SQLiteOpenHelper {
             getWritableDatabase().update(SQLhelper.TABLE_SETS, cv, whereClause, whereArgs);
             cv.clear();
         }
-
     }
 
 
@@ -247,7 +247,7 @@ public class SQLhelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETS + " " +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_UNIC_NAME + " TEXT, " + COLUMN_GROUP + " TEXT, "
-                + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
+                + COLUMN_MUSCLES1 + " TEXT, " + COLUMN_MUSCLES2 + " TEXT, " + COLUMN_MUSCLES3 + " TEXT, " + COLUMN_EXE + " TEXT, " + COLUMN_WEIGHT + " INTEGER, " + COLUMN_REPEATS + " INTEGER)");
 
     }
 

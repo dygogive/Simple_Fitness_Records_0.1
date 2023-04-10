@@ -2,6 +2,8 @@ package com.example.simplefitnessrecords01.fitness;
 
 import androidx.annotation.StyleableRes;
 
+import java.util.Arrays;
+
 public class Muscles {
 
     String[] muscles;
@@ -11,6 +13,6 @@ public class Muscles {
     }
 
     public Muscles(String[] muscles) {
-        this.muscles = muscles;
+        this.muscles = Arrays.copyOfRange(muscles, 0 , 4);
     }
 }

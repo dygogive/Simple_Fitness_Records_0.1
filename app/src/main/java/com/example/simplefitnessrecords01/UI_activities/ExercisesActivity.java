@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -108,7 +109,15 @@ public class ExercisesActivity extends AppCompatActivity {
         }
 
 
-
+        for(int i = 0; i < 10; i++) {
+            ContentValues cv = new ContentValues();
+            cv.put(SQLhelper.COLUMN_NAME_EXE, "Exe " + i);
+            cv.put(SQLhelper.COLUMN_MUSCLE1, "Muscle " + 1);
+            cv.put(SQLhelper.COLUMN_MUSCLE2, "Muscle " + 2);
+            cv.put(SQLhelper.COLUMN_MUSCLE3, "Muscle " + 3);
+            cv.put(SQLhelper.COLUMN_MUSCLE4, "Muscle " + 4);
+            database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
+        }
 
 
 

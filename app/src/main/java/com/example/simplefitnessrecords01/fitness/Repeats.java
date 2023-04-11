@@ -9,21 +9,19 @@ public class Repeats {
 
 
     /* GETTERS AND SETTERS */
-    public int getIntRepeats() {
-        return repeats;
-    }
     @NonNull
     @Override
     public String toString() {
         return String.valueOf(repeats);
     }
 
-    public void changeRepeats(String s) {
-        repeats = Integer.parseInt(s);
+    public int toInt() {
+        return repeats;
     }
 
-
-
+    public void setRepeats(int repeats) {
+        this.repeats = repeats;
+    }
 
     /* CONSTRUCTOR */
     public Repeats(int repeats) {

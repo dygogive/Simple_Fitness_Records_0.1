@@ -9,14 +9,8 @@ public class Exercise {
     /* PARAMETERS */
     private String exerciseName;
 
-    private MuscleGroup[] muscleGroups;
+    private MuscleGroup muscleGroup;
 
-    public MuscleGroup[] getMuscleGroups() {
-        return muscleGroups;
-    }
-    public MuscleGroup getMuscleGroup(int pos) {
-        return muscleGroups[pos];
-    }
 
 
 
@@ -29,20 +23,19 @@ public class Exercise {
     public String toString() {
         return exerciseName;
     }
-    public void setExeName(String my_new_exeName) {
-        exerciseName = my_new_exeName;
+
+    public void setExerciseName(String exerciseName) {
+        this.exerciseName = exerciseName;
     }
 
-
-
-
-
-
+    public MuscleGroup getMuscleGroup() {
+        return muscleGroup;
+    }
 
     /* CONSTRUCTOR */
-    public Exercise(String exerciseName, MuscleGroup[] muscleGroups) {
+    public Exercise(String exerciseName, MuscleGroup muscleGroup) {
         this.exerciseName = exerciseName;
-        this.muscleGroups = muscleGroups;
+        this.muscleGroup = muscleGroup;
     }
 
 }

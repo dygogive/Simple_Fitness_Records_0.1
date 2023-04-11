@@ -18,7 +18,6 @@ import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
-import com.example.simplefitnessrecords01.fitness.Muscles;
 import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
@@ -116,20 +115,22 @@ public class ExercisesActivity extends AppCompatActivity {
 
             String[] groups = this.getResources().getStringArray(R.array.muscles_groups);
             String[] muscles = this.getResources().getStringArray(R.array.lower_body);
-            Muscles muscles1 = new Muscles(Arrays.copyOfRange(muscles, 0, 3));
 
-            MuscleGroup muscleGroup = new MuscleGroup(groups[0],muscles1);
-            Exercise exe = new Exercise("Exe " + i , new MuscleGroup[]{muscleGroup} );
+            MuscleGroup muscleGroup = new MuscleGroup(groups[0], muscles);
+
+            Exercise exe = new Exercise("Exe " + i , muscleGroup);
             exerciseList.add(exe);
         }
 
+        String[] arr = null;
         for(Exercise exe : exerciseList) {
             ContentValues cv = new ContentValues();
-            cv.put(SQLhelper.COLUMN_NAME_EXE, exe.toString());
-            cv.put(SQLhelper.COLUMN_MUSCLE1, exe.getMuscleGroup[0]);
-            cv.put(SQLhelper.COLUMN_MUSCLE2, "Muscle " + 2);
-            cv.put(SQLhelper.COLUMN_MUSCLE3, "Muscle " + 3);
-            cv.put(SQLhelper.COLUMN_MUSCLE4, "Muscle " + 4);
+            cv.put( SQLhelper.COLUMN_NAME_EXE, exe.toString());
+            arr = exe.getMuscleGroup().getMuscles();
+            cv.put( SQLhelper.COLUMN_MUSCLE1,  arr[0]);
+            cv.put( SQLhelper.COLUMN_MUSCLE2,  arr[1]);
+            cv.put( SQLhelper.COLUMN_MUSCLE3,  arr[2]);
+            cv.put( SQLhelper.COLUMN_MUSCLE4,  arr[3]);
             database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
         }
 

@@ -22,7 +22,7 @@ import com.example.simplefitnessrecords01.dialog.DialogOnClick;
 import com.example.simplefitnessrecords01.dialog.DialogUniqueNameProcessor;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.OneFitnessTraining;
+import com.example.simplefitnessrecords01.fitness.Training;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
     //initialization recycleView list of created fitness workouts
     private void recycleViewInit() {
         //get setTrainingList from database
-        List<OneFitnessTraining> oneFitnessTrainingList = getFitnessList();
+        List<Training> trainingList = getFitnessList();
 
         //create a new adapter with this list
         AdapterRecyclerFitnessTrainings adapter =
-                new AdapterRecyclerFitnessTrainings(oneFitnessTrainingList, this);
+                new AdapterRecyclerFitnessTrainings(trainingList, this);
 
         //the display manager of the elements is transferred
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -185,10 +185,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //method creates a list of database names
-    private List<OneFitnessTraining>  getFitnessList(){
+    private List<Training>  getFitnessList(){
 
         //empty list for SetTraining from base for recycler
-        List<OneFitnessTraining> oneFitnessTrainingList = new ArrayList<>();
+        List<Training> trainingList = new ArrayList<>();
 
         //cursor from base with selection of all
         Cursor cursor = db.rawQuery("SELECT * FROM " + SQLhelper.TABLE_TRAININGS, null);
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
 
                 //add a row from the database to the list
-                oneFitnessTrainingList.add(   new OneFitnessTraining(id, day, name, subname)   );
+                trainingList.add(   new Training(id, day, name, subname)   );
             } while (cursor.moveToNext());
         } else {
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
         //повернути список об'єктів тренувань
-        return oneFitnessTrainingList;
+        return trainingList;
     }
 
     //update recycler view
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        OneFitnessTraining training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+        Training training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
         String uniqueName = training.getDay() + training.getName() + training.getInfo();
 
         return uniqueName;
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        OneFitnessTraining training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+        Training training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
 
         String[] uniqueName = new String[3];
 

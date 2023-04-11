@@ -18,7 +18,7 @@ import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.MusclesGroupsActivity;
 import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerSetActivityBinding;
-import com.example.simplefitnessrecords01.fitness.OneSet;
+import com.example.simplefitnessrecords01.fitness.SetTraining;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,32 +31,32 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
     //LIST of performed approaches in training
-    private List<OneSet> setOneSetList = new ArrayList<>();
+    private List<SetTraining> setSetTrainingList = new ArrayList<>();
 
 
 
     /********  GETTERS-SETTERS ********************/
-    public List<OneSet> getSetOneSetList() {
-        return setOneSetList;
+    public List<SetTraining> getSetOneSetList() {
+        return setSetTrainingList;
     }
 
     //Задати список підходів
-    public void setSetOneSetList(List<OneSet> setOneSetList) {
-        this.setOneSetList = setOneSetList;
+    public void setSetOneSetList(List<SetTraining> setSetTrainingList) {
+        this.setSetTrainingList = setSetTrainingList;
     }
 
     //Add another set to the adapter list
-    public void addOneSet(OneSet set) {
-        setOneSetList.add(set);
+    public void addOneSet(SetTraining set) {
+        setSetTrainingList.add(set);
     }
-    public OneSet getOneSet(int position) {
-        return setOneSetList.get(position);
+    public SetTraining getOneSet(int position) {
+        return setSetTrainingList.get(position);
     }
 
     //The method returns the number of objects
     @Override
     public int getItemCount() {
-        return setOneSetList.size();
+        return setSetTrainingList.size();
     }
 
 
@@ -73,9 +73,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
         this.context = (SetActivity) context;
     }
 
-    public AdapterRecyclerOneSets(Context context, List<OneSet> oneSetList) {
+    public AdapterRecyclerOneSets(Context context, List<SetTraining> setTrainingList) {
         this.context = (SetActivity) context;
-        this.setOneSetList = oneSetList;
+        this.setSetTrainingList = setTrainingList;
     }
 
 
@@ -102,9 +102,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
     @Override
     public void onBindViewHolder(@NonNull HolderSetFitList holder, int position) {
         //Витягти об'єкт зі списку
-        OneSet oneSet = setOneSetList.get(position);
+        SetTraining setTraining = setSetTrainingList.get(position);
         //Через метод в холдері запихнути дані в В'ю
-        holder.initItemView(oneSet);
+        holder.initItemView(setTraining);
     }
 
 
@@ -122,7 +122,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
         //object in holder
-        OneSet oneSet1 = null;
+        SetTraining setTraining1 = null;
 
         //binder
         RecyclerSetActivityBinding binding = RecyclerSetActivityBinding.bind(itemView);
@@ -190,7 +190,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                oneSet1.getExerciseGroup().setExeGroupName(s.toString());
+                                setTraining1.getExecutedExercise().getMuscleGroup().setBodyPart(s.toString());
                             //save change in DataBase
                             ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
@@ -218,7 +218,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                oneSet1.getExe().setExeName(s.toString());
+                                setTraining1.getExecutedExercise().setExerciseName(s.toString());
                             //save change in DataBase
                             ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
@@ -249,7 +249,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                oneSet1.getRecordSet().getRepeats().changeRepeats(s.toString());
+                                setTraining1.getExecutedExercise().getRepeats().setRepeats(Integer.parseInt(s.toString()));
                             //save change in DataBase
                             ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
@@ -279,7 +279,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                oneSet1.getRecordSet().getWeight().changeWeight(s.toString());
+                                setTraining1.getExecutedExercise().getWeight().setWeight(Integer.parseInt(s.toString()));
                             //save change in DataBase
                             ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
                         }
@@ -291,22 +291,22 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
         //Processing data from the object to animate the view in this holder
-        void initItemView(OneSet oneSet){
+        void initItemView(SetTraining setTraining){
             //object in holder
-            oneSet1 = oneSet;
+            setTraining1 = setTraining;
 
             //put data to item from object
-            String exeGroupName = oneSet.getExerciseGroup().toString();
+            String exeGroupName = setTraining.getExecutedExercise().getMuscleGroup().getBodyPart();
             binding.tvExerciceGroup.setText(exeGroupName);
             //
-            String exeName = oneSet.getExe().toString();
+            String exeName = setTraining.getExecutedExercise().toString();
             binding.tvExerciceName.setText(exeName);
             //
-            int weight = oneSet.getRecordSet().getWeight().getIntWeight();
+            int weight = setTraining.getExecutedExercise().getWeight().toInt();
             binding.etWeight.setText(String.valueOf(weight));
             if (weight == 0) binding.etWeight.setText("");
             //
-            int repeats = oneSet.getRecordSet().getRepeats().getIntRepeats();
+            int repeats = setTraining.getExecutedExercise().getRepeats().toInt();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
             //

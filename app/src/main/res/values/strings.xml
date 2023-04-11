@@ -38,7 +38,7 @@
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <string name="text_settings">Text settings</string>
-    <string name="group_of_muscles">Group of muscles</string>
+    <string name="group_of_muscles">Group of muscle</string>
     <string name="muscles_of_group">Muscles of group</string>
     <string name="exercises">Exercises</string>
 </resources>

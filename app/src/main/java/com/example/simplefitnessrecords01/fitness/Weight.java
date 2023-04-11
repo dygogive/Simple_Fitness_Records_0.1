@@ -9,22 +9,22 @@ public class Weight {
 
 
 
+
+
     /* GETTERS AND SETTERS */
-    public int getIntWeight() {
-        return weight;
-    }
     @NonNull
     @Override
     public String toString() {
         return String.valueOf(weight);
     }
 
-    public void changeWeight(String w) {
-        weight = Integer.parseInt(w);
+    public int toInt() {
+        return weight;
     }
 
-
-
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
     /* CONSTRUCTOR */
     public Weight(int weight) {

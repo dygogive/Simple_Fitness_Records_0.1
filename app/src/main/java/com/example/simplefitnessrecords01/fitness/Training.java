@@ -1,10 +1,11 @@
 package com.example.simplefitnessrecords01.fitness;
 
-public class OneFitnessTraining {
-    
+public class Training {
+
+
     /* PARAMETERS */
     private int id;
-    private String day, name, subName;
+    private String day, name, inform;
 
 
     
@@ -14,17 +15,10 @@ public class OneFitnessTraining {
         this.id = id;
     }
 
-    public void setDay(String day) {
-        this.day = day;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setSubname(String subname) {
-        this.subName = subname;
-    }
 
     public int getId() {
         return id;
@@ -39,7 +33,7 @@ public class OneFitnessTraining {
     }
 
     public String getInfo() {
-        return subName;
+        return inform;
     }
 
     
@@ -48,10 +42,10 @@ public class OneFitnessTraining {
     
 
     /* CONSTRUCTOR */
-    public OneFitnessTraining(int id, String day, String name, String subName) {
+    public Training(int id, String day, String name, String inform) {
         this.id = id;
         this.day = day;
         this.name = name;
-        this.subName = subName;
+        this.inform = inform;
     }
 }

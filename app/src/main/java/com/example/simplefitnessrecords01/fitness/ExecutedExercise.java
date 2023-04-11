@@ -18,15 +18,14 @@ public class ExecutedExercise extends Exercise {
     }
 
 
-    /* CONSTRUCTOR */
-    public ExecutedExercise(Weight weight, Repeats repeats) {
-        super("null" , null , null);
-        this.weight = weight;
-        this.repeats = repeats;
-    }
 
-    public ExecutedExercise(String exeName, MuscleGroup muscleGroup, Muscles muscles, Weight weight, Repeats repeats) {
-        super(exeName , muscleGroup, muscles);
+
+
+
+    /* CONSTRUCTOR */
+
+    public ExecutedExercise(String exeName, MuscleGroup muscleGroup, Weight weight, Repeats repeats) {
+        super(exeName , muscleGroup);
         this.weight = weight;
         this.repeats = repeats;
     }

@@ -82,7 +82,7 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
 
 
         private void onBind(Exercise exercise) {
-            itemBinding.textView2.setText(exercise.toString());
+            itemBinding.tvExercise.setText(exercise.toString());
         }
 
     }

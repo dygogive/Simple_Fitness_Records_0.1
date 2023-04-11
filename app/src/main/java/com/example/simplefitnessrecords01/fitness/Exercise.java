@@ -9,8 +9,18 @@ public class Exercise {
     /* PARAMETERS */
     private String exerciseName;
 
-    private Muscles muscles;
-    private BodyPart bodyPart;
+    private MuscleGroup[] muscleGroups;
+
+    public MuscleGroup[] getMuscleGroups() {
+        return muscleGroups;
+    }
+    public MuscleGroup getMuscleGroup(int pos) {
+        return muscleGroups[pos];
+    }
+
+
+
+
 
 
     /* GETTERS AND SETTERS */
@@ -30,10 +40,9 @@ public class Exercise {
 
 
     /* CONSTRUCTOR */
-    public Exercise(String exerciseName, BodyPart bodyPart, Muscles muscles) {
+    public Exercise(String exerciseName, MuscleGroup[] muscleGroups) {
         this.exerciseName = exerciseName;
-        this.bodyPart = bodyPart;
-        this.muscles = muscles;
+        this.muscleGroups = muscleGroups;
     }
 
 }

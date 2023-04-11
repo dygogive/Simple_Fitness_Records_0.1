@@ -25,8 +25,8 @@ public class ExecutedExercise extends Exercise {
         this.repeats = repeats;
     }
 
-    public ExecutedExercise(String exeName, BodyPart bodyPart, Muscles muscles, Weight weight, Repeats repeats) {
-        super(exeName , bodyPart , muscles);
+    public ExecutedExercise(String exeName, MuscleGroup muscleGroup, Muscles muscles, Weight weight, Repeats repeats) {
+        super(exeName , muscleGroup, muscles);
         this.weight = weight;
         this.repeats = repeats;
     }

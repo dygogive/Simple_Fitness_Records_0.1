@@ -20,7 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.simplefitnessrecords01.fitness.BodyPart;
+import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
 import com.example.simplefitnessrecords01.fitness.ExerciseGroup;
@@ -117,7 +117,7 @@ public class SetActivity extends AppCompatActivity {
                         extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
 
                         //new Exercise
-                        Exercise exe = new Exercise("exe chosen" ,  new BodyPart(extraFromExercise[0]),
+                        Exercise exe = new Exercise("exe chosen" ,  new MuscleGroup(extraFromExercise[0]),
                                 new Muscles( Arrays.copyOfRange(extraFromExercise,1,extraFromExercise.length - 1) ));
 
                         //change in database
@@ -334,7 +334,7 @@ public class SetActivity extends AppCompatActivity {
 
             case R.id.action_log_sql:
                 //table SQL to log
-                sqLhelper.getTableInLogSets("MainActSQLog", nameFitness);
+                sqLhelper.getTableInLogSets("Table_in_LOG", nameFitness);
 
 
                 return true;

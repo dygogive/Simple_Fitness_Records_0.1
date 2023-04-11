@@ -11,18 +11,22 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
+import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
+import com.example.simplefitnessrecords01.fitness.Muscles;
 import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ExercisesActivity extends AppCompatActivity {
-
 
     private ActivityExerciseListBinding binding;
 
@@ -33,7 +37,6 @@ public class ExercisesActivity extends AppCompatActivity {
 
     String[] extraArrayGroupMuscle = null;
 
-
     //Names of muscle groups
     String textGroup;
     String textMuscle;
@@ -41,6 +44,9 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+
+
+    /*************************** LIFECYCLE ACTIVITY ***************************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,10 @@ public class ExercisesActivity extends AppCompatActivity {
     }
 
 
-    //RecyclerView initializing
+
+
+
+    /****************** RecyclerView initializing ****************************/
     private void recyclerInit() {
         adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
@@ -104,25 +113,25 @@ public class ExercisesActivity extends AppCompatActivity {
     private List<Exercise> getExercises() {
         List<Exercise> exerciseList = new LinkedList<>();
         for(int i = 0; i < 10; i++) {
-            Exercise exe = new Exercise("Exe " + i , null , null);
+
+            String[] groups = this.getResources().getStringArray(R.array.muscles_groups);
+            String[] muscles = this.getResources().getStringArray(R.array.lower_body);
+            Muscles muscles1 = new Muscles(Arrays.copyOfRange(muscles, 0, 3));
+
+            MuscleGroup muscleGroup = new MuscleGroup(groups[0],muscles1);
+            Exercise exe = new Exercise("Exe " + i , new MuscleGroup[]{muscleGroup} );
             exerciseList.add(exe);
         }
 
-
-        for(int i = 0; i < 10; i++) {
+        for(Exercise exe : exerciseList) {
             ContentValues cv = new ContentValues();
-            cv.put(SQLhelper.COLUMN_NAME_EXE, "Exe " + i);
-            cv.put(SQLhelper.COLUMN_MUSCLE1, "Muscle " + 1);
+            cv.put(SQLhelper.COLUMN_NAME_EXE, exe.toString());
+            cv.put(SQLhelper.COLUMN_MUSCLE1, exe.getMuscleGroup[0]);
             cv.put(SQLhelper.COLUMN_MUSCLE2, "Muscle " + 2);
             cv.put(SQLhelper.COLUMN_MUSCLE3, "Muscle " + 3);
             cv.put(SQLhelper.COLUMN_MUSCLE4, "Muscle " + 4);
             database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
         }
-
-
-
-
-
 
 
 
@@ -134,10 +143,23 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+
     /************************ OPTIONS MENU *****************************/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflating the menu resource using MenuInflater
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent returnIntent = new Intent();
@@ -147,9 +169,23 @@ public class ExercisesActivity extends AppCompatActivity {
                 } else setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
                 return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+            case R.id.action_new:
+
+                return true;
+
+            case R.id.action_settings:
+
+                return true;
+
+            case R.id.action_log_sql:
+                //show table SQL in LOG
+                sqLhelper.getTableInLogTrainings("Table_in_LOG");
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

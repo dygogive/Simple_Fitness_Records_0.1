@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_log_sql:
                 //show table SQL in LOG
-                sqLhelper.getTableInLogTrainings("MainActSQLog");
+                sqLhelper.getTableInLogTrainings("Table_in_LOG");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

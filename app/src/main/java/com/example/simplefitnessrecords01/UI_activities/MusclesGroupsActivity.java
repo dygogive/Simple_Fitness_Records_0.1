@@ -10,12 +10,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
@@ -24,7 +26,8 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityMusclesGroupsBinding;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -188,17 +191,17 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         );
 
         if(intentExtra.equals("StartNewExercise")) {
-            MyExpandableListAdapter myExpandableListAdapter = new MyExpandableListAdapter(
-                    MusclesGroupsActivity.this, Arrays.asList(groups),
-            );
-
-
-
-
-
-
-
-            expandableListView.setAdapter(simpleExpandableListAdapter);
+//            MyExpandableListAdapter myExpandableListAdapter = new MyExpandableListAdapter(
+//                    MusclesGroupsActivity.this, Arrays.asList(groups),
+//            );
+//
+//
+//
+//
+//
+//
+//
+//            expandableListView.setAdapter(simpleExpandableListAdapter);
         }
 
         expandableListView.setAdapter(simpleExpandableListAdapter);
@@ -253,12 +256,16 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     }
 
 
-    private Map<String, List<String>> getMapItems(String[] groups, List<String[]> childs) {
-        Map<String, List<String>> mapItems = new HashMap<>();
+    private Map<String, List<String>> getMapItems (String[] groups, List<String[]> childs) {
 
+        Map < String, List<String> > mapItems = new HashMap<>();
 
+        int i = 0;
+        for( String group : groups ) {
+            mapItems.put(group , List.of(childs.get(i++)));
+        }
 
-
+        return mapItems;
     }
 
 
@@ -327,87 +334,91 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     public static class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
         private Context context;
-        private List<String> listDataHeader;
-        private HashMap<String, List<String>> listDataChild;
+        //
+        private List<String> groups;
+        private Map<String, List<String>> items;
+        //
+        private Map<String, Boolean> groupSelections;
+        private Map<String, List<Boolean>> itemSelections;
 
-        public MyExpandableListAdapter(Context context, List<String> listDataHeader,
-                                       HashMap<String, List<String>> listChildData) {
+
+
+
+        public MyExpandableListAdapter(Context context, List<String> groups, Map<String, List<String>> items) {
             this.context = context;
-            this.listDataHeader = listDataHeader;
-            this.listDataChild = listChildData;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            // Код для отримання вигляду заголовку
-        }
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
-            String childText = (String) getChild(groupPosition, childPosition);
-            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.list_item, null);
+            this.groups = groups;
+            this.items = items;
+            this.groupSelections = new HashMap<>();
+            this.itemSelections = new HashMap<>();
+            for (String group : groups) {
+                groupSelections.put(group, false);
+                itemSelections.put(group, new ArrayList<Boolean>(Collections.nCopies(items.get(group).size(), false)));
             }
-
-            TextView txtListChild = (TextView) convertView.findViewById(R.id.textView);
-            txtListChild.setText(childText);
-
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-            checkBox.setChecked(false);
-            checkBox.setVisibility(View.VISIBLE);
-
-            return convertView;
         }
+
+
 
         @Override
         public int getGroupCount() {
-            return 0;
+            return groups.size();
         }
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return 0;
+            return items.get(groups.get(groupPosition)).size();
         }
 
         @Override
         public Object getGroup(int groupPosition) {
-            return null;
+            return groups.get(groupPosition);
         }
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return null;
+            return items.get(groups.get(groupPosition)).get(childPosition);
         }
 
         @Override
         public long getGroupId(int groupPosition) {
-            return 0;
+            return groupPosition;
         }
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            return 0;
+            return childPosition;
         }
 
         @Override
         public boolean hasStableIds() {
-            return false;
+            return  true;
         }
 
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            return null;
+            if(convertView == null) {
+                convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_group, parent, false);
+            }
+
+            CheckBox checkGroup = convertView.findViewById(R.id.chkGroup);
+            String groupName    = (String) getGroup(groupPosition);
+
+            checkGroup.setChecked(groupSelections.get(groupName));
+            checkGroup.setText(groupName);
+
+
+
+            return  null;
+        }
+
+        @Override
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            return  null;
         }
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+            return false;
         }
-
-        // Код для інших методів
     }
 
 }

@@ -103,6 +103,41 @@ public class SQLhelper extends SQLiteOpenHelper {
     }
 
 
+    //methog give all information in Log
+    public void getTableInLogExercises(String logTag){
+        SQLiteDatabase db = this.getWritableDatabase();
+        //Cursor c = db.query(TABLE_SETS,null, COLUMN_UNIQUE_NAME + " = ?",new String[]{selection},null,null,null);
+        Cursor c = db.query(TABLE_EXERCISES,null, null,null,null,null,null);
+
+        if(c.moveToNext()){
+            int id_id        = c.getColumnIndex(COLUMN_ID    );
+            int id_exename = c.getColumnIndex(COLUMN_NAME_EXE);
+            int id_group   = c.getColumnIndex(COLUMN_GROUP   );
+            int id_muscle1 = c.getColumnIndex(COLUMN_MUSCLE1 );
+            int id_muscle2 = c.getColumnIndex(COLUMN_MUSCLE2 );
+            int id_muscle3 = c.getColumnIndex(COLUMN_MUSCLE3 );
+            int id_muscle4 = c.getColumnIndex(COLUMN_MUSCLE4 );
+            do {
+                int id           = c.getInt   (id_id     );
+                String exename   = c.getString(id_exename);
+                String group     = c.getString(id_group  );
+                String muscle1   = c.getString(id_muscle1);
+                String muscle2   = c.getString(id_muscle2);
+                String muscle3   = c.getString(id_muscle3);
+                String muscle4   = c.getString(id_muscle4);
+
+                Log.d(logTag, "Table " + TABLE_EXERCISES + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_NAME_EXE + " - " +
+                        exename + " ; " + COLUMN_GROUP + " - " +  group + " ; " + COLUMN_MUSCLE1 + " - " +
+                        muscle1 + " ; " + COLUMN_MUSCLE2 + " - " +  muscle2 + " ; " + COLUMN_MUSCLE3 + " - " +  muscle3 + " ; "
+                        + COLUMN_MUSCLE4 + " - " +  muscle4 + " ; ");
+
+            } while ( c.moveToNext() );
+        }else Log.d(logTag, "Table " + TABLE_EXERCISES + " is empty.");
+
+        c.close();
+    }
+
+
 
 
 

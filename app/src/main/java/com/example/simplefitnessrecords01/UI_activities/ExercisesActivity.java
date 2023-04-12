@@ -79,23 +79,23 @@ public class ExercisesActivity extends AppCompatActivity {
     private void processIntentExtra() {
         //Intent with info
         Intent intent = getIntent();
-        Log.d("whereIs" , "test - 1");
+
         //Info from the intent
         extraArrayGroupMuscle = intent.getStringArrayExtra("muscleGroup");
-        Log.d("whereIs" , "test - 2");
+
         //text strings from the info from the intent
         if(extraArrayGroupMuscle != null) {
             textGroup  = extraArrayGroupMuscle[0];
             textMuscle = extraArrayGroupMuscle[1];
         }
-        Log.d("whereIs" , "test - 3");
+
 
 
         //display texts on the screen
         binding.tvGroup.setText(textGroup);
         binding.tvChild.setText(textMuscle);
 
-        Log.d("whereIs" , "test - 4");
+        Log.d("whereIs" , "test - 0");
     }
 
 
@@ -111,28 +111,40 @@ public class ExercisesActivity extends AppCompatActivity {
 
     private List<Exercise> getExercises() {
         List<Exercise> exerciseList = new LinkedList<>();
-        for(int i = 0; i < 10; i++) {
 
-            String[] groups = this.getResources().getStringArray(R.array.muscles_groups);
-            String[] muscles = this.getResources().getStringArray(R.array.lower_body);
 
-            MuscleGroup muscleGroup = new MuscleGroup(groups[0], muscles);
 
-            Exercise exe = new Exercise("Exe " + i , muscleGroup);
-            exerciseList.add(exe);
-        }
 
-        String[] arr = null;
-        for(Exercise exe : exerciseList) {
-            ContentValues cv = new ContentValues();
-            cv.put( SQLhelper.COLUMN_NAME_EXE, exe.toString());
-            arr = exe.getMuscleGroup().getMuscles();
-            cv.put( SQLhelper.COLUMN_MUSCLE1,  arr[0]);
-            cv.put( SQLhelper.COLUMN_MUSCLE2,  arr[1]);
-            cv.put( SQLhelper.COLUMN_MUSCLE3,  arr[2]);
-            cv.put( SQLhelper.COLUMN_MUSCLE4,  arr[3]);
-            database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
-        }
+
+
+
+
+
+
+
+
+//        for(int i = 0; i < 10; i++) {
+//
+//            String[] groups = this.getResources().getStringArray(R.array.muscles_groups);
+//            String[] muscles = this.getResources().getStringArray(R.array.lower_body);
+//
+//            MuscleGroup muscleGroup = new MuscleGroup(groups[0], muscles);
+//
+//            Exercise exe = new Exercise("Exe " + i , muscleGroup);
+//            exerciseList.add(exe);
+//        }
+//
+//        String[] arr = null;
+//        for(Exercise exe : exerciseList) {
+//            ContentValues cv = new ContentValues();
+//            cv.put( SQLhelper.COLUMN_NAME_EXE, exe.toString());
+//            arr = exe.getMuscleGroup().getMuscles();
+//            cv.put( SQLhelper.COLUMN_MUSCLE1,  arr[0]);
+//            cv.put( SQLhelper.COLUMN_MUSCLE2,  arr[1]);
+//            cv.put( SQLhelper.COLUMN_MUSCLE3,  arr[2]);
+//            cv.put( SQLhelper.COLUMN_MUSCLE4,  arr[3]);
+//            database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
+//        }
 
 
 
@@ -181,7 +193,7 @@ public class ExercisesActivity extends AppCompatActivity {
 
             case R.id.action_log_sql:
                 //show table SQL in LOG
-                sqLhelper.getTableInLogTrainings("Table_in_LOG");
+                sqLhelper.getTableInLogExercises("Table_in_LOG");
                 return true;
 
             default:

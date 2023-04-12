@@ -35,7 +35,10 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     private ActivityMusclesGroupsBinding binding;
 
     //Triggers other activities from this activity
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<Intent> activityResultLauncherExercises, activityResultNewExercise;
+
+    //extra to know what to do when onClick on item of ExpandableListView
+    String intentExtra;
 
 
 
@@ -46,8 +49,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
 
 
-
-
+    /******************************* LIFECYCLE ****************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +62,10 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         actionBar.setSubtitle("Select group");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        extraProcess();
 
         //launcher for activity to chose group of muscles
-        activityResultLauncher = registerForActivityResult(
+        activityResultLauncherExercises = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
@@ -78,7 +81,22 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                         finish();
                     }
                 });
+        activityResultNewExercise = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(result.getResultCode() == RESULT_OK) {
+                        Toast.makeText(this, "RESULT_OK", Toast.LENGTH_SHORT).show();
 
+                        //get extra
+                        String[] extra = result.getData().getStringArrayExtra("newExerciseExtra");
+
+                        //put extra
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("muscleGroupsExtra", extra);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    }
+                });
 
         //check if there is ExpandableListview in the activity, check if there is Listview in the activity
         if( binding.lvGroups instanceof ExpandableListView) {
@@ -87,6 +105,25 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             initListView();
         }
     }
+
+
+
+
+
+
+
+    /***************************** GET INTENT EXTRA *****************************************/
+
+    private void extraProcess(){
+        //Intent with info
+        Intent intent = getIntent();
+
+        //Info from the intent
+        intentExtra = intent.getStringExtra("whatToDo");
+
+        Toast.makeText(this, "intentExtra-" +  intentExtra, Toast.LENGTH_SHORT).show();
+    }
+
 
 
 
@@ -145,6 +182,9 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 groupsKey, R.layout.text_list_groups_body, groupFrom, groupTo,
                 childsKey, R.layout.text_list_groups_muscles , childFrom, childTo
         );
+
+        if(intentExtra.equals("StartNewExercise")) expandableListView.select
+
         expandableListView.setAdapter(simpleExpandableListAdapter);
 
         listenersExpandableListView(expandableListView);
@@ -215,7 +255,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             //Toast.makeText(this, groupName + " -> " + childName , Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MusclesGroupsActivity.this, ExercisesActivity.class);
             intent.putExtra("muscleGroup" , new String[]{groupName,childName});
-            activityResultLauncher.launch(intent);
+            activityResultLauncherExercises.launch(intent);
 
 
             return true;

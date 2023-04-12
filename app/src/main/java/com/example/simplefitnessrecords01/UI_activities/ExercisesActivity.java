@@ -1,5 +1,7 @@
 package com.example.simplefitnessrecords01.UI_activities;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,11 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
@@ -40,6 +44,9 @@ public class ExercisesActivity extends AppCompatActivity {
     String textGroup;
     String textMuscle;
 
+    //Triggers other activities from this activity
+    private ActivityResultLauncher<Intent> activityMusclesGroupLauncher;
+
 
 
 
@@ -52,6 +59,20 @@ public class ExercisesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityExerciseListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        activityMusclesGroupLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),result -> {
+            if(result.getResultCode() == RESULT_OK) {
+
+                //get data for new Exercise
+                result.getData().getStringArrayExtra("newExe");
+
+
+
+            }
+        });
+
+
 
         //SQL database
         sqLhelper = new SQLhelper(this);
@@ -112,43 +133,37 @@ public class ExercisesActivity extends AppCompatActivity {
     private List<Exercise> getExercises() {
         List<Exercise> exerciseList = new LinkedList<>();
 
+        Cursor c = database.query(SQLhelper.TABLE_EXERCISES,null, null,null,null,null,null);
 
+        Exercise    exercise;
+        MuscleGroup muscleGroup;
 
+        if(c.moveToNext()){
+            int id_id       = c.getColumnIndex( SQLhelper.COLUMN_ID       );
+            int id_exename  = c.getColumnIndex( SQLhelper.COLUMN_NAME_EXE );
+            int id_group    = c.getColumnIndex( SQLhelper.COLUMN_GROUP    );
+            int id_muscle1  = c.getColumnIndex( SQLhelper.COLUMN_MUSCLE1  );
+            int id_muscle2  = c.getColumnIndex( SQLhelper.COLUMN_MUSCLE2  );
+            int id_muscle3  = c.getColumnIndex( SQLhelper.COLUMN_MUSCLE3  );
+            int id_muscle4  = c.getColumnIndex( SQLhelper.COLUMN_MUSCLE4  );
+            do {
+                int id           = c.getInt   ( id_id      );
+                String exename   = c.getString( id_exename );
+                String group     = c.getString( id_group   );
+                String muscle1   = c.getString( id_muscle1 );
+                String muscle2   = c.getString( id_muscle2 );
+                String muscle3   = c.getString( id_muscle3 );
+                String muscle4   = c.getString( id_muscle4 );
 
+                muscleGroup = new MuscleGroup( group, new String[]{muscle1,muscle2,muscle3,muscle4});
+                exercise = new Exercise(exename, muscleGroup);
 
+                exerciseList.add(exercise);
 
+            } while ( c.moveToNext() );
+        }
 
-
-
-
-
-
-//        for(int i = 0; i < 10; i++) {
-//
-//            String[] groups = this.getResources().getStringArray(R.array.muscles_groups);
-//            String[] muscles = this.getResources().getStringArray(R.array.lower_body);
-//
-//            MuscleGroup muscleGroup = new MuscleGroup(groups[0], muscles);
-//
-//            Exercise exe = new Exercise("Exe " + i , muscleGroup);
-//            exerciseList.add(exe);
-//        }
-//
-//        String[] arr = null;
-//        for(Exercise exe : exerciseList) {
-//            ContentValues cv = new ContentValues();
-//            cv.put( SQLhelper.COLUMN_NAME_EXE, exe.toString());
-//            arr = exe.getMuscleGroup().getMuscles();
-//            cv.put( SQLhelper.COLUMN_MUSCLE1,  arr[0]);
-//            cv.put( SQLhelper.COLUMN_MUSCLE2,  arr[1]);
-//            cv.put( SQLhelper.COLUMN_MUSCLE3,  arr[2]);
-//            cv.put( SQLhelper.COLUMN_MUSCLE4,  arr[3]);
-//            database.insert(SQLhelper.TABLE_EXERCISES,null,cv);
-//        }
-
-
-
-
+        c.close();
 
         return  exerciseList;
     }
@@ -184,6 +199,10 @@ public class ExercisesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_new:
+                Intent intent = new Intent(this, MusclesGroupsActivity.class);
+                intent.putExtra("whatToDo", "StartNewExercise");
+                activityMusclesGroupLauncher.launch(intent);
+
 
                 return true;
 

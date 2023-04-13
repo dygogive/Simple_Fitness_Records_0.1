@@ -27,6 +27,7 @@ import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityMusclesGroupsBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -107,7 +108,8 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
         //check if there is ExpandableListview in the activity, check if there is Listview in the activity
         if( binding.lvGroups instanceof ExpandableListView) {
-            initExpandableListView();
+            if(intentExtra.equals("StartNewExercise")) initExpandableListView2();
+            else initExpandableListView();
         } else if ( binding.lvGroups instanceof ListView) {
             initListView();
         }
@@ -190,24 +192,36 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 childsKey, R.layout.text_list_groups_muscles , childFrom, childTo
         );
 
-        if(intentExtra.equals("StartNewExercise")) {
-//            MyExpandableListAdapter myExpandableListAdapter = new MyExpandableListAdapter(
-//                    MusclesGroupsActivity.this, Arrays.asList(groups),
-//            );
-//
-//
-//
-//
-//
-//
-//
-//            expandableListView.setAdapter(simpleExpandableListAdapter);
-        }
-
         expandableListView.setAdapter(simpleExpandableListAdapter);
 
         listenersExpandableListView(expandableListView);
+    }
 
+    private void initExpandableListView2() {
+
+
+        //List og groups from resource
+        //Array from resource
+        String[] groups = getResources().getStringArray(R.array.muscles_groups);
+
+        //List of childs without key
+        List<String[]> childs = new LinkedList<>();
+        childs.add(getResources().getStringArray(R.array.lower_body));
+        childs.add(getResources().getStringArray(R.array.back));
+        childs.add(getResources().getStringArray(R.array.chest));
+        childs.add(getResources().getStringArray(R.array.shoulders));
+        childs.add(getResources().getStringArray(R.array.arms));
+        childs.add(getResources().getStringArray(R.array.abdominals));
+
+        ExpandableListView expandableListView = (ExpandableListView) binding.lvGroups;
+
+        MyExpandableListAdapter myAdapter = new MyExpandableListAdapter( this,
+                Arrays.asList(groups), getMapItems(groups , childs)
+        );
+
+        expandableListView.setAdapter(myAdapter);
+
+        listenersExpandableListView(expandableListView);
     }
 
 
@@ -402,18 +416,24 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             //отримати чекБокс
             CheckBox checkGroup = convertView.findViewById(R.id.chkGroup);
 
-            //отримати текст групи з ряду
+            //отримати текст групи з даних
             String groupName    = (String) getGroup(groupPosition);
 
             //виділити групу із ряду стану виділень groupSelections
             checkGroup.setChecked(groupSelections.get(groupName));
+
             //Задати текст групи
             checkGroup.setText(groupName);
 
             //слухач зміни виділення групи
             checkGroup.setOnClickListener(v -> {
+                //зняти виділення на всіх групах
+                for (int i = 0; i < groupSelections.size(); i++) {
+                    groupSelections.put( getGroup(i) , false );
+                }
+                //оновити ряд з інфою про виділення
                 boolean isChecked = ((CheckBox) v).isChecked();
-                groupSelections.put(groupName, isChecked);
+                groupSelections.put( groupName , isChecked );
 
                 //Якщо група без виділення - то зняти виділення на ітемах цієї групи
                 if(!isChecked) {
@@ -435,19 +455,48 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             if( convertView == null ) {
                 convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_item, parent , false);
             }
+
+            //задати текст ітема
             String item = getChild(groupPosition, childPosition);
             CheckBox checkBoxItem = (CheckBox) convertView.findViewById(R.id.chkItem);
             checkBoxItem.setText(item);
 
+            //задати виділення з даних
+            checkBoxItem.setChecked(itemSelections.get(getGroup(groupPosition)).get(childPosition));
+
+            //слухач
+            checkBoxItem.setOnClickListener( v -> {
+                boolean isChecked = ((CheckBox) v).isChecked();
+
+                //змінити значення в списку відмічених елементів
+                List<Boolean> booleanListItems = itemSelections.get(getGroup(groupPosition));
+                booleanListItems.set(childPosition,isChecked);
+                itemSelections.put(getGroup(groupPosition), booleanListItems);
+
+                //зняти виділення на всіх групах
+                for (int i = 0; i < groupSelections.size(); i++) {
+                    groupSelections.put( getGroup(i) , false );
+                }
+
+                //Виділити групу, з якою працюємо зараз
+                groupSelections.put( getGroup(groupPosition) , true );
+
+                //повідомити адаптер, що дані змінилися
+                notifyDataSetChanged();
+
+            });
 
 
 
-            return  null;
+
+
+
+            return  convertView;
         }
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
+            return true;
         }
     }
 

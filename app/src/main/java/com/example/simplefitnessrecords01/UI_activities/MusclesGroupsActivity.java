@@ -369,12 +369,12 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         }
 
         @Override
-        public Object getGroup(int groupPosition) {
+        public String getGroup(int groupPosition) {
             return groups.get(groupPosition);
         }
 
         @Override
-        public Object getChild(int groupPosition, int childPosition) {
+        public String getChild(int groupPosition, int childPosition) {
             return items.get(groups.get(groupPosition)).get(childPosition);
         }
 
@@ -399,19 +399,49 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_group, parent, false);
             }
 
+            //отримати чекБокс
             CheckBox checkGroup = convertView.findViewById(R.id.chkGroup);
+
+            //отримати текст групи з ряду
             String groupName    = (String) getGroup(groupPosition);
 
+            //виділити групу із ряду стану виділень groupSelections
             checkGroup.setChecked(groupSelections.get(groupName));
+            //Задати текст групи
             checkGroup.setText(groupName);
 
+            //слухач зміни виділення групи
+            checkGroup.setOnClickListener(v -> {
+                boolean isChecked = ((CheckBox) v).isChecked();
+                groupSelections.put(groupName, isChecked);
 
+                //Якщо група без виділення - то зняти виділення на ітемах цієї групи
+                if(!isChecked) {
+                    for (int i = 0; i < itemSelections.get(groupName).size(); i++) {
+                        itemSelections.get(groupName).set(i, isChecked);
+                    }
+                }
 
-            return  null;
+                //повідомити адаптер, що дані змінилися
+                notifyDataSetChanged();
+
+            });
+
+            return  convertView;
         }
 
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            if( convertView == null ) {
+                convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_item, parent , false);
+            }
+            String item = getChild(groupPosition, childPosition);
+            CheckBox checkBoxItem = (CheckBox) convertView.findViewById(R.id.chkItem);
+            checkBoxItem.setText(item);
+
+
+
+
             return  null;
         }
 

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -34,7 +32,6 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityMusclesGroupsBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
-import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.ArrayList;
@@ -58,6 +55,11 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
     //extra to know what to do when onClick on item of ExpandableListView
     String intentExtra;
+
+
+
+    //Chosen muscles for new Exercise
+    String[] musclesChosen = new String[]{};
 
 
 
@@ -223,8 +225,8 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
         for(String group : groups){
             childs = getResources().getStringArray(R.array.lower_body);
-//            int identifier = getResources().getIdentifier(group, "array", getPackageName());
-//            childs = getResources().getStringArray(identifier);
+            int identifier = getResources().getIdentifier(group, "array", getPackageName());
+            childs = getResources().getStringArray(identifier);
             mapChilds.put(group , List.of(childs));
         }
 
@@ -325,41 +327,45 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
 
     /************************ OPTIONS MENU *****************************/
-
     //Creating a menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflating the menu resource using MenuInflater
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        getMenuInflater().inflate(R.menu.menu_settings_chose_exe, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
+
         return super.onPrepareOptionsMenu(menu);
     }
 
+    //Listener of Options Menu
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle clicks on menu items
         int id = item.getItemId();
+        Intent returnIntent = new Intent();;
         switch (id) {
             case android.R.id.home:
-                Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
                 return true;
+
             case R.id.action_new:
-                // Handling the click on the "NEW" item
-                Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+                returnIntent.putExtra("musclesChosen", musclesChosen);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
                 return true;
 
+            case R.id.action_settings: openSettingsLayout();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -367,6 +373,11 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
 
 
+    /********************** SETTINGS OF THE PROGRAM ************************/
+    private void openSettingsLayout(){
+        Intent intent = new Intent(MusclesGroupsActivity.this,  SettingsActivity.class);
+        startActivity(intent);
+    }
 
 
 
@@ -444,15 +455,18 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_group, parent, false);
             }
 
+
             //отримати textView
             TextView tvGroup = convertView.findViewById(R.id.tvGroup);
 
 
             //отримати текст групи з даних
-            String groupName = (String) getGroup(groupPosition);
+            String groupName    = (String) getGroup(groupPosition);
+
 
             //Задати текст групи
             tvGroup.setText(groupName);
+
 
             return  convertView;
         }
@@ -463,26 +477,19 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(context).inflate(R.layout.ex_lv_item, parent , false);
             }
 
-            //отримати текст з списку даних
+            //задати текст ітема
             String item = getChild(groupPosition, childPosition);
-            //дати текст чекбоксу
             CheckBox checkBoxItem = (CheckBox) convertView.findViewById(R.id.chkItem);
             checkBoxItem.setText(item);
 
+            //задати виділення з даних
+            checkBoxItem.setChecked(itemSelections.get(getGroup(groupPosition)).get(childPosition));
 
-
-            //задати виділення з списку для чекбоксу
-            boolean selection = itemSelections.get(getGroup(groupPosition)).get(childPosition);
-            checkBoxItem.setChecked(selection);
-
-            //слухач чекбоксу
-            View finalConvertView = convertView;
-
-            checkBoxItem.setOnClickListener(v -> {
-                //чи виділений чекбокс
+            //слухач
+            checkBoxItem.setOnClickListener( v -> {
                 boolean isChecked = ((CheckBox) v).isChecked();
 
-                //обнулити інші групи і ітеми в них якщо виділений елемент цієї групи
+                //обнулити інші групи якщо виділений елемент цієї групи
                 if(isChecked) {
                     //set false to groups and items
                     for (String group : groups) {
@@ -492,7 +499,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                     }
                 }
 
-                //Виділити ітем, з яким працюємо зараз
+                //змінити значення в списку відмічених елементів
                 List<Boolean> booleanListItems = itemSelections.get(getGroup(groupPosition));
                 booleanListItems.set(childPosition,isChecked);
                 itemSelections.put(getGroup(groupPosition), booleanListItems);
@@ -501,14 +508,23 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 //Виділити групу, з якою працюємо зараз
                 groupSelections.put( getGroup(groupPosition) , true );
 
-
-
                 //повідомити адаптер, що дані змінилися
                 notifyDataSetChanged();
 
+                //зберегти дані для нової вправи
+                List<Boolean> chousen = itemSelections.get(getGroup(groupPosition));
+                musclesChosen = new String[chousen.size() + 1];
+                int count = 0;
+                musclesChosen[count] = getGroup(groupPosition);
+                for(boolean checked : chousen){
+                    if(checked) musclesChosen[count + 1] = getChild(groupPosition,count++);
+                }
+
+                for (String element : musclesChosen) {
+                    if (element != null) Log.d("testexe", element);
+                }
+
             });
-
-
 
             return  convertView;
         }

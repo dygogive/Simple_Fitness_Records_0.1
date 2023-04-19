@@ -218,17 +218,16 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         //Array from resource
         String[] groups = getResources().getStringArray(R.array.muscles_groups);
 
-        //List of childs without key
-        String[] childs;
+
         //list of childs with keys(groups names)
         Map<String, List<String>> mapChilds = new HashMap<>();
 
-        for(String group : groups){
-            childs = getResources().getStringArray(R.array.lower_body);
-            int identifier = getResources().getIdentifier(group, "array", getPackageName());
-            childs = getResources().getStringArray(identifier);
-            mapChilds.put(group , List.of(childs));
+        for (String group : groups) {
+            int identifier = getResources().getIdentifier(group.toLowerCase().replace(" ", "_"), "array", getPackageName());
+            String[] childs = getResources().getStringArray(identifier);
+            mapChilds.put(group, Arrays.asList(childs));
         }
+
 
 
         ExpandableListView expandableListView = binding.lvGroups;
@@ -505,19 +504,30 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 itemSelections.put(getGroup(groupPosition), booleanListItems);
 
 
-                //Виділити групу, з якою працюємо зараз
-                groupSelections.put( getGroup(groupPosition) , true );
+                //Виділити групу, з якою працюємо зараз, якщо там э видылены елементи
+                boolean hasTrue = false;
+                for (boolean bool : booleanListItems) {
+                    if (bool) {
+                        hasTrue = true;
+                        break;
+                    }
+                }
+                groupSelections.put( getGroup(groupPosition) , hasTrue );
 
                 //повідомити адаптер, що дані змінилися
                 notifyDataSetChanged();
+
 
                 //зберегти дані для нової вправи
                 List<Boolean> chousen = itemSelections.get(getGroup(groupPosition));
                 musclesChosen = new String[chousen.size() + 1];
                 int count = 0;
-                musclesChosen[count] = getGroup(groupPosition);
+                if (hasTrue) musclesChosen[count] = getGroup(groupPosition);
                 for(boolean checked : chousen){
-                    if(checked) musclesChosen[count + 1] = getChild(groupPosition,count++);
+                    if(checked) {
+                        musclesChosen[count + 1] = getChild(groupPosition,count);
+                    }
+                    count++;
                 }
 
                 for (String element : musclesChosen) {

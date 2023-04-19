@@ -47,6 +47,8 @@ public class ExercisesActivity extends AppCompatActivity {
     //Triggers other activities from this activity
     private ActivityResultLauncher<Intent> activityMusclesGroupLauncher;
 
+    //chosen muscles for new exercise
+    String[] musclesChosen;
 
 
 
@@ -65,8 +67,9 @@ public class ExercisesActivity extends AppCompatActivity {
             if(result.getResultCode() == RESULT_OK) {
 
                 //get data for new Exercise
-                result.getData().getStringArrayExtra("newExe");
+                musclesChosen = result.getData().getStringArrayExtra("musclesChosen");
 
+                Toast.makeText(ExercisesActivity.this, musclesChosen [0] + " " + musclesChosen [1], Toast.LENGTH_SHORT).show();
 
 
             }
@@ -162,6 +165,12 @@ public class ExercisesActivity extends AppCompatActivity {
 
             } while ( c.moveToNext() );
         }
+
+        //test
+//        if(musclesChosen != null) {
+//            exerciseList.add(new Exercise(musclesChosen[0], null));
+//            exerciseList.add(new Exercise(musclesChosen[1], null));
+//        }
 
         c.close();
 

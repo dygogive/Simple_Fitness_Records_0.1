@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
+import com.example.simplefitnessrecords01.dialog.DialogUniqueNameProcessor;
+import com.example.simplefitnessrecords01.dialog.NewExeDialog;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
@@ -41,8 +43,8 @@ public class ExercisesActivity extends AppCompatActivity {
     String[] extraArrayGroupMuscle = null;
 
     //Names of muscle groups
-    String textGroup;
-    String textMuscle;
+    String textGroup = "";
+    String textMuscle = "";
 
     //Triggers other activities from this activity
     private ActivityResultLauncher<Intent> activityMusclesGroupLauncher;
@@ -69,8 +71,9 @@ public class ExercisesActivity extends AppCompatActivity {
                 //get data for new Exercise
                 musclesChosen = result.getData().getStringArrayExtra("musclesChosen");
 
-                Toast.makeText(ExercisesActivity.this, musclesChosen [0] + " " + musclesChosen [1], Toast.LENGTH_SHORT).show();
+                createNewExercise(musclesChosen);
 
+                Toast.makeText(ExercisesActivity.this, musclesChosen [0] + " " + musclesChosen [1], Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -113,8 +116,6 @@ public class ExercisesActivity extends AppCompatActivity {
             textMuscle = extraArrayGroupMuscle[1];
         }
 
-
-
         //display texts on the screen
         binding.tvGroup.setText(textGroup);
         binding.tvChild.setText(textMuscle);
@@ -132,11 +133,20 @@ public class ExercisesActivity extends AppCompatActivity {
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
         binding.rvExercises.setAdapter(adapterRecyclerExercises);
     }
-
+    Cursor c = null;
     private List<Exercise> getExercises() {
         List<Exercise> exerciseList = new LinkedList<>();
 
-        Cursor c = database.query(SQLhelper.TABLE_EXERCISES,null, null,null,null,null,null);
+        if(!textGroup.equals("") & !textMuscle.equals("")) {
+            String selection = "" + SQLhelper.COLUMN_GROUP + "=? AND (" + SQLhelper.COLUMN_MUSCLE1 +
+                    "=? OR " + SQLhelper.COLUMN_MUSCLE2 + "=? OR " + SQLhelper.COLUMN_MUSCLE3 +
+                    "=? OR " + SQLhelper.COLUMN_MUSCLE4 + "=?)";
+
+            String[] selectionArgs = {textGroup, textGroup};
+            c = database.query(SQLhelper.TABLE_EXERCISES, null, selection, selectionArgs, null, null, null);
+        }else {
+            c = database.query(SQLhelper.TABLE_EXERCISES, null, null, null, null, null, null);
+        }
 
         Exercise    exercise;
         MuscleGroup muscleGroup;
@@ -165,12 +175,6 @@ public class ExercisesActivity extends AppCompatActivity {
 
             } while ( c.moveToNext() );
         }
-
-        //test
-//        if(musclesChosen != null) {
-//            exerciseList.add(new Exercise(musclesChosen[0], null));
-//            exerciseList.add(new Exercise(musclesChosen[1], null));
-//        }
 
         c.close();
 
@@ -209,7 +213,7 @@ public class ExercisesActivity extends AppCompatActivity {
 
             case R.id.action_new:
                 Intent intent = new Intent(this, MusclesGroupsActivity.class);
-                intent.putExtra("whatToDo", "StartNewExercise");
+                intent.putExtra("goal_launch", "StartNewExercise");
                 activityMusclesGroupLauncher.launch(intent);
 
 
@@ -228,5 +232,35 @@ public class ExercisesActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
+
+
+
+
+
+    /******************* CREATING NEW EXERCISE *************************/
+    String nameNewExercise = "";
+    private void createNewExercise(String[] musclesChosen) {
+        DialogUniqueNameProcessor dialogUniqueNameProcessor = uniqueName -> {
+            //
+            String[] data = new String[musclesChosen.length + 1];
+            data[0] = uniqueName[0];
+            for(int i = 0; i < musclesChosen.length; i++){
+                data[i + 1] = musclesChosen[i];
+            }
+
+            sqLhelper.createNewExeInSQL(data);
+
+            adapterRecyclerExercises.updateList(getExercises());
+            adapterRecyclerExercises.notifyDataSetChanged();
+        };
+
+        NewExeDialog dialog = new NewExeDialog(ExercisesActivity.this, dialogUniqueNameProcessor);
+        dialog.show();
+    }
+
+
 
 }

@@ -2,15 +2,12 @@ package com.example.simplefitnessrecords01.UI_activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,8 +28,6 @@ import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityMusclesGroupsBinding;
-import com.example.simplefitnessrecords01.dialog.StartDialog;
-import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,9 +116,8 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
         //check if there is ExpandableListview in the activity, check if there is Listview in the activity
         if( binding.lvGroups instanceof ExpandableListView) {
-//            if(intentExtra.equals("StartNewExercise")) initExpandableListView2();
-//            else initExpandableListView();
-            initExpandableListView2();
+            if(intentExtra.equals("StartNewExercise")) initExpandableListView2();
+            else if(intentExtra.equals("select_exe")) initExpandableListView();
         } else if ( binding.lvGroups instanceof ListView) {
             initListView();
         }
@@ -142,7 +136,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         //Info from the intent
-        intentExtra = intent.getStringExtra("whatToDo");
+        intentExtra = intent.getStringExtra("goal_launch");
 
         Toast.makeText(this, "intentExtra-" +  intentExtra, Toast.LENGTH_SHORT).show();
     }
@@ -330,10 +324,9 @@ public class MusclesGroupsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflating the menu resource using MenuInflater
-        getMenuInflater().inflate(R.menu.menu_settings_chose_exe, menu);
+        if(intentExtra.equals("StartNewExercise")) getMenuInflater().inflate(R.menu.menu_settings_create_exe, menu);
         return true;
     }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 

@@ -335,10 +335,16 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
         }
 
 
+
+
+
+
+        /*********************** ON CLICKS ***************************/
         //lunch Activity To Choise Exercise
         private void lunchActivityToChoiseExercise(){
             //launch the activity with groups of muscles
             Intent intent = new Intent(context, MusclesGroupsActivity.class);
+            intent.putExtra("goal_launch", "select_exe");
             context.getActivityChoseExeLauncher().launch(intent);
 
             //save the position in SetActivity

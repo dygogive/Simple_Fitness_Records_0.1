@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
 import com.example.simplefitnessrecords01.fitness.SetTraining;
@@ -260,8 +261,26 @@ public class SQLhelper extends SQLiteOpenHelper {
 
 
 
+    //add row in table Exercises
+    public void createNewExeInSQL(String[] dataToNewExercise) {
+        //
+        SQLiteDatabase db = getWritableDatabase();
+        //
+        ContentValues cv = new ContentValues();
+        //
+        int i = 0;
+        if(i < dataToNewExercise.length) cv.put(COLUMN_NAME_EXE, dataToNewExercise[i++]);
+        if(i < dataToNewExercise.length) cv.put(COLUMN_GROUP, dataToNewExercise[i++]);
+        if(i < dataToNewExercise.length) cv.put(COLUMN_MUSCLE1, dataToNewExercise[i++]);
+        if(i < dataToNewExercise.length) cv.put(COLUMN_MUSCLE2, dataToNewExercise[i++]);
+        if(i < dataToNewExercise.length) cv.put(COLUMN_MUSCLE3, dataToNewExercise[i++]);
+        if(i < dataToNewExercise.length) cv.put(COLUMN_MUSCLE4, dataToNewExercise[i++]);
 
-
+        //
+        db.insert(TABLE_EXERCISES,null,cv);
+        //
+        cv.clear();
+    }
 
 
 

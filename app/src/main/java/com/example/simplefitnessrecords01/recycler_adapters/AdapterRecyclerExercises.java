@@ -25,6 +25,10 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
         return exerciseList;
     }
 
+    public void updateList(List<Exercise> exerciseList) {
+        this.exerciseList = exerciseList;
+    }
+
 
 
 
@@ -83,6 +87,17 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
 
         private void onBind(Exercise exercise) {
             itemBinding.tvExercise.setText(exercise.toString());
+            itemBinding.tvGroup   .setText(exercise.getMuscleGroup().getBodyPart());
+            String[] muscles = exercise.getMuscleGroup().getMuscles();
+            StringBuilder sbMuscles = new StringBuilder();
+            boolean b = false;
+            for (String s : muscles ) {
+                if(s == null) break;
+                if(b) sbMuscles.append("; ");
+                sbMuscles.append(s);
+                b = true;
+            }
+            itemBinding.tvMuscles1.setText(sbMuscles.toString());
         }
 
     }

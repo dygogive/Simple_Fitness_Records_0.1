@@ -1,14 +1,20 @@
 package com.example.simplefitnessrecords01.recycler_adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.ExercisesActivity;
+import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerExercisesItemBinding;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 
@@ -29,6 +35,9 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
         this.exerciseList = exerciseList;
     }
 
+    public Exercise getItem(int position) {
+        return exerciseList.get(position);
+    }
 
 
 
@@ -98,9 +107,49 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
                 b = true;
             }
             itemBinding.tvMuscles1.setText(sbMuscles.toString());
+
+            //set size of text
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String selectedTextSize = preferences.getString("text_size_preference", context.getString(R.string.default_text_size));
+            itemBinding.tvExercise. setTextSize(Float.parseFloat(selectedTextSize));
+            itemBinding.tvGroup.    setTextSize(Float.parseFloat(selectedTextSize));
+            itemBinding.tvMuscles1. setTextSize(Float.parseFloat(selectedTextSize));
+
+
+
+
+            //onClick listener
+            itemBinding.imgMenuExe.setOnClickListener(v -> {
+                Toast.makeText(context, "OnClick", Toast.LENGTH_SHORT).show();
+
+                //position
+                int position = getAbsoluteAdapterPosition();
+                //context menu registry
+                v.setOnCreateContextMenuListener((menu, v1, menuInfo) -> {
+                    // We fill the context menu with items
+                    ((Activity)context).getMenuInflater().inflate(R.menu.context_exercises_activity, menu);
+                });
+
+
+
+
+                //If the context is MainActivity
+                if (context instanceof ExercisesActivity) {
+                    ExercisesActivity child = (ExercisesActivity) context;
+                    //You set a position
+                    child.setPositioContextMenu(position);
+                } else Toast.makeText(context, "Error! MainActivity renamed!", Toast.LENGTH_SHORT).show();
+
+
+
+                //show the context menu
+                v.showContextMenu();
+
+
+
+            });
         }
 
     }
-
 
 }

@@ -23,6 +23,9 @@ public class Exercise {
     public String toString() {
         return exerciseName;
     }
+    public String getExerciseName() {
+        return exerciseName;
+    }
 
     public void setExerciseName(String exerciseName) {
         this.exerciseName = exerciseName;

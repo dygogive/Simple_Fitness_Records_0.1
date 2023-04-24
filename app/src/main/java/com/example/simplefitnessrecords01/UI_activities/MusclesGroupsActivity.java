@@ -347,9 +347,15 @@ public class MusclesGroupsActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_new:
-                returnIntent.putExtra("musclesChosen", musclesChosen);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                if(musclesChosen.length != 0) {
+                    returnIntent.putExtra("musclesChosen", musclesChosen);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                } else {
+                    setResult(Activity.RESULT_CANCELED);
+                    Toast.makeText(this, "Chose muscle", Toast.LENGTH_SHORT).show();
+                }
+
                 return true;
 
             case R.id.action_settings: openSettingsLayout();
@@ -377,6 +383,7 @@ public class MusclesGroupsActivity extends AppCompatActivity {
 
 
 
+    /************************** BaseExpandableListAdapter ********************************************/
     public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
         private Context                           context;

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,13 +20,12 @@ import android.widget.Toast;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
 import com.example.simplefitnessrecords01.dialog.DialogUniqueNameProcessor;
-import com.example.simplefitnessrecords01.dialog.NewExeDialog;
+import com.example.simplefitnessrecords01.dialog.ExeNameDialog;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,7 +90,6 @@ public class ExercisesActivity extends AppCompatActivity {
 
         //get info from intent
         processIntentExtra();
-
     }
 
     @Override
@@ -122,6 +119,8 @@ public class ExercisesActivity extends AppCompatActivity {
 
         Log.d("whereIs" , "test - 0");
     }
+
+
 
 
 
@@ -185,6 +184,8 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+
+
     /************************ OPTIONS MENU *****************************/
 
     @Override
@@ -216,7 +217,6 @@ public class ExercisesActivity extends AppCompatActivity {
                 intent.putExtra("goal_launch", "StartNewExercise");
                 activityMusclesGroupLauncher.launch(intent);
 
-
                 return true;
 
             case R.id.action_settings:
@@ -239,8 +239,43 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+    /************************ CONTEXT MENU *****************************/
 
-    /******************* CREATING NEW EXERCISE *************************/
+    // implementation of a method for processing clicks on context menu items
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // We process clicking on the context menu items
+        switch (item.getItemId()) {
+            case R.id.editExe:  editExerciseName(positionItem); //change
+                return true;
+            case R.id.deleteExe: {
+                sqLhelper.deleteRowExercise(positionItem);           //delete
+                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
+            }
+                return true;
+            default:
+                return super.onContextItemSelected(item);  //default
+        }
+    }
+
+
+    //position context menu
+    private int positionItem = -1;
+    public void setPositioContextMenu(int position) {
+        positionItem = position;
+    }
+
+
+
+
+
+
+
+
+
+
+    /******************* CREATE/EDIT NEW EXERCISE *************************/
     String nameNewExercise = "";
     private void createNewExercise(String[] musclesChosen) {
         DialogUniqueNameProcessor dialogUniqueNameProcessor = uniqueName -> {
@@ -257,10 +292,24 @@ public class ExercisesActivity extends AppCompatActivity {
             adapterRecyclerExercises.notifyDataSetChanged();
         };
 
-        NewExeDialog dialog = new NewExeDialog(ExercisesActivity.this, dialogUniqueNameProcessor);
+        ExeNameDialog dialog = new ExeNameDialog(ExercisesActivity.this, dialogUniqueNameProcessor);
         dialog.show();
     }
 
+    private void editExerciseName(int positionItem) {
+        DialogUniqueNameProcessor dialogUniqueNameProcessor = uniqueName -> {
+
+            sqLhelper.editExeName(positionItem, String.valueOf(uniqueName[0]));
+
+            adapterRecyclerExercises.updateList(getExercises());
+            adapterRecyclerExercises.notifyDataSetChanged();
+        };
+
+        String exeName = adapterRecyclerExercises.getItem(positionItem).getExerciseName();
+
+        ExeNameDialog dialog = new ExeNameDialog(ExercisesActivity.this, dialogUniqueNameProcessor, exeName);
+        dialog.show();
+    }
 
 
 }

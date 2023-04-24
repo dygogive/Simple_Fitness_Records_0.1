@@ -8,10 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
-import com.example.simplefitnessrecords01.fitness.SetTraining;
 
 public class SQLhelper extends SQLiteOpenHelper {
     //
@@ -255,6 +253,39 @@ public class SQLhelper extends SQLiteOpenHelper {
             getWritableDatabase().update(SQLhelper.TABLE_SETS, cv, whereClause, whereArgs);
             cv.clear();
         }
+    }
+
+    public void deleteRowExercise(int position) {
+
+        //get cursor from table sql
+        Cursor c = getWritableDatabase().query(TABLE_EXERCISES,null,null,null,null,null,null);
+        //put cursor to chosen position of recycler
+        if(c.moveToPosition(position)) {
+            //update the table in selected id parameter
+            int id = c.getInt(c.getColumnIndexOrThrow(COLUMN_ID));
+            String whereClause = COLUMN_ID + " = ?";
+            String[] whereArgs = new String[] {Integer.toString(id)};
+            getWritableDatabase().delete(TABLE_EXERCISES, whereClause, whereArgs);
+        }
+    }
+
+    public void editExeName(int position, String exeName){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_NAME_EXE,exeName);
+
+        //get cursor from table sql
+        Cursor c = getWritableDatabase().query(TABLE_EXERCISES,null,null,null,null,null,null);
+        //put cursor to chosen position of recycler
+        if(c.moveToPosition(position)) {
+            //update the table in selected id parameter
+            int id = c.getInt(c.getColumnIndexOrThrow(COLUMN_ID));
+            String whereClause = COLUMN_ID + " = ?";
+            String[] whereArgs = new String[] {Integer.toString(id)};
+            getWritableDatabase().update(TABLE_EXERCISES,cv, whereClause, whereArgs);
+        }
+
+        cv.clear();
+
     }
 
 

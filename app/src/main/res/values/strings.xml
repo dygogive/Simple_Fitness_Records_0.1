@@ -42,4 +42,5 @@
     <string name="group_of_muscles">Group of muscle</string>
     <string name="muscles_of_group">Muscles of group</string>
     <string name="exercises">Exercises</string>
+    <string name="editName">Edit name</string>
 </resources>

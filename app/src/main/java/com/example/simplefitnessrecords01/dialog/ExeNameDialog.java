@@ -11,19 +11,20 @@ import androidx.preference.PreferenceManager;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.DialogNewExeBinding;
-import com.example.simplefitnessrecords01.databinding.DialogNewTrainingBinding;
 
 //Dialog for construct one training
-public class NewExeDialog extends Dialog {
+public class ExeNameDialog extends Dialog {
     private DialogNewExeBinding mBinding;
     private final Context context;
     private DialogUniqueNameProcessor dialogUniqueNameProcessor;
+
+    private String exeName = "null";
 
 
 
 
     //Constructor
-    public NewExeDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor) {
+    public ExeNameDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor) {
         super(context);
         this.context = context;
         this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;
@@ -31,6 +32,17 @@ public class NewExeDialog extends Dialog {
         // We call the method that configures the appearance of the dialog
         setupDialog();
     }
+
+    public ExeNameDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor, String exeName) {
+        super(context);
+        this.context = context;
+        this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;
+        this.exeName = exeName;
+
+        // We call the method that configures the appearance of the dialog
+        setupDialog();
+    }
+
 
 
 
@@ -45,6 +57,8 @@ public class NewExeDialog extends Dialog {
         String selectedTextSize = preferences.getString("text_size_preference", context.getResources().getString(R.string.default_text_size));
         mBinding.etExeNameNew.setTextSize(Float.parseFloat(selectedTextSize));
 
+        if(!exeName.equals("null")) mBinding.etExeNameNew.setText(exeName);
+
 
 
         //listener og button in dialog
@@ -55,7 +69,7 @@ public class NewExeDialog extends Dialog {
 
 
             //check if at least one field is empty, then fill it in red
-            if (name.equals("") ) {
+            if (name.equals("")) {
                 //Red color
                 int redColor = Color.RED;
                 //set the hidden text in red

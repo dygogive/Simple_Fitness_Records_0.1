@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.R;
@@ -88,6 +91,8 @@ public class ExercisesActivity extends AppCompatActivity {
         actionBar.setSubtitle("Select/Create exercise");
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        initSpinnerMuscles();
+
         //get info from intent
         processIntentExtra();
     }
@@ -124,12 +129,108 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+    /********************************** SPINNER *****************************************/
+    private void initSpinnerMuscles() {
+        //Array from resource
+        String[] groups  = getResources().getStringArray(R.array.muscles_groups);
+
+        //adapters
+        ArrayAdapter<String> adaptSpinnerGroups  = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groups);
+
+        //DropDownViewResource
+        adaptSpinnerGroups .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //set adapters
+        binding.spinGroups .setAdapter(adaptSpinnerGroups);
+
+        //set prompt
+        binding.spinGroups .setPrompt ("Groups of muscles");
+
+        //set selection
+        binding.spinGroups .setSelection (0);
+
+
+        binding.spinGroups .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = (String) parent.getItemAtPosition(position);
+                Toast.makeText(ExercisesActivity.this, selected, Toast.LENGTH_SHORT).show();
+                initSpinnerMuscles(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+    }
+
+    private void initSpinnerMuscles(String group) {
+        //Array from resource
+
+        int identifier = getResources().getIdentifier(group.toLowerCase().replace(" ", "_"), "array", getPackageName());
+        String[] muscles = getResources().getStringArray(identifier);
+
+
+        //adapters
+        ArrayAdapter<String> adaptSpinnerMuscles = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, muscles);
+
+        //DropDownViewResource
+        adaptSpinnerMuscles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //set adapters
+        binding.spinMuscles.setAdapter(adaptSpinnerMuscles);
+
+        //set prompt
+        binding.spinMuscles.setPrompt ("Muscles of group");
+
+        //set selection
+        binding.spinMuscles.setSelection (0);
+
+        //set listeners
+
+        binding.spinMuscles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = (String) parent.getItemAtPosition(position);
+                Toast.makeText(ExercisesActivity.this, selected, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /****************** RecyclerView initializing ****************************/
     private void recyclerInit() {
+        //create adapter
         adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
+        //layout manager add to recycler
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
+        //set adapter
         binding.rvExercises.setAdapter(adapterRecyclerExercises);
     }
     Cursor c = null;

@@ -261,7 +261,6 @@ public class MusclesGroupsActivity extends AppCompatActivity {
             listChilds.add(listOneChild);
         }
 
-
         return   listChilds;
     }
 

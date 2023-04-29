@@ -15,6 +15,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.ExercisesActivity;
 import com.example.simplefitnessrecords01.UI_activities.MusclesGroupsActivity;
 import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerSetActivityBinding;
@@ -328,7 +329,6 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
             //onClick TextViews
             binding.tvExerciceName.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
-
                 lunchActivityToChoiseExercise();
             });
 
@@ -343,12 +343,15 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
         //lunch Activity To Choise Exercise
         private void lunchActivityToChoiseExercise(){
             //launch the activity with groups of muscles
-            Intent intent = new Intent(context, MusclesGroupsActivity.class);
+            Intent intent = new Intent(context, ExercisesActivity.class);
             intent.putExtra("goal_launch", "select_exe");
             context.getActivityChoseExeLauncher().launch(intent);
 
             //save the position in SetActivity
             ((SetActivity) context).setPosition(getAbsoluteAdapterPosition());
         }
+
+
+
     }
 }

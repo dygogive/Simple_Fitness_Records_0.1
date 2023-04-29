@@ -1,5 +1,7 @@
 package com.example.simplefitnessrecords01.fitness;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 
@@ -40,5 +42,6 @@ public class Exercise {
         this.exerciseName = exerciseName;
         this.muscleGroup = muscleGroup;
     }
+
 
 }

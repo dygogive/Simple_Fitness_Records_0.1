@@ -241,6 +241,11 @@ public class SQLhelper extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_GROUP, groupExercise[0]);
+        cv.put(COLUMN_MUSCLE1, groupExercise[1]);
+        cv.put(COLUMN_MUSCLE2, groupExercise[2]);
+        cv.put(COLUMN_MUSCLE3, groupExercise[3]);
+        cv.put(COLUMN_MUSCLE4, groupExercise[4]);
+        cv.put(COLUMN_EXE, groupExercise[5]);
 
         //get cursor from table sql
         Cursor c = getWritableDatabase().query(TABLE_SETS,null,COLUMN_UNIC_NAME + " = ?",new String[]{unicName},null,null,null);

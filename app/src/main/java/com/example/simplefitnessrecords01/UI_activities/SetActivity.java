@@ -86,8 +86,9 @@ public class SetActivity extends AppCompatActivity {
     public ActivityResultLauncher getActivityChoseExeLauncher() {
         return activityChoseExeLauncher;
     }
-
-
+    public ActivityResultLauncher getactivityExercisesLauncher() {
+        return activityExercisesLauncher;
+    }
 
 
 
@@ -112,15 +113,16 @@ public class SetActivity extends AppCompatActivity {
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
 
+                        Log.d("findError", "test - 7");
                         //get data for new Exercise
                         extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
-
-
-
-                        //change in database
-                        sqLhelper.updateRowSets(positionOfRecycler, nameFitness, extraFromExercise);
-
-                        Toast.makeText(this, adapter.getOneSet(positionOfRecycler).getUniqueFitTraining(), Toast.LENGTH_SHORT).show();
+                        Log.d("findError", "test - 8");
+                        if(extraFromExercise != null) {
+                            //change in database
+                            sqLhelper.updateRowSets(positionOfRecycler, nameFitness, extraFromExercise);
+                            Log.d("findError", "test - 9");
+                        }
+                        Log.d("findError", "test - 10");
                     }
                 });
 
@@ -185,8 +187,6 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-
-
     //Process the data obtained from the previous activity
     private void processIntentExtra() {
         //Intent with info
@@ -207,8 +207,6 @@ public class SetActivity extends AppCompatActivity {
         //a unique workout name
         nameFitness = textDay + textName + textSubname;
     }
-
-
 
 
 
@@ -329,7 +327,8 @@ public class SetActivity extends AppCompatActivity {
 
                 //launch the activity with all Exercises
                 Intent intent = new Intent(SetActivity.this, ExercisesActivity.class);
-                this.activityExercisesLauncher.launch(intent);
+                intent.putExtra("goal_launch", "show_exe");
+                SetActivity.this.getactivityExercisesLauncher().launch(intent);
 
                 return true;
 
@@ -387,9 +386,6 @@ public class SetActivity extends AppCompatActivity {
 
 
 
-
-
-
     /********************  Save DATA TO DB **********************/
     public void updateTableDBFromList(List<SetTraining> setsFitness1){
         //
@@ -436,8 +432,6 @@ public class SetActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 
 

@@ -2,7 +2,10 @@ package com.example.simplefitnessrecords01.recycler_adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,8 @@ import java.util.List;
 public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecyclerExercises.ExeHolder> {
 
     private Context context;
+
+    private boolean selectExercise = false;
 
     private List<Exercise> exerciseList = new LinkedList<>();
 
@@ -50,6 +55,11 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
     public AdapterRecyclerExercises(Context context, List<Exercise> exerciseList) {
         this.context      = context;
         this.exerciseList = exerciseList;
+    }
+    public AdapterRecyclerExercises(Context context, List<Exercise> exerciseList, boolean selectExercise) {
+        this.context        = context;
+        this.exerciseList   = exerciseList;
+        this.selectExercise = selectExercise;
     }
 
 
@@ -116,6 +126,9 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
             itemBinding.tvMuscles1. setTextSize(Float.parseFloat(selectedTextSize));
 
 
+            if(selectExercise) {
+                itemBinding.imageSelect.setVisibility(View.VISIBLE);
+            }
 
 
             //onClick listener
@@ -147,6 +160,32 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
 
 
 
+            });
+
+            itemBinding.imageSelect.setOnClickListener(v -> {
+                Intent intent = new Intent();
+
+                //create data
+                String[] txtData = new String[6];
+                txtData[0] = exercise.getMuscleGroup().getBodyPart();
+                int i = 1;
+                for (String s : muscles ) {
+                    if(s == null) txtData[i++] = "";
+                    else txtData[i++] = s;
+                }
+                txtData[i] = exercise.getExerciseName();
+
+                for(String s : txtData){
+                    Log.d("data" , s);
+                }
+
+
+                //put extra
+                intent.putExtra("muscleGroupsExtra" , txtData);
+                ((Activity)context).setResult(Activity.RESULT_OK,intent);
+
+                //finish
+                ((Activity)context).finish();
             });
         }
 

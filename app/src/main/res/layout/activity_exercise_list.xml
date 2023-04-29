@@ -7,26 +7,6 @@
     android:background="@color/purple_200"
     tools:context=".UI_activities.ExercisesActivity">
 
-    <TextView
-        android:id="@+id/tvGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/group_of_muscles"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvChild"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/muscles_of_group"
-        app:layout_constraintBottom_toBottomOf="@+id/tvGroup"
-        app:layout_constraintStart_toEndOf="@+id/tvGroup"
-        app:layout_constraintTop_toTopOf="@+id/tvGroup" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExercises"
         android:layout_width="0dp"
@@ -48,7 +28,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvChild" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinMuscles"

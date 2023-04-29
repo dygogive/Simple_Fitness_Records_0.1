@@ -41,11 +41,11 @@ public class ExercisesActivity extends AppCompatActivity {
 
     private AdapterRecyclerExercises adapterRecyclerExercises;
 
-    String[] extraArrayGroupMuscle = null;
 
-    //Names of muscle groups
-    String textGroup = "";
-    String textMuscle = "";
+    //for what goal this activity is launched
+    String goalOfLaunchIntent = "view_exercises";
+    String[] dataToReturn = new String[] {  };
+    String chosenGroup = "", chosenMuscle = "";
 
     //Triggers other activities from this activity
     private ActivityResultLauncher<Intent> activityMusclesGroupLauncher;
@@ -80,7 +80,6 @@ public class ExercisesActivity extends AppCompatActivity {
         });
 
 
-
         //SQL database
         sqLhelper = new SQLhelper(this);
         database  = sqLhelper.getWritableDatabase();
@@ -92,9 +91,10 @@ public class ExercisesActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         initSpinnerMuscles();
-
+        Log.d("findError" , "test - 0");
         //get info from intent
         processIntentExtra();
+        Log.d("findError" , "test - 1");
     }
 
     @Override
@@ -110,19 +110,7 @@ public class ExercisesActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         //Info from the intent
-        extraArrayGroupMuscle = intent.getStringArrayExtra("muscleGroup");
-
-        //text strings from the info from the intent
-        if(extraArrayGroupMuscle != null) {
-            textGroup  = extraArrayGroupMuscle[0];
-            textMuscle = extraArrayGroupMuscle[1];
-        }
-
-        //display texts on the screen
-        binding.tvGroup.setText(textGroup);
-        binding.tvChild.setText(textMuscle);
-
-        Log.d("whereIs" , "test - 0");
+        goalOfLaunchIntent = intent.getStringExtra("goal_launch");
     }
 
 
@@ -153,9 +141,11 @@ public class ExercisesActivity extends AppCompatActivity {
         binding.spinGroups .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = (String) parent.getItemAtPosition(position);
-                Toast.makeText(ExercisesActivity.this, selected, Toast.LENGTH_SHORT).show();
-                initSpinnerMuscles(selected);
+                chosenGroup = (String) parent.getItemAtPosition(position);
+                Toast.makeText(ExercisesActivity.this, chosenGroup, Toast.LENGTH_SHORT).show();
+                initSpinnerMuscles(chosenGroup);
+                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
             }
 
             @Override
@@ -195,8 +185,10 @@ public class ExercisesActivity extends AppCompatActivity {
         binding.spinMuscles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = (String) parent.getItemAtPosition(position);
-                Toast.makeText(ExercisesActivity.this, selected, Toast.LENGTH_SHORT).show();
+                chosenMuscle = (String) parent.getItemAtPosition(position).toString();
+                Toast.makeText(ExercisesActivity.this, chosenMuscle, Toast.LENGTH_SHORT).show();
+                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
             }
 
             @Override
@@ -212,22 +204,16 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     /****************** RecyclerView initializing ****************************/
     private void recyclerInit() {
+
         //create adapter
-        adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
+        if(goalOfLaunchIntent.equals("show_exe")) {
+            adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
+        } else if (goalOfLaunchIntent.equals("select_exe")) {
+            adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises(),true);
+        }
+
         //layout manager add to recycler
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
         //set adapter
@@ -237,12 +223,12 @@ public class ExercisesActivity extends AppCompatActivity {
     private List<Exercise> getExercises() {
         List<Exercise> exerciseList = new LinkedList<>();
 
-        if(!textGroup.equals("") & !textMuscle.equals("")) {
+        if(!chosenGroup.equals("") & !chosenMuscle.equals("")) {
             String selection = "" + SQLhelper.COLUMN_GROUP + "=? AND (" + SQLhelper.COLUMN_MUSCLE1 +
                     "=? OR " + SQLhelper.COLUMN_MUSCLE2 + "=? OR " + SQLhelper.COLUMN_MUSCLE3 +
                     "=? OR " + SQLhelper.COLUMN_MUSCLE4 + "=?)";
 
-            String[] selectionArgs = {textGroup, textGroup};
+            String[] selectionArgs = {chosenGroup, chosenMuscle};
             c = database.query(SQLhelper.TABLE_EXERCISES, null, selection, selectionArgs, null, null, null);
         }else {
             c = database.query(SQLhelper.TABLE_EXERCISES, null, null, null, null, null, null);
@@ -306,10 +292,7 @@ public class ExercisesActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent returnIntent = new Intent();
-                if(extraArrayGroupMuscle != null) {
-                    returnIntent.putExtra("exercisesExtra", new String[]{extraArrayGroupMuscle[0], extraArrayGroupMuscle[1], "exercise888"});
-                    setResult(Activity.RESULT_OK, returnIntent);
-                } else setResult(Activity.RESULT_CANCELED, returnIntent);
+                setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
                 return true;
 
@@ -366,9 +349,6 @@ public class ExercisesActivity extends AppCompatActivity {
     public void setPositioContextMenu(int position) {
         positionItem = position;
     }
-
-
-
 
 
 

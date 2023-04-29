@@ -37,11 +37,8 @@ public class MainActivity extends AppCompatActivity {
     //references
     private ActivityMainBinding binding;
 
-    //Triggers other activities from this activity
-    private ActivityResultLauncher activityResultLauncher;
-
-    //Triggers other activities from this activity
-    private ActivityResultLauncher<Intent> activityExercisesLauncher;
+    //Triggers activities from this activity
+    private ActivityResultLauncher activityResultLauncher , activityExercisesLauncher;
 
     //link to the Database Assistant
     SQLhelper sqLhelper;
@@ -324,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //launch the activity with all Exercises
                 Intent intent = new Intent(MainActivity.this, ExercisesActivity.class);
+                intent.putExtra("goal_launch", "show_exe");
                 this.activityExercisesLauncher.launch(intent);
 
                 return true;

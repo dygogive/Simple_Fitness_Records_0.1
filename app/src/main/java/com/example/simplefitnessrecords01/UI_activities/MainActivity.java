@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
     /************** GETTERS SETTERS **********************/
     public SQLiteDatabase getDB() {
         return db;
@@ -60,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     public ActivityResultLauncher getActivityResultLauncher() {
         return activityResultLauncher;
     }
-
-
 
 
 
@@ -130,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
         //close dadabases
         sqLhelper.close();
     }
-
-
 
 
 
@@ -266,8 +260,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
     /********** Options Menu **************/
     //Creating a menu
     @Override
@@ -326,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
-
             case R.id.action_log_sql:
                 //show table SQL in LOG
                 sqLhelper.getTableInLogTrainings("Table_in_LOG");
@@ -335,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
 
@@ -364,8 +354,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);  //default
         }
     }
-
-
 
 
 
@@ -407,8 +395,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
     /******************** DATABASES **************************/
     //delete item from database and from recycler view
     private void deleteOneItemInDatabases(){
@@ -429,11 +415,6 @@ public class MainActivity extends AppCompatActivity {
         new DeleteDialog(MainActivity.this, dialogOnClick).show();
 
     }
-
-
-
-
-
 
 
 

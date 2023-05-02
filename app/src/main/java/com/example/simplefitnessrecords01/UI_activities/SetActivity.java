@@ -112,17 +112,12 @@ public class SetActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == RESULT_OK) {
-
-                        Log.d("findError", "test - 7");
                         //get data for new Exercise
                         extraFromExercise = result.getData().getStringArrayExtra("muscleGroupsExtra");
-                        Log.d("findError", "test - 8");
                         if(extraFromExercise != null) {
                             //change in database
                             sqLhelper.updateRowSets(positionOfRecycler, nameFitness, extraFromExercise);
-                            Log.d("findError", "test - 9");
                         }
-                        Log.d("findError", "test - 10");
                     }
                 });
 
@@ -163,8 +158,6 @@ public class SetActivity extends AppCompatActivity {
 
         //initialization of the Recycler view
         recycleViewInit();
-
-        Log.d("findErr", "onResume");
     }
 
     @Override
@@ -238,17 +231,25 @@ public class SetActivity extends AppCompatActivity {
             int id_uniName = c.getColumnIndex(SQLhelper.COLUMN_UNIC_NAME);
             int id_group = c.getColumnIndex(sqLhelper.COLUMN_GROUP);
             int id_exe = c.getColumnIndex(sqLhelper.COLUMN_EXE);
+            int id_muscle1 = c.getColumnIndex(sqLhelper.COLUMN_MUSCLE1);
+            int id_muscle2 = c.getColumnIndex(sqLhelper.COLUMN_MUSCLE2);
+            int id_muscle3 = c.getColumnIndex(sqLhelper.COLUMN_MUSCLE3);
+            int id_muscle4 = c.getColumnIndex(sqLhelper.COLUMN_MUSCLE4);
             int id_wei = c.getColumnIndex(sqLhelper.COLUMN_WEIGHT);
             int id_rep = c.getColumnIndex(sqLhelper.COLUMN_REPEATS);
             do {
                 int id         = c.getInt(id_id);
                 String uniName = c.getString(id_uniName);
                 String group     = c.getString(id_group);
+                String muscle1     = c.getString(id_muscle1);
+                String muscle2     = c.getString(id_muscle2);
+                String muscle3     = c.getString(id_muscle3);
+                String muscle4     = c.getString(id_muscle4);
                 String exe     = c.getString(id_exe);
                 int wei        = c.getInt(id_wei);
                 int rep        = c.getInt(id_rep);
 
-                ExecutedExercise executedExercise = new ExecutedExercise(exe,new MuscleGroup(group),
+                ExecutedExercise executedExercise = new ExecutedExercise(exe,new MuscleGroup(group , new String[]{muscle1,muscle2,muscle3,muscle4}),
                         new Weight(wei), new Repeats(rep));
                 SetTraining setTraining = new SetTraining(id, executedExercise, uniName);
 

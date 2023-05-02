@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:focusable="true"
-        android:hint="@string/exercise_group"
+        android:gravity="right"
         android:inputType="textMultiLine|text"
         android:textIsSelectable="false"
         android:textSize="20sp"
@@ -28,16 +28,14 @@
         android:id="@+id/tvExerciceName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:focusable="true"
-        android:hint="@string/exercise"
         android:inputType="textMultiLine|text"
         android:textIsSelectable="false"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imBtnPlus"
         app:layout_constraintTop_toBottomOf="@+id/tv_muskles" />
 
     <EditText
@@ -50,7 +48,7 @@
         android:inputType="numberDecimal"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/tvExerciceGroup"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tuype_set" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_type_set" />
 
     <EditText
         android:id="@+id/etRepeat"
@@ -66,13 +64,12 @@
         app:layout_constraintTop_toTopOf="@+id/etWeight" />
 
     <TextView
-        android:id="@+id/tv_tuype_set"
+        android:id="@+id/tv_type_set"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:hint="Type of set"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -86,11 +83,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:hint="Muscles"
+        android:gravity="right"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvExerciceGroup" />
+
+    <ImageView
+        android:id="@+id/imBtnPlus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvExerciceName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvExerciceName"
+        app:srcCompat="@drawable/baseline_add_box_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

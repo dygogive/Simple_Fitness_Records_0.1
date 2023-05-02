@@ -126,8 +126,10 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
             itemBinding.tvMuscles1. setTextSize(Float.parseFloat(selectedTextSize));
 
 
+            //visible invisible image buttons
             if(selectExercise) {
                 itemBinding.imageSelect.setVisibility(View.VISIBLE);
+                itemBinding.imgMenuExe.setVisibility(View.INVISIBLE);
             }
 
 
@@ -165,24 +167,31 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
             itemBinding.imageSelect.setOnClickListener(v -> {
                 Intent intent = new Intent();
 
-                //create data
+                //create data array
                 String[] txtData = new String[6];
+
+                //part of body of the exercise
                 txtData[0] = exercise.getMuscleGroup().getBodyPart();
                 int i = 1;
+
+                //muscles of the exercise
                 for (String s : muscles ) {
                     if(s == null) txtData[i++] = "";
                     else txtData[i++] = s;
                 }
+
+                //name of the exercise
                 txtData[i] = exercise.getExerciseName();
 
+                //show data in log
                 for(String s : txtData){
-                    Log.d("data" , s);
+                    Log.d("dataOfExe" , s);
                 }
-
 
                 //put extra
                 intent.putExtra("muscleGroupsExtra" , txtData);
                 ((Activity)context).setResult(Activity.RESULT_OK,intent);
+
 
                 //finish
                 ((Activity)context).finish();

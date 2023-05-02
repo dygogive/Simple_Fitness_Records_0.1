@@ -56,6 +56,10 @@ public class ExercisesActivity extends AppCompatActivity {
 
 
 
+    /******************************** GETTER SETTER *****************************************/
+    public SQLhelper getSqLhelper() {
+        return sqLhelper;
+    }
 
     /*************************** LIFECYCLE ACTIVITY ***************************************/
 

@@ -23,6 +23,7 @@ import com.example.simplefitnessrecords01.fitness.SetTraining;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +34,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
     //LIST of performed approaches in training
     private List<SetTraining> setSetTrainingList = new ArrayList<>();
+
 
 
 
@@ -63,12 +65,6 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
 
-
-
-
-
-
-
     /************* Constructors ***********************/
     public AdapterRecyclerOneSets(Context context) {
         this.context = (SetActivity) context;
@@ -82,9 +78,7 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
 
-
-
-    // **************   Creation of View and Holder blank   ********
+    /******************** Creation of View and Holder blank ***************/
     @NonNull
     @Override
     public HolderSetFitList onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -107,9 +101,6 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
         //Через метод в холдері запихнути дані в В'ю
         holder.initItemView(setTraining);
     }
-
-
-
 
 
 
@@ -299,20 +290,33 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
             //put data to item from object
             String exeGroupName = setTraining.getExecutedExercise().getMuscleGroup().getBodyPart();
             binding.tvExerciceGroup.setText(exeGroupName);
+
+            // show muscles in recycler view
+            String[] muscles = setTraining.getExecutedExercise().getMuscleGroup().getMuscles();
+            StringBuilder sb = new StringBuilder();
+            for(String muscle : muscles) {
+                if(  muscle != null & !Objects.equals(muscle, "")) {
+                    sb.append(muscle);
+                    sb.append("; ");
+                }
+            }
+            binding.tvMuskles.setText(sb.toString());
+
+
+
             //
             String exeName = setTraining.getExecutedExercise().toString();
             binding.tvExerciceName.setText(exeName);
+
             //
             int weight = setTraining.getExecutedExercise().getWeight().toInt();
             binding.etWeight.setText(String.valueOf(weight));
             if (weight == 0) binding.etWeight.setText("");
+
             //
             int repeats = setTraining.getExecutedExercise().getRepeats().toInt();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
-            //
-
-
 
             //
             binding.tvExerciceName. setTextSize(Float.parseFloat(selectedTextSize));
@@ -321,16 +325,17 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
             binding.tvExerciceGroup.setTextSize(Float.parseFloat(selectedTextSize));
 
             //onClick TextViews
-            binding.tvExerciceGroup.setOnClickListener(v -> {
+            binding.imBtnPlus.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
 
                 lunchActivityToChoiseExercise();
             });
-            //onClick TextViews
             binding.tvExerciceName.setOnClickListener(v -> {
                 Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+
                 lunchActivityToChoiseExercise();
             });
+
 
         }
 
@@ -345,6 +350,8 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
             //launch the activity with groups of muscles
             Intent intent = new Intent(context, ExercisesActivity.class);
             intent.putExtra("goal_launch", "select_exe");
+            intent.putExtra("position", getAbsoluteAdapterPosition());
+            intent.putExtra("unicName", setTraining1.getUniqueFitTraining());
             context.getActivityChoseExeLauncher().launch(intent);
 
             //save the position in SetActivity

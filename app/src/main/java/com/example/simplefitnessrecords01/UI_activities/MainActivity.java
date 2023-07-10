@@ -56,6 +56,51 @@ public class MainActivity extends AppCompatActivity {
         return activityResultLauncher;
     }
 
+    //getUniqueName
+    private String getUniqueName(int position) {
+        //адаптер
+        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
+                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
+
+        //unique Name To Delete
+        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+        String uniqueName = workout.getDay() + workout.getName() + workout.getInfo();
+
+        return uniqueName;
+    }
+    private String[] getUniqueNameArray(int position) {
+        //адаптер
+        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
+                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
+
+        //unique Name To Delete
+        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+
+        String[] uniqueName = new String[3];
+
+        uniqueName[0] = workout.getDay();
+        uniqueName[1] = workout.getName();
+        uniqueName[2] = workout.getInfo();
+
+        return uniqueName;
+    }
+    private String[] getUniqueNameArray2(int position) {
+        //адаптер
+        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
+                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
+
+        //unique Name To Delete
+        Workout workout = adapterRecyclerFitnessTrainings.getItem(position);
+
+        String[] uniqueName = new String[3];
+
+        uniqueName[0] = workout.getDay();
+        uniqueName[1] = workout.getName();
+        uniqueName[2] = workout.getInfo();
+
+        return uniqueName;
+    }
+
 
 
 
@@ -171,12 +216,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 
             //method TWO
-
-            String day = workoutList.get(position).getDay();
-            String name = workoutList.get(position).getName();
-            String infoWorkout = workoutList.get(position).getInfo();
-            uniqueName = new String[] {day,name,infoWorkout};
-            MainActivity.this.getActivityResultLauncher().launch(uniqueName);
+            MainActivity.this.getActivityResultLauncher().launch(getUniqueNameArray2(position));
 
 
 
@@ -238,34 +278,7 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    //getUniqueName
-    private String getUniqueName(int position) {
-        //адаптер
-        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
-                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
-        //unique Name To Delete
-        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
-        String uniqueName = workout.getDay() + workout.getName() + workout.getInfo();
-
-        return uniqueName;
-    }
-    private String[] getUniqueNameArray(int position) {
-        //адаптер
-        AdapterRecyclerFitnessTrainings adapterRecyclerFitnessTrainings =
-                (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
-
-        //unique Name To Delete
-        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
-
-        String[] uniqueName = new String[3];
-
-        uniqueName[0] = workout.getDay();
-        uniqueName[1] = workout.getName();
-        uniqueName[2] = workout.getInfo();
-
-        return uniqueName;
-    }
 
 
 
@@ -278,13 +291,6 @@ public class MainActivity extends AppCompatActivity {
         // Inflating the menu resource using MenuInflater
         getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-
-        return super.onPrepareOptionsMenu(menu);
     }
 
     //Listener of Options Menu

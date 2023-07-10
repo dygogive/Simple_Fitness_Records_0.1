@@ -43,7 +43,6 @@ public class DeleteDialog extends Dialog {
         mBinding.btnCancel.setTextSize(Float.parseFloat(selectedTextSize));
         mBinding.textInfo.setTextSize(Float.parseFloat(selectedTextSize));
 
-
         //listener og button in dialog
         mBinding.btnDelete.setOnClickListener(view -> {
             dialogOnClick.OnClick();

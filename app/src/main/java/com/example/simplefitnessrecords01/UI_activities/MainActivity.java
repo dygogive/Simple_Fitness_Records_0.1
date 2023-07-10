@@ -22,7 +22,7 @@ import com.example.simplefitnessrecords01.dialog.DialogOnClick;
 import com.example.simplefitnessrecords01.dialog.DialogUniqueNameProcessor;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.Training;
+import com.example.simplefitnessrecords01.fitness.Workout;
 import com.example.simplefitnessrecords01.activityResultContracts.MyActivityResultContract;
 import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialog.StartDialog;
@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     /************** GETTERS SETTERS **********************/
-    public SQLiteDatabase getDB() {
-        return db;
-    }
 
     //getter method to get the reference to the activity launcher
     public ActivityResultLauncher getActivityResultLauncher() {
@@ -74,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setTitle("Trainings");
         actionBar.setSubtitle("Create new training");
 
+
         //binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -83,9 +81,8 @@ public class MainActivity extends AppCompatActivity {
         //initialization of links to databases
         sqLhelper = new SQLhelper(MainActivity.this);
 
-
         //database sqLfitness
-        db     = sqLhelper.getWritableDatabase();
+        db  = sqLhelper.getWritableDatabase();
 
 
         //luncher with handler
@@ -136,11 +133,11 @@ public class MainActivity extends AppCompatActivity {
     //initialization recycleView list of created fitness workouts
     private void recycleViewInit() {
         //get setTrainingList from database
-        List<Training> trainingList = getFitnessList();
+        List<Workout> workoutList = getWorkoutList();
 
         //create a new adapter with this list
         AdapterRecyclerFitnessTrainings adapter =
-                new AdapterRecyclerFitnessTrainings(trainingList, this);
+                new AdapterRecyclerFitnessTrainings(workoutList, this);
 
         //the display manager of the elements is transferred
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -151,24 +148,38 @@ public class MainActivity extends AppCompatActivity {
             //let's create an array with unique name
             String[] uniqueName = null;
 
-            //cursor
-            Cursor c = db.query(SQLhelper.TABLE_TRAININGS,null,null,null,null,null,null);
-            //
-            if(c.moveToPosition(position)) {
-                @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLhelper.COLUMN_DAY));
-                @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLhelper.COLUMN_NAME));
-                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_INFO));
+            //method ONE
 
-                //array filling
-                uniqueName = new String[] {day,name,subname};
+//            //cursor
+//            Cursor c = db.query(SQLhelper.TABLE_TRAININGS,null,null,null,null,null,null);
+//
+//            //
+//            if(c.moveToPosition(position)) {
+//                @SuppressLint("Range") String day =     c.getString(c.getColumnIndex(SQLhelper.COLUMN_DAY));
+//                @SuppressLint("Range") String name =    c.getString(c.getColumnIndex(SQLhelper.COLUMN_NAME));
+//                @SuppressLint("Range") String subname = c.getString(c.getColumnIndex(SQLhelper.COLUMN_INFO));
+//
+//                //array filling
+//                uniqueName = new String[] {day,name,subname};
+//
+//                //run the activity SetActivity representing the training process by passing the training information to it
+//                MainActivity.this.getActivityResultLauncher().launch(uniqueName);
+//
+//            }else {
+//                //in case of an error, start the toast like this
+//                Toast.makeText(this, "Position: " + position + " wrong", Toast.LENGTH_SHORT).show();
+//            }
 
-                //run the activity SetActivity representing the training process by passing the training information to it
-                MainActivity.this.getActivityResultLauncher().launch(uniqueName);
+            //method TWO
 
-            }else {
-                //in case of an error, start the toast like this
-                Toast.makeText(this, "Position: " + position + " wrong", Toast.LENGTH_SHORT).show();
-            }
+            String day = workoutList.get(position).getDay();
+            String name = workoutList.get(position).getName();
+            String infoWorkout = workoutList.get(position).getInfo();
+            uniqueName = new String[] {day,name,infoWorkout};
+            MainActivity.this.getActivityResultLauncher().launch(uniqueName);
+
+
+
         });
 
         //pass adapter to Recyclerview
@@ -176,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //method creates a list of database names
-    private List<Training>  getFitnessList(){
+    private List<Workout> getWorkoutList(){
 
         //empty list for SetTraining from base for recycler
-        List<Training> trainingList = new ArrayList<>();
+        List<Workout> workoutList = new ArrayList<>();
 
         //cursor from base with selection of all
         Cursor cursor = db.rawQuery("SELECT * FROM " + SQLhelper.TABLE_TRAININGS, null);
@@ -197,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 String subname = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
 
                 //add a row from the database to the list
-                trainingList.add(   new Training(id, day, name, subname)   );
+                workoutList.add(   new Workout(id, day, name, subname)   );
             } while (cursor.moveToNext());
         } else {
 
@@ -216,13 +227,13 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
         //повернути список об'єктів тренувань
-        return trainingList;
+        return workoutList;
     }
 
     //update recycler view
     private void updateRecyclerView(){
         //from db to adapter update data
-        ((AdapterRecyclerFitnessTrainings)binding.recyclerView.getAdapter()).setFitnessList(getFitnessList());
+        ((AdapterRecyclerFitnessTrainings)binding.recyclerView.getAdapter()).setFitnessList(getWorkoutList());
         //notify adapter
         binding.recyclerView.getAdapter().notifyDataSetChanged();
     }
@@ -234,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
                 (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        Training training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
-        String uniqueName = training.getDay() + training.getName() + training.getInfo();
+        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+        String uniqueName = workout.getDay() + workout.getName() + workout.getInfo();
 
         return uniqueName;
     }
@@ -245,13 +256,13 @@ public class MainActivity extends AppCompatActivity {
                 (AdapterRecyclerFitnessTrainings) binding.recyclerView.getAdapter();
 
         //unique Name To Delete
-        Training training = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
+        Workout workout = adapterRecyclerFitnessTrainings.getItem(positioContextMenu);
 
         String[] uniqueName = new String[3];
 
-        uniqueName[0] = training.getDay();
-        uniqueName[1] = training.getName();
-        uniqueName[2] = training.getInfo();
+        uniqueName[0] = workout.getDay();
+        uniqueName[1] = workout.getName();
+        uniqueName[2] = workout.getInfo();
 
         return uniqueName;
     }

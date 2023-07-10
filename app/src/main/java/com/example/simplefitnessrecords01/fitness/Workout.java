@@ -1,6 +1,6 @@
 package com.example.simplefitnessrecords01.fitness;
 
-public class Training {
+public class Workout {
 
 
     /* PARAMETERS */
@@ -42,7 +42,7 @@ public class Training {
     
 
     /* CONSTRUCTOR */
-    public Training(int id, String day, String name, String inform) {
+    public Workout(int id, String day, String name, String inform) {
         this.id = id;
         this.day = day;
         this.name = name;

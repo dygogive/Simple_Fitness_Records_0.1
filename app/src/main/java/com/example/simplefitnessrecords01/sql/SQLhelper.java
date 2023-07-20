@@ -23,7 +23,7 @@ public class SQLhelper extends SQLiteOpenHelper {
 
 
     /*********************** TABLE_TRAININGS *****************************/
-    public static final String TABLE_TRAININGS = "tableTraining";
+    public static final String TABLE_ONEGYM = "tableTraining";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_INFO = "info";
@@ -47,9 +47,9 @@ public class SQLhelper extends SQLiteOpenHelper {
 
 
     //methog give all information in Log
-    public void getTableInLogTrainings(String logTag){
+    public void getTableGymsInLog(String logTag){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor c = db.query(TABLE_TRAININGS,null,null,null,null,null,null);
+        Cursor c = db.query(TABLE_ONEGYM,null,null,null,null,null,null);
         if(c.moveToNext()){
             do{
                 int id_id      = c.getColumnIndex(COLUMN_ID);
@@ -62,11 +62,11 @@ public class SQLhelper extends SQLiteOpenHelper {
                 String name    = c.getString(id_name);
                 String subname    = c.getString(id_subname);
                 //
-                Log.d(logTag, "Table " + TABLE_TRAININGS + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_DAY + " - " +
+                Log.d(logTag, "Table " + TABLE_ONEGYM + "has: " + COLUMN_ID + " - " + id + " ; " + COLUMN_DAY + " - " +
                         day + " ; " + COLUMN_NAME + " - " +
                         name + " ; " + COLUMN_INFO + " - " +  subname + " ; " );
             }while (c.moveToNext());
-        }else Log.d(logTag, "Table " + TABLE_TRAININGS + " is empty.");
+        }else Log.d(logTag, "Table " + TABLE_ONEGYM + " is empty.");
     }
 
 
@@ -149,7 +149,7 @@ public class SQLhelper extends SQLiteOpenHelper {
     //methods for changing rows
     public void deleteRowTrainings(String[] uniqueName) {
         //code to delete
-        String table_name = TABLE_TRAININGS;
+        String table_name = TABLE_ONEGYM;
         String where_clause = COLUMN_DAY + "=?" + " AND " + COLUMN_NAME + "=?" + " AND " + COLUMN_INFO + "=?";
         String[] where_args = new String[] { uniqueName[0], uniqueName[1], uniqueName[2] };
         String sql = "DELETE FROM " + table_name + " WHERE " + where_clause;
@@ -167,14 +167,14 @@ public class SQLhelper extends SQLiteOpenHelper {
 
 
         //get cursor from table sql
-        Cursor c = getWritableDatabase().query(TABLE_TRAININGS,null,null,null,null,null,null);
+        Cursor c = getWritableDatabase().query(TABLE_ONEGYM,null,null,null,null,null,null);
         //put cursor to chosen position of recycler
         if(c.moveToPosition(position)) {
             //update the table in selected id parameter
             int id = c.getInt(c.getColumnIndexOrThrow(COLUMN_ID));
             String whereClause = COLUMN_ID + " = ?";
             String[] whereArgs = new String[] {Integer.toString(id)};
-            getWritableDatabase().update(SQLhelper.TABLE_TRAININGS, cv, whereClause, whereArgs);
+            getWritableDatabase().update(SQLhelper.TABLE_ONEGYM, cv, whereClause, whereArgs);
             cv.clear();
         }
     }
@@ -182,7 +182,7 @@ public class SQLhelper extends SQLiteOpenHelper {
     //get String[] of row in table from database
     public String[] getRowTrainings(int position) {
         String[] str = null;
-        Cursor cursor = getWritableDatabase().query(TABLE_TRAININGS,null,null,null,null,null,null);
+        Cursor cursor = getWritableDatabase().query(TABLE_ONEGYM,null,null,null,null,null,null);
         if(cursor.moveToPosition(position)){
             @SuppressLint("Range") int id      = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
             @SuppressLint("Range") String day  = cursor.getString(cursor.getColumnIndex(COLUMN_DAY));
@@ -339,7 +339,7 @@ public class SQLhelper extends SQLiteOpenHelper {
         Log.d("notStart" , "start");
 
         // Creation of database tables
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TRAININGS + " " +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ONEGYM + " " +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_DAY + " TEXT, " + COLUMN_NAME + " TEXT, " +
                 "" + COLUMN_INFO + " TEXT)" );
 
@@ -359,7 +359,7 @@ public class SQLhelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Updating database tables
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRAININGS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ONEGYM);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SETS);
         onCreate(db);
 

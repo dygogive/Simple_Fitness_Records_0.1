@@ -1,4 +1,4 @@
-package com.example.simplefitnessrecords01.dialog;
+package com.example.simplefitnessrecords01.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;

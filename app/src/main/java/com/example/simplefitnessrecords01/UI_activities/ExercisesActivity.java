@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.ActivityExerciseListBinding;
-import com.example.simplefitnessrecords01.dialog.DialogUniqueNameProcessor;
-import com.example.simplefitnessrecords01.dialog.ExeNameDialog;
+import com.example.simplefitnessrecords01.dialogs.DialogUniqueNameProcessor;
+import com.example.simplefitnessrecords01.dialogs.ExeNameDialog;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;

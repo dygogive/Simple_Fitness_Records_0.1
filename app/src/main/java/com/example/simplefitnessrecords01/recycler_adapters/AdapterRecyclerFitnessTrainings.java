@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerMainActivityBinding;
-import com.example.simplefitnessrecords01.fitness.Workout;
+import com.example.simplefitnessrecords01.fitness.OneGym;
 
 import java.util.List;
 
@@ -28,27 +28,27 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
 
     //List of exercises
-    private List<Workout> setWorkoutList;
+    private List<OneGym> setOneGymList;
 
     /* SETTER AND GETTER this exercise list */
-    public void setFitnessList(List<Workout> setWorkoutList) {
-        this.setWorkoutList = setWorkoutList;
+    public void setFitnessList(List<OneGym> setOneGymList) {
+        this.setOneGymList = setOneGymList;
     }
-    public List<Workout> getSetTrainingList() {
-        return setWorkoutList;
+    public List<OneGym> getSetTrainingList() {
+        return setOneGymList;
     }
 
-    public Workout getItem(int position) {
-        return setWorkoutList.get(position);
+    public OneGym getItem(int position) {
+        return setOneGymList.get(position);
     }
-    public void setItem(Workout workout) {
-        setWorkoutList.add(workout);
+    public void setItem(OneGym oneGym) {
+        setOneGymList.add(oneGym);
     }
     //returning the number of items displayed by the Recycler
     @Override
     public int getItemCount() {
         //розмір елементів
-        return setWorkoutList.size();
+        return setOneGymList.size();
     }
 
 
@@ -67,8 +67,8 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
 
     //Constructor
-    public AdapterRecyclerFitnessTrainings(List<Workout> setWorkoutList, Context context) {
-        this.setWorkoutList = setWorkoutList;
+    public AdapterRecyclerFitnessTrainings(List<OneGym> setOneGymList, Context context) {
+        this.setOneGymList = setOneGymList;
         this.context = context;
     }
 
@@ -94,9 +94,9 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
     @Override
     public void onBindViewHolder(@NonNull AdapterRecyclerFitnessTrainings.SetTrainingHolder holder, int position) {
         //get a list item
-        Workout setWorkout = setWorkoutList.get(position);
+        OneGym setOneGym = setOneGymList.get(position);
         //throw information from it into the holder
-        holder.onBindData(setWorkout);
+        holder.onBindData(setOneGym);
     }
 
 
@@ -165,10 +165,10 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
 
         // fill the item holder item with information
-        void onBindData(Workout workout){
-            binding.textView. setText(workout.getDay());
-            binding.tvName.   setText(workout.getName());
-            binding.tvSubName.setText(workout.getInfo());
+        void onBindData(OneGym oneGym){
+            binding.textView. setText(oneGym.getDay());
+            binding.tvName.   setText(oneGym.getName());
+            binding.tvSubName.setText(oneGym.getInfo());
 
             //set size of text
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

@@ -9,7 +9,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.simplefitnessrecords01.dialogs.StartDialog;
 import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
+import com.example.simplefitnessrecords01.fitness.OneGym;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLhelper extends SQLiteOpenHelper {
     //
@@ -156,7 +161,6 @@ public class SQLhelper extends SQLiteOpenHelper {
         //delete from database
         getWritableDatabase().execSQL(sql, where_args);
     }
-
     //
     public void updateRowTrainings(int position, String[] data) {
         //get strings from dialog
@@ -192,6 +196,8 @@ public class SQLhelper extends SQLiteOpenHelper {
         }
             return str;
     }
+
+
 
 
 

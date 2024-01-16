@@ -51,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /************** GETTERS SETTERS **********************/
+
+
+    /************** CREATE NAME OF GYM **********************/
 
     //Отримати адаптер на РециклерВ'ю
     private AdapterRecyclerFitnessTrainings getAdapterRecyclerView(){
         return (AdapterRecyclerFitnessTrainings) binding.recyclerViewID.getAdapter();
     }
-
     //Створити унікальне ім'я тренування (
     private String createGymName(int position) {
         //get OneGym from position
@@ -65,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //generosity unique name
         return oneGym.getDay() + oneGym.getName() + oneGym.getInfo();
     }
-
-
-    private String[] getUniqueNameArray(int position) {
+    private String[] createArrayGymName(int position) {
 
         //unique Name To Delete
         OneGym oneGym = getAdapterRecyclerView().getItem(position);
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -114,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {}
         );
+
+
 
     }
     @Override
@@ -140,8 +140,9 @@ public class MainActivity extends AppCompatActivity {
 
     //initialization recycleView list of created fitness workouts
     private void recycleViewInit() {
+
         //get setTrainingList from database
-        List<OneGym> oneGymList = getOneGymListFromDB();
+        List<OneGym> oneGymList = getOneGymListOrCreate();
 
         //create a new adapter with this list
         AdapterRecyclerFitnessTrainings adapter =
@@ -155,12 +156,16 @@ public class MainActivity extends AppCompatActivity {
 
         //set up our listener for short-click processing and code the processing itself
         adapter.setOnItemRecyclerClickListener((position) -> {
-            activityResultLauncher.launch(getUniqueNameArray(position));
+            activityResultLauncher.launch(createArrayGymName(position));
         });
+
     }
 
+
+
     //method creates a list of database names
-    private List<OneGym> getOneGymListFromDB(){
+    @SuppressLint("Range")
+    public List<OneGym> getOneGymList(){
 
         //empty list for SetTraining from base for recycler
         List<OneGym> oneGymList = new ArrayList<>();
@@ -168,21 +173,21 @@ public class MainActivity extends AppCompatActivity {
         //cursor from base with selection of all
         Cursor cursor = sqLhelper.getWritableDatabase().rawQuery("SELECT * FROM " + SQLhelper.TABLE_ONEGYM, null);
 
+        //Strings
+        String day = "", name = "", info = "";
+
         //iterate through the cursor lines
         if (cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range")
                 int id = cursor.getInt(cursor.getColumnIndex(SQLhelper.COLUMN_ID));
-                @SuppressLint("Range")
-                String day = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_DAY));
-                @SuppressLint("Range")
-                String name = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_NAME));
-                @SuppressLint("Range")
-                String info = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
-
+                day = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_DAY));
+                name = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_NAME));
+                info = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
                 //add a row from the database to the list
                 oneGymList.add(   new OneGym(id, day, name, info)   );
             } while (cursor.moveToNext());
+            return oneGymList;
         } else {
             //If the base is empty, then the dialog is started
             StartDialog dialog = new StartDialog(this, uniqueName -> {
@@ -193,9 +198,35 @@ public class MainActivity extends AppCompatActivity {
                 sqLhelper.getWritableDatabase().insert(SQLhelper.TABLE_ONEGYM,null,cv);
                 cv.clear();
                 recycleViewInit();
-                });
+            });
             //show dialogue
             dialog.show();
+        }
+        return oneGymList;
+    }
+
+
+
+
+
+
+    //method creates a list of database names
+    private List<OneGym> getOneGymListOrCreate(){
+
+
+        //empty list for SetTraining from base for recycler
+        List<OneGym> oneGymList = getOneGymList();
+
+        //Strings
+        String day, name, info;
+
+        //iterate through the cursor lines
+        if (oneGymList.toString() == null) {
+
+            Log.d("myLog" , "3333");
+        } else {
+            //повернути список об'єктів тренувань
+            return oneGymList;
         }
         //повернути список об'єктів тренувань
         return oneGymList;
@@ -204,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     //update recycler view
     private void updateRecyclerView(){
         //from db to adapter update data
-        ((AdapterRecyclerFitnessTrainings)binding.recyclerViewID.getAdapter()).setFitnessList(getOneGymListFromDB());
+        ((AdapterRecyclerFitnessTrainings)binding.recyclerViewID.getAdapter()).setFitnessList(getOneGymListOrCreate());
         //notify adapter
         binding.recyclerViewID.getAdapter().notifyDataSetChanged();
     }
@@ -359,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         //RUN delete for dialog
         DialogOnClick dialogOnClick = () -> {
             //delete from the database of Fitness Trainings
-            sqLhelper.deleteRowTrainings(getUniqueNameArray(positioContextMenu));
+            sqLhelper.deleteRowTrainings(createArrayGymName(positioContextMenu));
 
             Log.d("howDel" , createGymName(positioContextMenu));
             //delete from the database of performed sets

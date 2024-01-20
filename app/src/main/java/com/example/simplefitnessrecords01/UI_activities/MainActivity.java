@@ -21,15 +21,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
 import com.example.simplefitnessrecords01.dialogs.DeleteDialog;
 import com.example.simplefitnessrecords01.dialogs.DialogOnClick;
 import com.example.simplefitnessrecords01.dialogs.DialogUniqueNameProcessor;
+import com.example.simplefitnessrecords01.fitness.Workout;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.fitness.OneGym;
-import com.example.simplefitnessrecords01.databinding.ActivityMainBinding;
-import com.example.simplefitnessrecords01.dialogs.StartDialog;
-import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerFitnessTrainings;
+import com.example.simplefitnessrecords01.dialogs.DialogCreateWorkout;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterWorkouts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,44 +41,57 @@ public class MainActivity extends AppCompatActivity {
             binding;
     //Різалт лаунчери
     private ActivityResultLauncher
-            activityResultLauncher ,
+            activityWorkoutLauncher,
             activityExercisesLauncher;
     //Хелпер БД
     SQLhelper
-            sqLhelper;
+            sqlHelper;
 
-
-
-
-
-
-
-    /************** CREATE NAME OF GYM **********************/
 
     //Отримати адаптер на РециклерВ'ю
-    private AdapterRecyclerFitnessTrainings getAdapterRecyclerView(){
-        return (AdapterRecyclerFitnessTrainings) binding.recyclerViewID.getAdapter();
+    private AdapterWorkouts getAdapterRecyclerView(){
+        return (AdapterWorkouts) binding.recyclerViewID.getAdapter();
     }
+
     //Створити унікальне ім'я тренування (
-    private String createGymName(int position) {
-        //get OneGym from position
-        OneGym oneGym = getAdapterRecyclerView().getItem(position);
+    private String getNameWorkout(int position) {
+        //get Workout from position
+        Workout workout = getAdapterRecyclerView().getWorkout(position);
         //generosity unique name
-        return oneGym.getDay() + oneGym.getName() + oneGym.getInfo();
+        return workout.getDay() + workout.getName() + workout.getInfo();
     }
-    private String[] createArrayGymName(int position) {
+    private String[] getArrayNameWorkout(int position) {
 
         //unique Name To Delete
-        OneGym oneGym = getAdapterRecyclerView().getItem(position);
+        Workout workout = getAdapterRecyclerView().getWorkout(position);
 
         String[] uniqueName = new String[3];
 
-        uniqueName[0] = oneGym.getDay();
-        uniqueName[1] = oneGym.getName();
-        uniqueName[2] = oneGym.getInfo();
+        uniqueName[0] = workout.getDay();
+        uniqueName[1] = workout.getName();
+        uniqueName[2] = workout.getInfo();
 
         return uniqueName;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -99,11 +112,11 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setSubtitle("Create new training");
 
         //initialization of links to databases
-        sqLhelper = new SQLhelper(MainActivity.this);
+        sqlHelper = new SQLhelper(MainActivity.this);
 
-        //luncher for SetActivity
-        activityResultLauncher = registerForActivityResult(
-                new MyActivityResultContract(),
+        //luncher for ExerciseSetActivity
+        activityWorkoutLauncher = registerForActivityResult(
+                new ExerciseSetContract(),
                 result -> {}
         );
 
@@ -112,24 +125,31 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {}
         );
-
-
-
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-
         //initialize recycleView
         recycleViewInit();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         //close dadabases
-        sqLhelper.close();
+        sqlHelper.close();
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,37 +161,43 @@ public class MainActivity extends AppCompatActivity {
     //initialization recycleView list of created fitness workouts
     private void recycleViewInit() {
 
-        //get setTrainingList from database
-        List<OneGym> oneGymList = getOneGymListOrCreate();
-
-        //create a new adapter with this list
-        AdapterRecyclerFitnessTrainings adapter =
-                new AdapterRecyclerFitnessTrainings(oneGymList, this);
-
         //the display manager of the elements is transferred
         binding.recyclerViewID.setLayoutManager(new LinearLayoutManager(this));
+
+        //get setTrainingList from database
+        List<Workout> workoutList = getWorkoutList();
+
+        //create My adapter with Workout list
+        AdapterWorkouts adapter = new AdapterWorkouts(workoutList, this);
 
         //pass adapter to Recyclerview
         binding.recyclerViewID.setAdapter(adapter);
 
-        //set up our listener for short-click processing and code the processing itself
+        //launcher Workout from RecView
         adapter.setOnItemRecyclerClickListener((position) -> {
-            activityResultLauncher.launch(createArrayGymName(position));
+            activityWorkoutLauncher.launch(getArrayNameWorkout(position));
         });
 
     }
 
+    //update recycler view
+    private void updateListInRecyclerView(){
+        //from db to adapter update data
+        ((AdapterWorkouts)binding.recyclerViewID.getAdapter()).setWorkoutList(getWorkoutList());
+        //notify adapter
+        binding.recyclerViewID.getAdapter().notifyDataSetChanged();
+    }
 
 
     //method creates a list of database names
     @SuppressLint("Range")
-    public List<OneGym> getOneGymList(){
+    public List<Workout> getWorkoutList(){
 
         //empty list for SetTraining from base for recycler
-        List<OneGym> oneGymList = new ArrayList<>();
+        List<Workout> workoutList = new ArrayList<>();
 
         //cursor from base with selection of all
-        Cursor cursor = sqLhelper.getWritableDatabase().rawQuery("SELECT * FROM " + SQLhelper.TABLE_ONEGYM, null);
+        Cursor cursor = sqlHelper.getWritableDatabase().rawQuery("SELECT * FROM " + SQLhelper.TABLE_ONEGYM, null);
 
         //Strings
         String day = "", name = "", info = "";
@@ -185,24 +211,24 @@ public class MainActivity extends AppCompatActivity {
                 name = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_NAME));
                 info = cursor.getString(cursor.getColumnIndex(SQLhelper.COLUMN_INFO));
                 //add a row from the database to the list
-                oneGymList.add(   new OneGym(id, day, name, info)   );
+                workoutList.add(   new Workout(id, day, name, info)   );
             } while (cursor.moveToNext());
-            return oneGymList;
+            return workoutList;
         } else {
             //If the base is empty, then the dialog is started
-            StartDialog dialog = new StartDialog(this, uniqueName -> {
+            DialogCreateWorkout dialog = new DialogCreateWorkout(this, uniqueName -> {
                 ContentValues cv = new ContentValues();
                 cv.put(SQLhelper.COLUMN_DAY,    uniqueName[0]);
                 cv.put(SQLhelper.COLUMN_NAME,   uniqueName[1]);
                 cv.put(SQLhelper.COLUMN_INFO,   uniqueName[2]);
-                sqLhelper.getWritableDatabase().insert(SQLhelper.TABLE_ONEGYM,null,cv);
+                sqlHelper.getWritableDatabase().insert(SQLhelper.TABLE_ONEGYM,null,cv);
                 cv.clear();
                 recycleViewInit();
             });
             //show dialogue
             dialog.show();
         }
-        return oneGymList;
+        return workoutList;
     }
 
 
@@ -210,35 +236,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    //method creates a list of database names
-    private List<OneGym> getOneGymListOrCreate(){
 
 
-        //empty list for SetTraining from base for recycler
-        List<OneGym> oneGymList = getOneGymList();
 
-        //Strings
-        String day, name, info;
 
-        //iterate through the cursor lines
-        if (oneGymList.toString() == null) {
 
-            Log.d("myLog" , "3333");
-        } else {
-            //повернути список об'єктів тренувань
-            return oneGymList;
-        }
-        //повернути список об'єктів тренувань
-        return oneGymList;
-    }
 
-    //update recycler view
-    private void updateRecyclerView(){
-        //from db to adapter update data
-        ((AdapterRecyclerFitnessTrainings)binding.recyclerViewID.getAdapter()).setFitnessList(getOneGymListOrCreate());
-        //notify adapter
-        binding.recyclerViewID.getAdapter().notifyDataSetChanged();
-    }
+
 
 
 
@@ -265,11 +269,11 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_new:
                 // Handling the click on the "NEW" item
-                StartDialog dialog = new StartDialog(this, uniqueName -> {
+                DialogCreateWorkout dialog = new DialogCreateWorkout(this, uniqueName -> {
                     String selection = SQLhelper.COLUMN_DAY + "=? AND " + SQLhelper.COLUMN_NAME + "=? AND " + SQLhelper.COLUMN_INFO + "=?";
                     String[] selectionArgs = {uniqueName[0] , uniqueName[1] , uniqueName[2]};
 
-                    Cursor cursor = sqLhelper.getWritableDatabase().query(SQLhelper.TABLE_ONEGYM,null,selection, selectionArgs,null,null,null);
+                    Cursor cursor = sqlHelper.getWritableDatabase().query(SQLhelper.TABLE_ONEGYM,null,selection, selectionArgs,null,null,null);
 
                     if (  cursor.moveToFirst()  ) {
                         Toast.makeText(MainActivity.this, "Рядок уже є", Toast.LENGTH_SHORT).show();
@@ -278,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
                         cv.put(SQLhelper.COLUMN_DAY,    uniqueName[0]);
                         cv.put(SQLhelper.COLUMN_NAME,   uniqueName[1]);
                         cv.put(SQLhelper.COLUMN_INFO,   uniqueName[2]);
-                        sqLhelper.getWritableDatabase().insert(SQLhelper.TABLE_ONEGYM,null,cv);
+                        sqlHelper.getWritableDatabase().insert(SQLhelper.TABLE_ONEGYM,null,cv);
                         cv.clear();
                     }
                     cursor.close();
@@ -300,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_log_sql:
                 //show table SQL in LOG
-                sqLhelper.getTableGymsInLog("Table_in_LOG");
+                sqlHelper.getTableGymsInLog("Table_in_LOG");
                 return true;
 
             default:
@@ -332,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.edit: changeDataOfItemAcrossDialog();  //change names
                 return true;
-            case R.id.delete: deleteOneItemInDatabases();  //delete training
+            case R.id.delete: deleteOneItemInDatabase();  //delete training
                 return true;
             default:
                 return super.onContextItemSelected(item);  //default
@@ -352,16 +356,16 @@ public class MainActivity extends AppCompatActivity {
         //The processor of received information from the dialog
         @SuppressLint("Range") DialogUniqueNameProcessor dialogUniqueNameProcessor = dayNameInfo -> {
             //update info in database 1
-            sqLhelper.updateRowTrainings(positioContextMenu, dayNameInfo);
+            sqlHelper.updateRowTrainings(positioContextMenu, dayNameInfo);
 
             //update info in database 2
-            sqLhelper.updateRowSets(createGymName(positioContextMenu) ,dayNameInfo[0] + dayNameInfo[1] + dayNameInfo[2]);
+            sqlHelper.updateRowSets(getNameWorkout(positioContextMenu) ,dayNameInfo[0] + dayNameInfo[1] + dayNameInfo[2]);
 
             //update RecyclerView
-            updateRecyclerView();
+            updateListInRecyclerView();
         };
         //get OneFitnessTraining from database
-        String[] row = sqLhelper.getRowTrainings(positioContextMenu);
+        String[] row = sqlHelper.getRowTrainings(positioContextMenu);
         //create dayNameInfo
         String[] dayNameInfo;
         if(row.length == 4)
@@ -372,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Start Dialog
-        StartDialog dialog = new StartDialog(this, dialogUniqueNameProcessor, dayNameInfo);
+        DialogCreateWorkout dialog = new DialogCreateWorkout(this, dialogUniqueNameProcessor, dayNameInfo);
         // show Dialog
         dialog.show();
     }
@@ -385,18 +389,18 @@ public class MainActivity extends AppCompatActivity {
 
     /******************** DATABASES **************************/
     //delete item from database and from recycler view
-    private void deleteOneItemInDatabases(){
+    private void deleteOneItemInDatabase(){
 
         //RUN delete for dialog
         DialogOnClick dialogOnClick = () -> {
             //delete from the database of Fitness Trainings
-            sqLhelper.deleteRowTrainings(createArrayGymName(positioContextMenu));
+            sqlHelper.deleteRowTrainings(getArrayNameWorkout(positioContextMenu));
 
-            Log.d("howDel" , createGymName(positioContextMenu));
+            Log.d("howDel" , getNameWorkout(positioContextMenu));
             //delete from the database of performed sets
-            sqLhelper.deleteRowSets(createGymName(positioContextMenu));
+            sqlHelper.deleteRowSets(getNameWorkout(positioContextMenu));
 
-            updateRecyclerView();
+            updateListInRecyclerView();
         };
 
         //show dialog DELETE OR CANCEL
@@ -425,14 +429,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /********************** ACTIVITY RESULT CONTRACT ************************/
-    private static class MyActivityResultContract extends ActivityResultContract<String[], Boolean> {
+    /********************** ACTIVITY EXERCISESET CONTRACT ************************/
+    private static class ExerciseSetContract extends ActivityResultContract<String[], Boolean> {
 
         //create Intent for sending to a new Activity
         @NonNull
         @Override
         public Intent createIntent(@NonNull Context context, String[] txts) {
-            Intent intent = new Intent(context, SetActivity.class);
+            Intent intent = new Intent(context, ExerciseSetActivity.class);
             intent.putExtra("start fitness", txts);
             return intent;
         }

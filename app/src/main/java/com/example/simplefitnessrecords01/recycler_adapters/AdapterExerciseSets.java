@@ -15,11 +15,10 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
+import com.example.simplefitnessrecords01.UI_activities.ExerciseSetActivity;
 import com.example.simplefitnessrecords01.UI_activities.ExercisesActivity;
-import com.example.simplefitnessrecords01.UI_activities.MusclesGroupsActivity;
-import com.example.simplefitnessrecords01.UI_activities.SetActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerSetActivityBinding;
-import com.example.simplefitnessrecords01.fitness.SetTraining;
+import com.example.simplefitnessrecords01.fitness.ExerciseSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,52 +26,52 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecyclerOneSets.HolderSetFitList> {
+public class AdapterExerciseSets extends RecyclerView.Adapter<AdapterExerciseSets.HolderExerciseSetList> {
 
-    SetActivity context;
+    ExerciseSetActivity context;
 
 
     //LIST of performed approaches in training
-    private List<SetTraining> setSetTrainingList = new ArrayList<>();
+    private List<ExerciseSet> exerciseSetList = new ArrayList<>();
 
 
 
 
     /********  GETTERS-SETTERS ********************/
-    public List<SetTraining> getSetOneSetList() {
-        return setSetTrainingList;
+    public List<ExerciseSet> getExerciseSetList() {
+        return exerciseSetList;
     }
 
     //Задати список підходів
-    public void setSetOneSetList(List<SetTraining> setSetTrainingList) {
-        this.setSetTrainingList = setSetTrainingList;
+    public void setExerciseSetList(List<ExerciseSet> exerciseSetList) {
+        this.exerciseSetList = exerciseSetList;
     }
 
     //Add another set to the adapter list
-    public void addOneSet(SetTraining set) {
-        setSetTrainingList.add(set);
+    public void addExerciseSet(ExerciseSet exerciseSet) {
+        exerciseSetList.add(exerciseSet);
     }
-    public SetTraining getOneSet(int position) {
-        return setSetTrainingList.get(position);
+    public ExerciseSet getExerciseSet(int position) {
+        return exerciseSetList.get(position);
     }
 
     //The method returns the number of objects
     @Override
     public int getItemCount() {
-        return setSetTrainingList.size();
+        return exerciseSetList.size();
     }
 
 
 
 
     /************* Constructors ***********************/
-    public AdapterRecyclerOneSets(Context context) {
-        this.context = (SetActivity) context;
+    public AdapterExerciseSets(Context context) {
+        this.context = (ExerciseSetActivity) context;
     }
 
-    public AdapterRecyclerOneSets(Context context, List<SetTraining> setTrainingList) {
-        this.context = (SetActivity) context;
-        this.setSetTrainingList = setTrainingList;
+    public AdapterExerciseSets(Context context, List<ExerciseSet> exerciseSetList) {
+        this.context = (ExerciseSetActivity) context;
+        this.exerciseSetList = exerciseSetList;
     }
 
 
@@ -81,13 +80,13 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
     /******************** Creation of View and Holder blank ***************/
     @NonNull
     @Override
-    public HolderSetFitList onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HolderExerciseSetList onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //Створення В'ю
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_set_activity, parent, false);
 
         //Створення холдера
-        return new HolderSetFitList(view);
+        return new HolderExerciseSetList(view);
     }
 
 
@@ -95,18 +94,18 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
     /****** Initialize (Animate) the View and the holder with the data of the object from the list **********/
     @Override
-    public void onBindViewHolder(@NonNull HolderSetFitList holder, int position) {
+    public void onBindViewHolder(@NonNull HolderExerciseSetList holder, int position) {
         //Витягти об'єкт зі списку
-        SetTraining setTraining = setSetTrainingList.get(position);
+        ExerciseSet exerciseSet = exerciseSetList.get(position);
         //Через метод в холдері запихнути дані в В'ю
-        holder.initItemView(setTraining);
+        holder.initItemView(exerciseSet);
     }
 
 
 
 
     /*******************  Holder  *****************/
-    public class HolderSetFitList extends RecyclerView.ViewHolder {
+    public class HolderExerciseSetList extends RecyclerView.ViewHolder {
 
 
         //text size
@@ -114,13 +113,13 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
         //object in holder
-        SetTraining setTraining1 = null;
+        ExerciseSet exerciseSet1 = null;
 
         //binder
         RecyclerSetActivityBinding binding = RecyclerSetActivityBinding.bind(itemView);
 
         //constructor
-        public HolderSetFitList(@NonNull View itemView) {
+        public HolderExerciseSetList(@NonNull View itemView) {
             super(itemView);
 
 
@@ -140,15 +139,15 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                     //menu.setHeaderTitle("Опції");
 
                     // We fill the context menu with items
-                    ((SetActivity)context).getMenuInflater().inflate(R.menu.context_set_activity, menu);
+                    ((ExerciseSetActivity)context).getMenuInflater().inflate(R.menu.context_set_activity, menu);
                 });
 
-                //If the context is SetActivity
-                if (context instanceof SetActivity) {
-                    SetActivity setActivity = (SetActivity) context;
+                //If the context is ExerciseSetActivity
+                if (context instanceof ExerciseSetActivity) {
+                    ExerciseSetActivity exerciseSetActivity = (ExerciseSetActivity) context;
                     //You set a position
-                    setActivity.setPosition(position);
-                } else Toast.makeText(context, "Error! SetActivity renamed!", Toast.LENGTH_SHORT).show();
+                    exerciseSetActivity.setPosition(position);
+                } else Toast.makeText(context, "Error! ExerciseSetActivity renamed!", Toast.LENGTH_SHORT).show();
 
 
                 //show the context menu
@@ -182,9 +181,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                setTraining1.getExecutedExercise().getMuscleGroup().setBodyPart(s.toString());
+                                exerciseSet1.getExecutedExercise().getMuscleGroup().setBodyPart(s.toString());
                             //save change in DataBase
-                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
+                            ((ExerciseSetActivity)context).updateTableDBFromList(getExerciseSetList());
                         }
                     } , DELAY);
                 }
@@ -210,9 +209,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                setTraining1.getExecutedExercise().setExerciseName(s.toString());
+                                exerciseSet1.getExecutedExercise().setExerciseName(s.toString());
                             //save change in DataBase
-                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
+                            ((ExerciseSetActivity)context).updateTableDBFromList(getExerciseSetList());
                         }
                     } , DELAY);
                 }
@@ -241,9 +240,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                setTraining1.getExecutedExercise().getRepeats().setRepeats(Integer.parseInt(s.toString()));
+                                exerciseSet1.getExecutedExercise().getRepeats().setRepeats(Integer.parseInt(s.toString()));
                             //save change in DataBase
-                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
+                            ((ExerciseSetActivity)context).updateTableDBFromList(getExerciseSetList());
                         }
                     } , DELAY);
                 }
@@ -271,9 +270,9 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
                         public void run() {
                             //change object in holder
                             if( !(s.toString()).equals("") )
-                                setTraining1.getExecutedExercise().getWeight().setWeight(Integer.parseInt(s.toString()));
+                                exerciseSet1.getExecutedExercise().getWeight().setWeight(Integer.parseInt(s.toString()));
                             //save change in DataBase
-                            ((SetActivity)context).updateTableDBFromList(getSetOneSetList());
+                            ((ExerciseSetActivity)context).updateTableDBFromList(getExerciseSetList());
                         }
                     } , DELAY);
                 }
@@ -283,16 +282,16 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
         //Processing data from the object to animate the view in this holder
-        void initItemView(SetTraining setTraining){
+        void initItemView(ExerciseSet exerciseSet){
             //object in holder
-            setTraining1 = setTraining;
+            exerciseSet1 = exerciseSet;
 
             //put data to item from object
-            String exeGroupName = setTraining.getExecutedExercise().getMuscleGroup().getBodyPart();
+            String exeGroupName = exerciseSet.getExecutedExercise().getMuscleGroup().getBodyPart();
             binding.tvExerciceGroup.setText(exeGroupName);
 
             // show muscles in recycler view
-            String[] muscles = setTraining.getExecutedExercise().getMuscleGroup().getMuscles();
+            String[] muscles = exerciseSet.getExecutedExercise().getMuscleGroup().getMuscles();
             StringBuilder sb = new StringBuilder();
             for(String muscle : muscles) {
                 if(  muscle != null & !Objects.equals(muscle, "")) {
@@ -305,16 +304,16 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
 
 
             //
-            String exeName = setTraining.getExecutedExercise().toString();
+            String exeName = exerciseSet.getExecutedExercise().toString();
             binding.tvExerciceName.setText(exeName);
 
             //
-            int weight = setTraining.getExecutedExercise().getWeight().toInt();
+            int weight = exerciseSet.getExecutedExercise().getWeight().toInt();
             binding.etWeight.setText(String.valueOf(weight));
             if (weight == 0) binding.etWeight.setText("");
 
             //
-            int repeats = setTraining.getExecutedExercise().getRepeats().toInt();
+            int repeats = exerciseSet.getExecutedExercise().getRepeats().toInt();
             binding.etRepeat.setText(String.valueOf(repeats));
             if (repeats == 0) binding.etRepeat.setText("");
 
@@ -351,11 +350,11 @@ public class AdapterRecyclerOneSets extends RecyclerView.Adapter<AdapterRecycler
             Intent intent = new Intent(context, ExercisesActivity.class);
             intent.putExtra("goal_launch", "select_exe");
             intent.putExtra("position", getAbsoluteAdapterPosition());
-            intent.putExtra("unicName", setTraining1.getUniqueFitTraining());
+            intent.putExtra("unicName", exerciseSet1.getNameWorkout());
             context.getActivityChoseExeLauncher().launch(intent);
 
-            //save the position in SetActivity
-            ((SetActivity) context).setPosition(getAbsoluteAdapterPosition());
+            //save the position in ExerciseSetActivity
+            ((ExerciseSetActivity) context).setPosition(getAbsoluteAdapterPosition());
         }
 
 

@@ -14,7 +14,7 @@ import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.databinding.DialogCreateOnegymBinding;
 
 //Dialog for construct one training
-public class StartDialog extends Dialog {
+public class DialogCreateWorkout extends Dialog {
     private DialogCreateOnegymBinding mBinding;
     private final Context context;
     private DialogUniqueNameProcessor dialogUniqueNameProcessor;
@@ -22,7 +22,7 @@ public class StartDialog extends Dialog {
 
 
     //Constructor
-    public StartDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor) {
+    public DialogCreateWorkout(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor) {
         super(context);
         this.context = context;
         this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;
@@ -32,7 +32,7 @@ public class StartDialog extends Dialog {
     }
 
 
-    public StartDialog(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor, String[] dataToDialogue1) {
+    public DialogCreateWorkout(@NonNull Context context, DialogUniqueNameProcessor dialogUniqueNameProcessor, String[] dataToDialogue1) {
         super(context);
         this.context = context;
         this.dialogUniqueNameProcessor = dialogUniqueNameProcessor;

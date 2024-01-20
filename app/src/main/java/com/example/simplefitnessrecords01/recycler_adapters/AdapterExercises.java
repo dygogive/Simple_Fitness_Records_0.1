@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.ExercisesActivity;
-import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerExercisesItemBinding;
 import com.example.simplefitnessrecords01.fitness.Exercise;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecyclerExercises.ExeHolder> {
+public class AdapterExercises extends RecyclerView.Adapter<AdapterExercises.ExeHolder> {
 
     private Context context;
 
@@ -52,11 +50,11 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
 
 
     /********************** CONSTRUCTOR *****************************/
-    public AdapterRecyclerExercises(Context context, List<Exercise> exerciseList) {
+    public AdapterExercises(Context context, List<Exercise> exerciseList) {
         this.context      = context;
         this.exerciseList = exerciseList;
     }
-    public AdapterRecyclerExercises(Context context, List<Exercise> exerciseList, boolean selectExercise) {
+    public AdapterExercises(Context context, List<Exercise> exerciseList, boolean selectExercise) {
         this.context        = context;
         this.exerciseList   = exerciseList;
         this.selectExercise = selectExercise;
@@ -74,7 +72,7 @@ public class AdapterRecyclerExercises extends RecyclerView.Adapter<AdapterRecycl
         //creating a view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_exercises_item, parent, false);
         //creating a SetsHolder
-        return new AdapterRecyclerExercises.ExeHolder(view);
+        return new AdapterExercises.ExeHolder(view);
     }
 
     @Override

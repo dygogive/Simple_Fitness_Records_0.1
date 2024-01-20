@@ -1,7 +1,7 @@
 package com.example.simplefitnessrecords01.fitness;
 
 
-public class SetTraining extends EmptySetTraining {
+public class ExerciseSet extends EmptyExerciseSet {
 
     /* PARAMETERS */
     private int id;
@@ -25,7 +25,7 @@ public class SetTraining extends EmptySetTraining {
 
 
     /* CONSTRUCTOR */
-    public SetTraining(int id, ExecutedExercise executedExercise, String uniqueFitTraining) {
+    public ExerciseSet(int id, ExecutedExercise executedExercise, String uniqueFitTraining) {
         super(uniqueFitTraining);
         this.executedExercise = executedExercise;
         this.id = id;

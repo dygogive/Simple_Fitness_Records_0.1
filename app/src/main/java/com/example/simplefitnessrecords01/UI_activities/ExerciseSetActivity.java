@@ -15,32 +15,29 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
+import com.example.simplefitnessrecords01.databinding.ActivityExerciseSetBinding;
+import com.example.simplefitnessrecords01.fitness.EmptyExerciseSet;
+import com.example.simplefitnessrecords01.fitness.ExerciseSet;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
-import com.example.simplefitnessrecords01.fitness.Exercise;
 import com.example.simplefitnessrecords01.fitness.ExecutedExercise;
 import com.example.simplefitnessrecords01.fitness.Repeats;
-import com.example.simplefitnessrecords01.fitness.SetTraining;
 import com.example.simplefitnessrecords01.fitness.Weight;
-import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerOneSets;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterExerciseSets;
 import com.example.simplefitnessrecords01.R;
-import com.example.simplefitnessrecords01.databinding.ActivitySetBinding;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SetActivity extends AppCompatActivity {
+public class ExerciseSetActivity extends AppCompatActivity {
 
 
     //binding
-    private ActivitySetBinding binding;
+    private ActivityExerciseSetBinding binding;
 
     //link to the Database Assistant
     private SQLhelper sqLhelper;
@@ -52,7 +49,7 @@ public class SetActivity extends AppCompatActivity {
     private String nameFitness;
 
     //Adapter RecyclerView
-    AdapterRecyclerOneSets adapter;
+    AdapterExerciseSets adapter;
 
     // current position of recycler
     private int positionOfRecycler = -1;
@@ -99,11 +96,11 @@ public class SetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivitySetBinding.inflate(getLayoutInflater());
+        binding = ActivityExerciseSetBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         //initialization of database links
-        sqLhelper = new SQLhelper(SetActivity.this);
+        sqLhelper = new SQLhelper(ExerciseSetActivity.this);
         db = sqLhelper.getWritableDatabase();
 
 
@@ -148,7 +145,7 @@ public class SetActivity extends AppCompatActivity {
         super.onResume();
 
         //set size of text
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SetActivity.this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ExerciseSetActivity.this);
         String selectedTextSize = preferences.getString("text_size_preference", getResources().getString(R.string.default_text_size));
         binding.tvSubName.setTextSize(Float.parseFloat(selectedTextSize));
         binding.tvName.setTextSize(Float.parseFloat(selectedTextSize));
@@ -163,7 +160,7 @@ public class SetActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         //save all to db
-        updateTableDBFromList(adapter.getSetOneSetList());
+        updateTableDBFromList(adapter.getExerciseSetList());
 
         super.onPause();
     }
@@ -208,18 +205,18 @@ public class SetActivity extends AppCompatActivity {
 
     /******************  RecyclerView **********************/
     private void recycleViewInit() {
-        List<SetTraining> setsFitness = getSetsFitness();
+        List<ExerciseSet> setsFitness = getSetsFitness();
         //Adapter for recycler
-        adapter = new AdapterRecyclerOneSets(SetActivity.this, setsFitness);
+        adapter = new AdapterExerciseSets(ExerciseSetActivity.this, setsFitness);
         //manager for RECYCLER
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //set Adapter for recycler
         binding.recyclerView.setAdapter(adapter);
     }
 
-    private List<SetTraining> getSetsFitness() {
+    private List<ExerciseSet> getSetsFitness() {
         //empty list for SetTraining from base for recycler
-        List<SetTraining> setsTrainings = new ArrayList<>();
+        List<ExerciseSet> setsTrainings = new ArrayList<>();
 
         String selection = SQLhelper.COLUMN_UNIC_NAME + " = ?";
         String[] selectionArgs = new String[] {getNameFitness()};
@@ -251,7 +248,7 @@ public class SetActivity extends AppCompatActivity {
 
                 ExecutedExercise executedExercise = new ExecutedExercise(exe,new MuscleGroup(group , new String[]{muscle1,muscle2,muscle3,muscle4}),
                         new Weight(wei), new Repeats(rep));
-                SetTraining setTraining = new SetTraining(id, executedExercise, uniName);
+                ExerciseSet setTraining = new ExerciseSet(id, executedExercise, uniName);
 
                 //add to list
                 setsTrainings.add( setTraining );
@@ -267,9 +264,9 @@ public class SetActivity extends AppCompatActivity {
     //update Recycler View
     private void updateRecycler() {
         // get List<OneSet>
-        List<SetTraining> setsFitness = getSetsFitness();
+        List<ExerciseSet> sets = getSetsFitness();
         //put into adapter
-        adapter.setSetOneSetList(setsFitness);
+        adapter.setExerciseSetList(sets);
         //renew display
         adapter.notifyDataSetChanged();
     }
@@ -306,7 +303,7 @@ public class SetActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_new:
                 //add Set
-                EmptySetTraining emptySetTraining = new EmptySetTraining(nameFitness);
+                EmptyExerciseSet emptySetTraining = new EmptyExerciseSet(nameFitness);
                 //add this set to sql
                 sqLhelper.addRowSets(emptySetTraining);
                 //
@@ -327,9 +324,9 @@ public class SetActivity extends AppCompatActivity {
             case R.id.exercises:
 
                 //launch the activity with all Exercises
-                Intent intent = new Intent(SetActivity.this, ExercisesActivity.class);
+                Intent intent = new Intent(ExerciseSetActivity.this, ExercisesActivity.class);
                 intent.putExtra("goal_launch", "show_exe");
-                SetActivity.this.getactivityExercisesLauncher().launch(intent);
+                ExerciseSetActivity.this.getactivityExercisesLauncher().launch(intent);
 
                 return true;
 
@@ -367,12 +364,12 @@ public class SetActivity extends AppCompatActivity {
 
             case R.id.delete_set:
                 //get OneSet for deleting
-                SetTraining setTraining = adapter.getOneSet(positionOfRecycler);
+                ExerciseSet setTraining = adapter.getExerciseSet(positionOfRecycler);
                 //delete from DB
                 String query = "DELETE FROM " + sqLhelper.TABLE_SETS + " WHERE " + sqLhelper.COLUMN_ID + " = " + setTraining.getId();
                 db.execSQL(query);
                 //update OneSetList in adapter
-                adapter.setSetOneSetList(getSetsFitness());
+                adapter.setExerciseSetList(getSetsFitness());
                 //renew display
                 adapter.notifyDataSetChanged();
 
@@ -388,12 +385,12 @@ public class SetActivity extends AppCompatActivity {
 
 
     /********************  Save DATA TO DB **********************/
-    public void updateTableDBFromList(List<SetTraining> setsFitness1){
+    public void updateTableDBFromList(List<ExerciseSet> setsFitness1){
         //
         ContentValues cv = new ContentValues();
 
         // get OneSet list from recycler
-        List<SetTraining> setsFitness = setsFitness1;
+        List<ExerciseSet> setsFitness = setsFitness1;
 
         // create selection from database
         String where_clause = SQLhelper.COLUMN_UNIC_NAME + "=?";
@@ -406,7 +403,7 @@ public class SetActivity extends AppCompatActivity {
         //number of elements in database and recycler must be equal
         if(cursor.getCount() == setsFitness.size()) {
             //iteration for OneSet list
-            for (SetTraining setTraining : setsFitness) {
+            for (ExerciseSet setTraining : setsFitness) {
                 //get data from setFitness
                 String exe       = setTraining.getExecutedExercise().toString();
                 String exeGroup  = setTraining.getExecutedExercise().getMuscleGroup().getBodyPart();
@@ -440,7 +437,7 @@ public class SetActivity extends AppCompatActivity {
 
     /********************** SETTINGS OF THE PROGRAM ************************/
     private void openSettingsLayout(){
-        Intent intent = new Intent(SetActivity.this,  SettingsActivity.class);
+        Intent intent = new Intent(ExerciseSetActivity.this,  SettingsActivity.class);
         startActivity(intent);
     }
 }

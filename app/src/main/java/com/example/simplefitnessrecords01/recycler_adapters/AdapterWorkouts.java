@@ -15,50 +15,48 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simplefitnessrecords01.R;
 import com.example.simplefitnessrecords01.UI_activities.MainActivity;
 import com.example.simplefitnessrecords01.databinding.RecyclerMainActivityBinding;
-import com.example.simplefitnessrecords01.fitness.OneGym;
+import com.example.simplefitnessrecords01.fitness.Workout;
 
 import java.util.List;
 
-public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<AdapterRecyclerFitnessTrainings.SetTrainingHolder> {
+public class AdapterWorkouts extends RecyclerView.Adapter<AdapterWorkouts.WorkoutHolder> {
 
     private final Context context;
 
+    //List of trainings
+    private List<Workout> workoutList;
 
 
-
-
-    //List of exercises
-    private List<OneGym> setOneGymList;
 
     /* SETTER AND GETTER this exercise list */
-    public void setFitnessList(List<OneGym> setOneGymList) {
-        this.setOneGymList = setOneGymList;
+    public void    setWorkoutList (List<Workout> trainings1) {
+        workoutList = trainings1;
     }
-    public List<OneGym> getSetTrainingList() {
-        return setOneGymList;
+    public List<Workout> getWorkoutList () {
+        return workoutList;
     }
 
-    public OneGym getItem(int position) {
-        return setOneGymList.get(position);
+    public Workout getWorkout(int position) {
+        return workoutList.get(position);
     }
-    public void setItem(OneGym oneGym) {
-        setOneGymList.add(oneGym);
+    public void    addWorkout(Workout workout) {
+        workoutList.add(workout);
     }
     //returning the number of items displayed by the Recycler
     @Override
     public int getItemCount() {
         //розмір елементів
-        return setOneGymList.size();
+        return workoutList.size();
     }
 
 
 
 
     //element click listener
-    private OnItemRecyclerClickListener onItemShortClickListener;
+    private OnWorkoutClickListener onItemShortClickListener;
 
     //method to initialize the click listener
-    public void setOnItemRecyclerClickListener(OnItemRecyclerClickListener listener) {
+    public void setOnItemRecyclerClickListener(OnWorkoutClickListener listener) {
         this.onItemShortClickListener = listener;
     }
 
@@ -67,8 +65,8 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
 
     //Constructor
-    public AdapterRecyclerFitnessTrainings(List<OneGym> setOneGymList, Context context) {
-        this.setOneGymList = setOneGymList;
+    public AdapterWorkouts(List<Workout> workoutList, Context context) {
+        this.workoutList = workoutList;
         this.context = context;
     }
 
@@ -79,11 +77,11 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
     //method creates view holders
     @NonNull
     @Override
-    public SetTrainingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WorkoutHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //creating a view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_main_activity, parent, false);
         //creating a SetsHolder
-        return new SetTrainingHolder(view);
+        return new WorkoutHolder(view);
     }
 
 
@@ -92,18 +90,18 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
     //the method fills the created views in the holders with information
     @Override
-    public void onBindViewHolder(@NonNull AdapterRecyclerFitnessTrainings.SetTrainingHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WorkoutHolder holder, int position) {
         //get a list item
-        OneGym setOneGym = setOneGymList.get(position);
+        Workout workout = workoutList.get(position);
         //throw information from it into the holder
-        holder.onBindData(setOneGym);
+        holder.onBindData(workout);
     }
 
 
 
 
     /*******************   RecyclerView.ViewHolder *********************/
-    public class SetTrainingHolder extends RecyclerView.ViewHolder {
+    public class WorkoutHolder extends RecyclerView.ViewHolder {
 
         //text size
         String selectedTextSize = context.getString(R.string.default_text_size);
@@ -113,7 +111,7 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
         RecyclerMainActivityBinding binding = RecyclerMainActivityBinding.bind(itemView);
 
         //конструктор
-        public SetTrainingHolder(@NonNull View itemView) {
+        public WorkoutHolder(@NonNull View itemView) {
             super(itemView);
 
             //set size of text
@@ -124,7 +122,7 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
             //set a short-click listener on the view element
             itemView.setOnClickListener(v -> {
                 int position = getAbsoluteAdapterPosition();
-                /* you need to check if the OnItemRecyclerClickListener listener is identified,
+                /* you need to check if the OnWorkoutClickListener listener is identified,
                  and if the position of the clicked item is */
                 if (onItemShortClickListener != null & RecyclerView.NO_POSITION != position) {
                     // now I call the click method on my listener and pass the SetTraining element
@@ -165,10 +163,10 @@ public class AdapterRecyclerFitnessTrainings extends RecyclerView.Adapter<Adapte
 
 
         // fill the item holder item with information
-        void onBindData(OneGym oneGym){
-            binding.textView. setText(oneGym.getDay());
-            binding.tvName.   setText(oneGym.getName());
-            binding.tvSubName.setText(oneGym.getInfo());
+        void onBindData(Workout workout){
+            binding.textView. setText(workout.getDay());
+            binding.tvName.   setText(workout.getName());
+            binding.tvSubName.setText(workout.getInfo());
 
             //set size of text
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

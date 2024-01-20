@@ -26,7 +26,7 @@ import com.example.simplefitnessrecords01.dialogs.DialogUniqueNameProcessor;
 import com.example.simplefitnessrecords01.dialogs.ExeNameDialog;
 import com.example.simplefitnessrecords01.fitness.MuscleGroup;
 import com.example.simplefitnessrecords01.fitness.Exercise;
-import com.example.simplefitnessrecords01.recycler_adapters.AdapterRecyclerExercises;
+import com.example.simplefitnessrecords01.recycler_adapters.AdapterExercises;
 import com.example.simplefitnessrecords01.sql.SQLhelper;
 
 import java.util.LinkedList;
@@ -39,7 +39,7 @@ public class ExercisesActivity extends AppCompatActivity {
     SQLhelper sqLhelper;
     SQLiteDatabase database;
 
-    private AdapterRecyclerExercises adapterRecyclerExercises;
+    private AdapterExercises adapterExercises;
 
 
     //for what goal this activity is launched
@@ -148,8 +148,8 @@ public class ExercisesActivity extends AppCompatActivity {
                 chosenGroup = (String) parent.getItemAtPosition(position);
                 Toast.makeText(ExercisesActivity.this, chosenGroup, Toast.LENGTH_SHORT).show();
                 initSpinnerMuscles(chosenGroup);
-                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
-                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
+                adapterExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterExercises.notifyDataSetChanged();     // update screen
             }
 
             @Override
@@ -191,8 +191,8 @@ public class ExercisesActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 chosenMuscle = (String) parent.getItemAtPosition(position).toString();
                 Toast.makeText(ExercisesActivity.this, chosenMuscle, Toast.LENGTH_SHORT).show();
-                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
-                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
+                adapterExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterExercises.notifyDataSetChanged();     // update screen
             }
 
             @Override
@@ -213,15 +213,15 @@ public class ExercisesActivity extends AppCompatActivity {
 
         //create adapter
         if(goalOfLaunchIntent.equals("show_exe")) {
-            adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises());
+            adapterExercises = new AdapterExercises(this, getExercises());
         } else if (goalOfLaunchIntent.equals("select_exe")) {
-            adapterRecyclerExercises = new AdapterRecyclerExercises(this, getExercises(),true);
+            adapterExercises = new AdapterExercises(this, getExercises(),true);
         }
 
         //layout manager add to recycler
         binding.rvExercises.setLayoutManager(new LinearLayoutManager(this));
         //set adapter
-        binding.rvExercises.setAdapter(adapterRecyclerExercises);
+        binding.rvExercises.setAdapter(adapterExercises);
     }
     Cursor c = null;
     private List<Exercise> getExercises() {
@@ -338,8 +338,8 @@ public class ExercisesActivity extends AppCompatActivity {
                 return true;
             case R.id.deleteExe: {
                 sqLhelper.deleteRowExercise(positionItem);           //delete
-                adapterRecyclerExercises.updateList(getExercises()); //update exercise list in adapter
-                adapterRecyclerExercises.notifyDataSetChanged();     // update screen
+                adapterExercises.updateList(getExercises()); //update exercise list in adapter
+                adapterExercises.notifyDataSetChanged();     // update screen
             }
                 return true;
             default:
@@ -373,8 +373,8 @@ public class ExercisesActivity extends AppCompatActivity {
 
             sqLhelper.createNewExeInSQL(data);
 
-            adapterRecyclerExercises.updateList(getExercises());
-            adapterRecyclerExercises.notifyDataSetChanged();
+            adapterExercises.updateList(getExercises());
+            adapterExercises.notifyDataSetChanged();
         };
 
         ExeNameDialog dialog = new ExeNameDialog(ExercisesActivity.this, dialogUniqueNameProcessor);
@@ -386,11 +386,11 @@ public class ExercisesActivity extends AppCompatActivity {
 
             sqLhelper.editExeName(positionItem, String.valueOf(uniqueName[0]));
 
-            adapterRecyclerExercises.updateList(getExercises());
-            adapterRecyclerExercises.notifyDataSetChanged();
+            adapterExercises.updateList(getExercises());
+            adapterExercises.notifyDataSetChanged();
         };
 
-        String exeName = adapterRecyclerExercises.getItem(positionItem).getExerciseName();
+        String exeName = adapterExercises.getItem(positionItem).getExerciseName();
 
         ExeNameDialog dialog = new ExeNameDialog(ExercisesActivity.this, dialogUniqueNameProcessor, exeName);
         dialog.show();

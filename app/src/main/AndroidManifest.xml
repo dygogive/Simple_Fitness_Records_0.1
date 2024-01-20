@@ -18,7 +18,7 @@
             android:name=".UI_activities.MusclesGroupsActivity"
             android:exported="false" />
         <activity
-            android:name=".UI_activities.SetActivity"
+            android:name=".UI_activities.ExerciseSetActivity"
             android:exported="false" />
         <activity
             android:name=".UI_activities.SettingsActivity"

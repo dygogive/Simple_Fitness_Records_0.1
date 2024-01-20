@@ -16,14 +16,14 @@ public class MuscleGroup {
         return muscles;
     }
 
-    public void setBodyPart(String bodyGroup) {
-        this.bodyPart = bodyGroup;
+    public void setBodyPart(String bodyPart) {
+        this.bodyPart = bodyPart;
     }
 
     /******************* CONSTRUCTOR ***********************/
-    public MuscleGroup(String bodyGroup, String[] muscles) {
+    public MuscleGroup(String bodyPart, String[] muscles) {
         this.muscles = muscles;
-        this.bodyPart = bodyGroup;
+        this.bodyPart = bodyPart;
     }
     public MuscleGroup(String bodyPart) {
         this.muscles = new String[]{"some muscle"};

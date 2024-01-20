@@ -9,12 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.simplefitnessrecords01.dialogs.StartDialog;
-import com.example.simplefitnessrecords01.fitness.EmptySetTraining;
-import com.example.simplefitnessrecords01.fitness.OneGym;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.simplefitnessrecords01.fitness.EmptyExerciseSet;
 
 public class SQLhelper extends SQLiteOpenHelper {
     //
@@ -208,11 +203,11 @@ public class SQLhelper extends SQLiteOpenHelper {
 
 
     //add delete, update Rows
-    public void addRowSets(EmptySetTraining emptySetTraining){
+    public void addRowSets(EmptyExerciseSet emptySetTraining){
 
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_EXE     , "Exercise");
-        cv.put(COLUMN_UNIC_NAME, emptySetTraining.getUniqueFitTraining());
+        cv.put(COLUMN_UNIC_NAME, emptySetTraining.getNameWorkout());
         getWritableDatabase().insert(TABLE_SETS,null,cv);
         cv.clear();
     }
